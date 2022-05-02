@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tree-sitter generate",
     "test": "tree-sitter test",
-    "parse": "tree-sitter parse test/corpus/hello.asm"
+    "hello": "tree-sitter parse test/hello.asm"
   },
   "keywords": [],
   "author": "",

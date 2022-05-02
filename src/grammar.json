@@ -1,23 +1,23 @@
 {
   "name": "nasm",
   "rules": {
-    "source": {
+    "source_file": {
       "type": "REPEAT",
       "content": {
         "type": "CHOICE",
         "members": [
           {
             "type": "SYMBOL",
-            "name": "line"
+            "name": "source_line"
           },
           {
-            "type": "STRING",
-            "value": "\n"
+            "type": "PATTERN",
+            "value": "\\r?\\n"
           }
         ]
       }
     },
-    "line": {
+    "source_line": {
       "type": "PREC",
       "value": 1,
       "content": {
@@ -42,8 +42,16 @@
                     ]
                   },
                   {
-                    "type": "SYMBOL",
-                    "name": "instruction"
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "instruction"
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
                   }
                 ]
               },
@@ -53,8 +61,8 @@
             ]
           },
           {
-            "type": "STRING",
-            "value": "\n"
+            "type": "PATTERN",
+            "value": "\\r?\\n"
           }
         ]
       }
@@ -152,7 +160,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "word"
+          "name": "expression"
         }
       ]
     },
@@ -479,7 +487,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "word"
+          "name": "expression"
         },
         {
           "type": "STRING",
@@ -563,7 +571,7 @@
         },
         {
           "type": "PATTERN",
-          "value": ".*\\n"
+          "value": ".*\\r?\\n"
         }
       ]
     },
@@ -572,8 +580,12 @@
       "value": -5,
       "content": {
         "type": "PATTERN",
-        "value": "[A-Za-z]+"
+        "value": "[A-Za-z._?$][A-Za-z0-9_$#@~.?]*"
       }
+    },
+    "expression": {
+      "type": "SYMBOL",
+      "name": "word"
     }
   },
   "extras": [
@@ -583,7 +595,7 @@
     },
     {
       "type": "PATTERN",
-      "value": "\\s"
+      "value": "\\s|\\\\\\r?\\n"
     }
   ],
   "conflicts": [

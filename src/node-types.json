@@ -41,6 +41,21 @@
       "required": true,
       "types": [
         {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
           "type": "word",
           "named": true
         }
@@ -91,25 +106,6 @@
     }
   },
   {
-    "type": "line",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "instruction",
-          "named": true
-        },
-        {
-          "type": "label",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "operand",
     "named": true,
     "fields": {},
@@ -126,11 +122,11 @@
           "named": true
         },
         {
-          "type": "register",
+          "type": "expression",
           "named": true
         },
         {
-          "type": "word",
+          "type": "register",
           "named": true
         }
       ]
@@ -157,7 +153,7 @@
     "fields": {}
   },
   {
-    "type": "source",
+    "type": "source_file",
     "named": true,
     "fields": {},
     "children": {
@@ -165,7 +161,26 @@
       "required": false,
       "types": [
         {
-          "type": "line",
+          "type": "source_line",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "source_line",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "instruction",
+          "named": true
+        },
+        {
+          "type": "label",
           "named": true
         }
       ]
@@ -190,10 +205,6 @@
     "type": "word",
     "named": true,
     "fields": {}
-  },
-  {
-    "type": "\n",
-    "named": false
   },
   {
     "type": ",",

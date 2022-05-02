@@ -1,5 +1,6 @@
 /// <reference path="node_modules/tree-sitter-cli/dsl.d.ts" />
-// line ::= [label[':']] [prefix] [instr [opr{',' opr}]] '\n'
+// source_line ::= [label[':']] [prefix] [instr [opr{',' opr}]] '\n'
+// TODO/FIXME: file-ending lines (ie. no '\n', but EOL)
 
 module.exports = grammar({
 
@@ -7,7 +8,7 @@ module.exports = grammar({
 
   extras: $ => [
     $.comment,
-    /\s/,
+    /\s|\\\r?\n/,
   ],
 
   conflicts: $ => [
@@ -16,24 +17,23 @@ module.exports = grammar({
 
   rules: {
 
-    source: $ => repeat(choice(
-      $.line,
-      '\n',
+    source_file: $ => repeat(choice(
+      $.source_line,
+      /\r?\n/,
     )),
 
-    line: $ => prec(1, seq(
+    source_line: $ => prec(1, seq(
         optional(seq(
           optional($.label),
-          $.instruction,
+          optional($.instruction),
         )),
-        '\n',
+        /\r?\n/,
     )),
 
     label: $ => seq($.word, optional(':')),
 
     instruction: $ => seq(
       choice(
-        // YYY: probably the precedence here has no impact...
         $.known_instruction,
         $.unknown_instruction,
       ),
@@ -47,7 +47,7 @@ module.exports = grammar({
       $.register,
       $.effective_address,
       $.constant,
-      $.word, // XXX: $.expression
+      $.expression,
     ),
 
     register: $ => choice(...[
@@ -60,7 +60,7 @@ module.exports = grammar({
     effective_address: $ => seq(
       '[',
       optional(choice(...['BYTE', 'WORD', 'DWORD', 'NOSPLIT', 'REL', 'ABS'].map(ci))),
-      $.word, // XXX: $.expression
+      $.expression,
       ']',
     ),
 
@@ -81,8 +81,10 @@ module.exports = grammar({
     known_instruction: $ => choice(...['MOV', 'ADD', 'INC', 'SYSCALL'].map(ci)),
     unknown_instruction: $ => $.word,
 
-    comment: $ => seq(';', /.*\n/),
-    word: $ => prec(-5, /[A-Za-z]+/), // XXX: /[A-Za-z._?$][A-Za-z0-9_$#@~.?]*/
+    comment: $ => seq(';', /.*\r?\n/),
+    word: $ => prec(-5, /[A-Za-z._?$][A-Za-z0-9_$#@~.?]*/), // YYY: not sure precedence will be ever needed here
+
+    expression: $ => $.word, // YYY: probably not here (ie. declare earlier may be needed)
 
   },
 
