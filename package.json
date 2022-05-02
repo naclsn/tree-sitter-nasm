@@ -1,0 +1,21 @@
+{
+  "name": "tree-sittest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bindings/node",
+  "scripts": {
+    "build": "tree-sitter generate",
+    "test": "tree-sitter test",
+    "parse": "tree-sitter parse test/corpus/hello.asm"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^17.0.31",
+    "tree-sitter-cli": "^0.20.6"
+  },
+  "dependencies": {
+    "nan": "^2.15.0"
+  }
+}
