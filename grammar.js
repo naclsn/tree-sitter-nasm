@@ -10,15 +10,16 @@ module.exports = grammar({
     /\s/,
   ],
 
+  conflicts: $ => [
+    [$.label, $.unknown_instruction],
+  ],
+
   rules: {
 
     source: $ => repeat(choice(
       $.line,
       '\n',
     )),
-
-    comment: $ => seq(';', /.*\n/),
-    word: $ => /[a-z]+/,
 
     line: $ => prec(1, seq(
         optional(seq(
@@ -32,15 +33,32 @@ module.exports = grammar({
     //label: $ => seq($.word, ':'),
 
     instruction: $ => seq(
-      $.word,
+      choice(
+        // YYY: probably the precedence here has no impact...
+        prec(5, $.known_instruction),
+        prec(4, $.unknown_instruction),
+      ),
       optional($.operands),
     ),
 
-    prefix: $ => $.word,
+    // prefix: $ => $.word,
 
     operands: $ => seq($.operand, repeat(seq(',', $.operand))),
     operand: $ => $.word,
 
+    known_instruction: $ => choice(...['mov', 'add', 'inc', 'syscall'].map(ci)),
+    unknown_instruction: $ => $.word,
+
+    comment: $ => seq(';', /.*\n/),
+    word: $ => prec(-5, /[a-z]+/i),
+
   },
 
 });
+
+function ci(it) {
+  return 'string' === typeof it
+    ? RegExp(it, 'i')
+    : RegExp(it.source, (it.flags??'') + 'i')
+    ;
+}

@@ -17,23 +17,6 @@
         ]
       }
     },
-    "comment": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": ";"
-        },
-        {
-          "type": "PATTERN",
-          "value": ".*\\n"
-        }
-      ]
-    },
-    "word": {
-      "type": "PATTERN",
-      "value": "[a-z]+"
-    },
     "line": {
       "type": "PREC",
       "value": 1,
@@ -101,8 +84,25 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "word"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PREC",
+              "value": 5,
+              "content": {
+                "type": "SYMBOL",
+                "name": "known_instruction"
+              }
+            },
+            {
+              "type": "PREC",
+              "value": 4,
+              "content": {
+                "type": "SYMBOL",
+                "name": "unknown_instruction"
+              }
+            }
+          ]
         },
         {
           "type": "CHOICE",
@@ -117,10 +117,6 @@
           ]
         }
       ]
-    },
-    "prefix": {
-      "type": "SYMBOL",
-      "name": "word"
     },
     "operands": {
       "type": "SEQ",
@@ -150,6 +146,52 @@
     "operand": {
       "type": "SYMBOL",
       "name": "word"
+    },
+    "known_instruction": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "mov"
+        },
+        {
+          "type": "PATTERN",
+          "value": "add"
+        },
+        {
+          "type": "PATTERN",
+          "value": "inc"
+        },
+        {
+          "type": "PATTERN",
+          "value": "syscall"
+        }
+      ]
+    },
+    "unknown_instruction": {
+      "type": "SYMBOL",
+      "name": "word"
+    },
+    "comment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": ";"
+        },
+        {
+          "type": "PATTERN",
+          "value": ".*\\n"
+        }
+      ]
+    },
+    "word": {
+      "type": "PREC",
+      "value": -5,
+      "content": {
+        "type": "PATTERN",
+        "value": "[a-z]+"
+      }
     }
   },
   "extras": [
@@ -162,7 +204,12 @@
       "value": "\\s"
     }
   ],
-  "conflicts": [],
+  "conflicts": [
+    [
+      "label",
+      "unknown_instruction"
+    ]
+  ],
   "precedences": [],
   "externals": [],
   "inline": [],

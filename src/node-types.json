@@ -13,15 +13,24 @@
       "required": true,
       "types": [
         {
+          "type": "known_instruction",
+          "named": true
+        },
+        {
           "type": "operands",
           "named": true
         },
         {
-          "type": "word",
+          "type": "unknown_instruction",
           "named": true
         }
       ]
     }
+  },
+  {
+    "type": "known_instruction",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "label",
@@ -103,6 +112,26 @@
     }
   },
   {
+    "type": "unknown_instruction",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "word",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "\n",
     "named": false
   },
@@ -117,9 +146,5 @@
   {
     "type": ";",
     "named": false
-  },
-  {
-    "type": "word",
-    "named": true
   }
 ]
