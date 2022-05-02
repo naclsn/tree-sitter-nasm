@@ -5,6 +5,49 @@
     "fields": {}
   },
   {
+    "type": "constant",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "constant_charstr",
+          "named": true
+        },
+        {
+          "type": "constant_floatpt",
+          "named": true
+        },
+        {
+          "type": "constant_numeric",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "constant_charstr",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "effective_address",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "instruction",
     "named": true,
     "fields": {},
@@ -75,6 +118,18 @@
       "required": true,
       "types": [
         {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "effective_address",
+          "named": true
+        },
+        {
+          "type": "register",
+          "named": true
+        },
+        {
           "type": "word",
           "named": true
         }
@@ -95,6 +150,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "register",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "source",
@@ -146,5 +206,21 @@
   {
     "type": ";",
     "named": false
+  },
+  {
+    "type": "[",
+    "named": false
+  },
+  {
+    "type": "]",
+    "named": false
+  },
+  {
+    "type": "constant_floatpt",
+    "named": true
+  },
+  {
+    "type": "constant_numeric",
+    "named": true
   }
 ]

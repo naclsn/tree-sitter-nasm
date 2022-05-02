@@ -1,1 +1,1 @@
-label:	mov	rax, rbx, rcx
+label:	sys_exit	RAX, 60
