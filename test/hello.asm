@@ -1,1 +1,1 @@
-label:
+	mov	rax, strict byte '*'

@@ -71,6 +71,10 @@
       "required": true,
       "types": [
         {
+          "type": "instruction_prefix",
+          "named": true
+        },
+        {
           "type": "known_instruction",
           "named": true
         },
@@ -84,6 +88,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "instruction_prefix",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "known_instruction",
@@ -110,7 +119,7 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
@@ -126,11 +135,20 @@
           "named": true
         },
         {
+          "type": "operand_prefix",
+          "named": true
+        },
+        {
           "type": "register",
           "named": true
         }
       ]
     }
+  },
+  {
+    "type": "operand_prefix",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "operands",
@@ -233,5 +251,9 @@
   {
     "type": "constant_numeric",
     "named": true
+  },
+  {
+    "type": "strict",
+    "named": false
   }
 ]

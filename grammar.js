@@ -1,6 +1,7 @@
 /// <reference path="node_modules/tree-sitter-cli/dsl.d.ts" />
 // source_line ::= [label[':']] [prefix] [instr [opr{',' opr}]] '\n'
 // TODO/FIXME: file-ending lines (ie. no '\n', but EOL)
+// TODO/LATER: hide some node (and thus update test)
 
 module.exports = grammar({
 
@@ -33,21 +34,33 @@ module.exports = grammar({
     label: $ => seq($.word, optional(':')),
 
     instruction: $ => seq(
+      optional($.instruction_prefix),
       choice(
         $.known_instruction,
         $.unknown_instruction,
       ),
       optional($.operands),
     ),
-
-    // prefix: $ => $.word,
+    instruction_prefix: $ => choice(...[
+      'LOCK', 'REP', 'REPE', 'REPZ', 'REPNE', 'REPNZ', 'XACQUIRE', 'XRELEASE', 'BND', 'NOBND',
+      /*_address_size:*/ 'A16', 'A32', 'A64',
+      /*_operand_size:*/ 'O16', 'O32', 'O64',
+      /*_segment_register:*/ 'CS', 'DS', 'SS', 'ES', 'FS', 'GS',
+    ].map(ci)),
 
     operands: $ => seq($.operand, repeat(seq(',', $.operand))),
-    operand: $ => choice(
-      $.register,
-      $.effective_address,
-      $.constant,
-      $.expression,
+    operand: $ => seq(
+      optional($.operand_prefix),
+      choice(
+        $.register,
+        $.effective_address,
+        $.constant,
+        $.expression,
+      ),
+    ),
+    operand_prefix: $ => seq(
+      optional('strict'),
+      choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci)),
     ),
 
     register: $ => choice(...[
@@ -78,7 +91,7 @@ module.exports = grammar({
     ),
     constant_floatpt: $ => /[0-9]+\.[0-9]*/,
 
-    known_instruction: $ => choice(...['MOV', 'ADD', 'INC', 'SYSCALL'].map(ci)),
+    known_instruction: $ => choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB'].map(ci)),
     unknown_instruction: $ => $.word,
 
     comment: $ => seq(';', /.*\r?\n/),

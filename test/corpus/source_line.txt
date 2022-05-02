@@ -18,7 +18,7 @@ label:	mov	rax, 60
             (constant_numeric)))))))
 
 ===
-label instuctions operand
+label instuction operand
 ===
 label	add	rax, rbx
 
@@ -70,3 +70,35 @@ label:
   (source_line
     (label
       (word))))
+
+===
+prefix instruction
+===
+repne	scasb
+
+---
+(source_file
+  (source_line
+    (instruction
+      (instruction_prefix)
+      (known_instruction))))
+
+===
+line \ continuation
+===
+label:	mov	rax, \
+		60
+
+---
+(source_file
+  (source_line
+    (label
+      (word))
+    (instruction
+      (known_instruction)
+      (operands
+        (operand
+          (register))
+        (operand
+          (constant
+            (constant_numeric)))))))
