@@ -1,7 +1,4 @@
 /// <reference path="node_modules/tree-sitter-cli/dsl.d.ts" />
-// source_line ::= [label[':']] [prefix] [instr [opr{',' opr}]] '\n'
-// TODO/LATER: hide some node (and thus update test)
-
 module.exports = grammar({
 
   name: 'nasm',
@@ -23,23 +20,64 @@ module.exports = grammar({
         seq(
           optional(choice(
             $.source_line,
-            //$.preproc_directive,
-            //$.assembl_directive,
+            $.preproc_directive,
+            $.assembl_directive,
           )),
           /\r?\n/,
         ),
       ),
       optional(choice(
         $.source_line,
-        //$.preproc_directive,
-        //$.assembl_directive,
+        $.preproc_directive,
+        $.assembl_directive,
       )),
     ),
 
+    // source_line ::= [label[':']] [prefix] [instr [opr{',' opr}]] '\n'
     source_line: $ => choice(
       $.label,
       $.instruction,
       seq($.label, $.instruction),
+    ),
+
+    // question: can you have a macro over multiple files?
+    preproc_directive: $ => seq('%', choice( // XXX: %+ %? %?? %!<env> %, %%<label> %{..} %0 %n %00 %[..] .....
+      'define', 'idefine', 'xdefine', // <ident> immediat!['(' [('='|'&'|'+'|'!')<name> {',' (...)<name>} [',']] ')'] <value>
+      'undef', // <name>
+      'assign', 'iassign', // similar to the define family
+      'defstr', 'idefstr', // 
+      'deftok', 'ideftok', // 
+      'defalias', 'idefalias', 'undefalias', 'clear', 'aliases', 'ifdefalias',
+      'strcat', 'strlen', 'substr',
+      'macro', 'imacro', 'endmacro', 'unmacro',
+      'rotate',
+      'if', 'ifn', 'elif', 'elifn', 'else', 'endif', // .. and variants 'ifdef', 'ifmacro', 'ifctx', 'ifidn', 'ifidni', 'ifid', 'ifnum', 'ifstr', 'iftoken', 'ifempty', 'ifenv'
+      'rep', 'endrep',
+      'include',
+      'pathsearch',
+      'depend',
+      'use',
+      'push', 'pop',
+      'repl',
+      'arg', 'stacksize', 'local',
+      'error', 'warning', 'fatal',
+      'pragma', // 'ignore', 'preproc', 'limit', 'asm', 'list', 'file', 'input', 'output', 'debug', but also << output or debug format, and sometimes groups thereof >>
+      'line',
+      'clear', // [global|context] type ('define', 'defalias', 'alldefine', 'macro', 'all')
+    )),
+
+    assembl_directive: $ => choice(
+      'bits', /* <number> */ 'use16', 'use32',
+      'default', // REL | ABS | BND | NOBND
+      'section', 'segment', // <dotted_name?>
+      'absolute', // <number>
+      'extern', 'required', 'global', 'static', // <ident> (depends)
+      'common', // <ident> <number>
+      'prefix', 'gprefix', 'lprefix',
+      'postfix', 'gpostfix', 'lpostfix',
+      'cpu', // <cpu_ident>
+      'float', // DAZ | NODAZ | NEAR | UP | DOWN | ZERO | DEFAULT
+      'warning', // 'no', 'user', 'form',
     ),
 
     label: $ => prec(5, seq($.word, optional(':'))), // precedence over unknown_operation
@@ -71,7 +109,7 @@ module.exports = grammar({
       ),
     ),
     operand_prefix: $ => seq(
-      optional('strict'),
+      optional('STRICT'),
       choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci)),
     ),
 
@@ -90,8 +128,8 @@ module.exports = grammar({
     ),
 
     constant: $ => choice(
-      $.constant_numeric,
-      $.constant_charstr,
+      $.constant_numeric, // XXX: no test
+      $.constant_charstr, // XXX: no test
       //$.constant_floatpt, // XXX: not everywhere
     ),
 
@@ -149,15 +187,15 @@ module.exports = grammar({
         '`',
       ),*/
     ),
-    constant_floatpt: $ => /[0-9]+\.[0-9]*/,
+    constant_floatpt: $ => /[0-9]+\.[0-9]*/, // TODO
 
     known_instruction: $ => choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB'].map(ci)), // XXX: incomplete
     pseudo_instruction: $ => choice(...[
-      'db', 'dw', 'dd', 'dq', 'dt', 'do', 'dy', 'dz',
-      'resb', 'resw', 'resd', 'resq', 'rest', 'reso', 'resy', 'resz',
-      'incbin', // XXX: not exactly syntax, but expects filename [offset [count]]
-      'equ', // XXX: technically requires a label before it
-      'times', // XXX/FIXME: expects TIMES <number> <instruction> (NOTE: kinda like a prefix, no?)
+      'DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ',
+      'RESB', 'RESW', 'RESD', 'RESQ', 'REST', 'RESO', 'RESY', 'RESZ',
+      'INCBIN', // XXX: not exactly syntax, but expects filename [offset [count]]
+      'EQU', // XXX: technically requires a label before it
+      'TIMES', // XXX/FIXME: expects TIMES <numeric_expression> <instruction> (NOTE: kinda like a prefix, no?)
     ].map(ci)),
     unknown_instruction: $ => $.word,
 

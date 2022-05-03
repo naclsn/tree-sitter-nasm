@@ -1,5 +1,10 @@
 [
   {
+    "type": "assembl_directive",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "constant",
     "named": true,
     "fields": {},
@@ -166,6 +171,21 @@
     }
   },
   {
+    "type": "preproc_directive",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "pseudo_instruction",
     "named": true,
     "fields": {}
@@ -183,6 +203,14 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "assembl_directive",
+          "named": true
+        },
+        {
+          "type": "preproc_directive",
+          "named": true
+        },
         {
           "type": "source_line",
           "named": true
@@ -230,6 +258,10 @@
     "fields": {}
   },
   {
+    "type": "%",
+    "named": false
+  },
+  {
     "type": ",",
     "named": false
   },
@@ -246,11 +278,95 @@
     "named": false
   },
   {
+    "type": "absolute",
+    "named": false
+  },
+  {
+    "type": "bits",
+    "named": false
+  },
+  {
     "type": "comment",
     "named": true
   },
   {
+    "type": "common",
+    "named": false
+  },
+  {
+    "type": "cpu",
+    "named": false
+  },
+  {
+    "type": "default",
+    "named": false
+  },
+  {
+    "type": "extern",
+    "named": false
+  },
+  {
+    "type": "float",
+    "named": false
+  },
+  {
+    "type": "global",
+    "named": false
+  },
+  {
+    "type": "gpostfix",
+    "named": false
+  },
+  {
+    "type": "gprefix",
+    "named": false
+  },
+  {
+    "type": "lpostfix",
+    "named": false
+  },
+  {
+    "type": "lprefix",
+    "named": false
+  },
+  {
+    "type": "postfix",
+    "named": false
+  },
+  {
+    "type": "prefix",
+    "named": false
+  },
+  {
+    "type": "required",
+    "named": false
+  },
+  {
+    "type": "section",
+    "named": false
+  },
+  {
+    "type": "segment",
+    "named": false
+  },
+  {
+    "type": "static",
+    "named": false
+  },
+  {
     "type": "strict",
+    "named": false
+  },
+  {
+    "type": "use16",
+    "named": false
+  },
+  {
+    "type": "use32",
+    "named": false
+  },
+  {
+    "type": "warning",
     "named": false
   }
 ]

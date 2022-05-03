@@ -18,6 +18,14 @@
                       {
                         "type": "SYMBOL",
                         "name": "source_line"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "preproc_directive"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "assembl_directive"
                       }
                     ]
                   },
@@ -42,6 +50,14 @@
                 {
                   "type": "SYMBOL",
                   "name": "source_line"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "preproc_directive"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "assembl_directive"
                 }
               ]
             },
@@ -75,6 +91,115 @@
               "name": "instruction"
             }
           ]
+        }
+      ]
+    },
+    "preproc_directive": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "%"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "word"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "PATTERN",
+            "value": "."
+          }
+        }
+      ]
+    },
+    "assembl_directive": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "bits"
+        },
+        {
+          "type": "STRING",
+          "value": "use16"
+        },
+        {
+          "type": "STRING",
+          "value": "use32"
+        },
+        {
+          "type": "STRING",
+          "value": "default"
+        },
+        {
+          "type": "STRING",
+          "value": "section"
+        },
+        {
+          "type": "STRING",
+          "value": "segment"
+        },
+        {
+          "type": "STRING",
+          "value": "absolute"
+        },
+        {
+          "type": "STRING",
+          "value": "extern"
+        },
+        {
+          "type": "STRING",
+          "value": "required"
+        },
+        {
+          "type": "STRING",
+          "value": "global"
+        },
+        {
+          "type": "STRING",
+          "value": "static"
+        },
+        {
+          "type": "STRING",
+          "value": "common"
+        },
+        {
+          "type": "STRING",
+          "value": "prefix"
+        },
+        {
+          "type": "STRING",
+          "value": "gprefix"
+        },
+        {
+          "type": "STRING",
+          "value": "lprefix"
+        },
+        {
+          "type": "STRING",
+          "value": "postfix"
+        },
+        {
+          "type": "STRING",
+          "value": "gpostfix"
+        },
+        {
+          "type": "STRING",
+          "value": "lpostfix"
+        },
+        {
+          "type": "STRING",
+          "value": "cpu"
+        },
+        {
+          "type": "STRING",
+          "value": "float"
+        },
+        {
+          "type": "STRING",
+          "value": "warning"
         }
       ]
     },
