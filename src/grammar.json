@@ -2,88 +2,48 @@
   "name": "nasm",
   "rules": {
     "source_file": {
-      "type": "REPEAT",
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "source_line"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "source_line"
-          },
-          {
-            "type": "PATTERN",
-            "value": "\\r?\\n"
-          }
-        ]
-      }
-    },
-    "source_line": {
-      "type": "PREC",
-      "value": 1,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "CHOICE",
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
             "members": [
               {
-                "type": "SEQ",
+                "type": "CHOICE",
                 "members": [
                   {
                     "type": "CHOICE",
                     "members": [
                       {
                         "type": "SYMBOL",
-                        "name": "label"
-                      },
-                      {
-                        "type": "BLANK"
+                        "name": "source_line"
                       }
                     ]
                   },
                   {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "instruction"
-                      },
-                      {
-                        "type": "BLANK"
-                      }
-                    ]
+                    "type": "BLANK"
                   }
                 ]
               },
               {
-                "type": "BLANK"
+                "type": "PATTERN",
+                "value": "\\r?\\n"
               }
             ]
-          },
-          {
-            "type": "PATTERN",
-            "value": "\\r?\\n"
           }
-        ]
-      }
-    },
-    "label": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "word"
         },
         {
           "type": "CHOICE",
           "members": [
             {
-              "type": "STRING",
-              "value": ":"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "source_line"
+                }
+              ]
             },
             {
               "type": "BLANK"
@@ -91,6 +51,57 @@
           ]
         }
       ]
+    },
+    "source_line": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "label"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "instruction"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "label"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "instruction"
+            }
+          ]
+        }
+      ]
+    },
+    "label": {
+      "type": "PREC",
+      "value": 5,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "word"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ":"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
     },
     "instruction": {
       "type": "SEQ",
@@ -870,7 +881,7 @@
     },
     "comment": {
       "type": "PATTERN",
-      "value": ";(\\\\\\r?\\n|.)*\\r?\\n"
+      "value": ";(\\\\\\r?\\n|.)*"
     },
     "word": {
       "type": "PREC",

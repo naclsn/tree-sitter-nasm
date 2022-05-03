@@ -15,7 +15,8 @@ label:	mov	rax, 60 ; sys_EXIT
           (register))
         (operand
           (constant
-            (constant_numeric)))))))
+            (constant_numeric))))))
+  (comment))
 
 ===
 label instuction operand
@@ -143,7 +144,7 @@ unknown operands
             (word)))))))
 
 ===
-coucou // XXX: could be any of: label, macro, unknown_instruction
+coucou
 ===
 coucou
 
@@ -171,3 +172,80 @@ com \ ment
 ---
 (source_file
   (comment))
+
+===
+multi-line snippet
+===
+no_file:
+	mov	rax, 60	; sys_EXIT
+	mov	rdi, 2	; ENOENT
+	syscall
+
+---
+(source_file
+  (source_line
+    (label
+      (word)))
+  (source_line
+    (instruction
+      (known_instruction)
+      (operands
+        (operand
+          (register))
+        (operand
+          (constant
+            (constant_numeric))))))
+  (comment)
+  (source_line
+    (instruction
+      (known_instruction)
+      (operands
+        (operand
+          (register))
+        (operand
+          (constant
+            (constant_numeric))))))
+  (comment)
+  (source_line
+    (instruction
+      (known_instruction))))
+
+===
+ambiguous label
+===
+coucou
+	mov	rax, 42
+---
+(source_file
+  (source_line
+    (label
+      (word)))
+  (source_line
+    (instruction
+      (known_instruction)
+      (operands
+        (operand
+          (register))
+        (operand
+          (constant
+            (constant_numeric)))))))
+
+===
+ambiguous known_instruction
+===
+syscall
+	mov	rax, 42
+---
+(source_file
+  (source_line
+    (instruction
+      (known_instruction)))
+  (source_line
+    (instruction
+      (known_instruction)
+      (operands
+        (operand
+          (register))
+        (operand
+          (constant
+            (constant_numeric)))))))

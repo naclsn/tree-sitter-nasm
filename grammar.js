@@ -1,7 +1,5 @@
 /// <reference path="node_modules/tree-sitter-cli/dsl.d.ts" />
 // source_line ::= [label[':']] [prefix] [instr [opr{',' opr}]] '\n'
-// TODO/FIXME: file-ending lines (ie. no '\n', but EOL)
-// TODO/FIXME: lines ending with a comment
 // TODO/LATER: hide some node (and thus update test)
 
 module.exports = grammar({
@@ -19,22 +17,32 @@ module.exports = grammar({
 
   rules: {
 
-    source_file: $ => repeat(choice(
-      $.source_line,
-      //$.preproc_directive,
-      //$.assembl_directive,
-      /\r?\n/,
-    )),
+    // source_file ::= {[source|preproc|assembl] '\n'} [source|preproc|assembl]
+    source_file: $ => seq(
+      repeat(
+        seq(
+          optional(choice(
+            $.source_line,
+            //$.preproc_directive,
+            //$.assembl_directive,
+          )),
+          /\r?\n/,
+        ),
+      ),
+      optional(choice(
+        $.source_line,
+        //$.preproc_directive,
+        //$.assembl_directive,
+      )),
+    ),
 
-    source_line: $ => prec(1, seq(
-        optional(seq(
-          optional($.label),
-          optional($.instruction),
-        )),
-        /\r?\n/,
-    )),
+    source_line: $ => choice(
+      $.label,
+      $.instruction,
+      seq($.label, $.instruction),
+    ),
 
-    label: $ => seq($.word, optional(':')),
+    label: $ => prec(5, seq($.word, optional(':'))), // precedence over unknown_operation
 
     instruction: $ => seq(
       optional($.instruction_prefix),
@@ -153,7 +161,7 @@ module.exports = grammar({
     ].map(ci)),
     unknown_instruction: $ => $.word,
 
-    comment: $ => /;(\\\r?\n|.)*\r?\n/,
+    comment: $ => /;(\\\r?\n|.)*/,
     word: $ => prec(-5, /[A-Za-z._?$][A-Za-z0-9_$#@~.?]*/), // YYY: not sure precedence will be ever needed here
 
     expression: $ => $.word, // YYY: probably not here (ie. declare earlier may be needed)

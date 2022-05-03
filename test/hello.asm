@@ -1,2 +1,2 @@
-; com \
-  ment
+coucou
+	mov	rax, 42
