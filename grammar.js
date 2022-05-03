@@ -1,6 +1,7 @@
 /// <reference path="node_modules/tree-sitter-cli/dsl.d.ts" />
 // source_line ::= [label[':']] [prefix] [instr [opr{',' opr}]] '\n'
 // TODO/FIXME: file-ending lines (ie. no '\n', but EOL)
+// TODO/FIXME: lines ending with a comment
 // TODO/LATER: hide some node (and thus update test)
 
 module.exports = grammar({
@@ -20,6 +21,8 @@ module.exports = grammar({
 
     source_file: $ => repeat(choice(
       $.source_line,
+      //$.preproc_directive,
+      //$.assembl_directive,
       /\r?\n/,
     )),
 
@@ -81,18 +84,66 @@ module.exports = grammar({
     constant: $ => choice(
       $.constant_numeric,
       $.constant_charstr,
-      $.constant_floatpt,
+      //$.constant_floatpt, // XXX: not everywhere
     ),
 
-    constant_numeric: $ => /[0-9]+/,
+    constant_numeric: $ => {
+      /**
+       * the same characters can be used in prefix or suffix notation:
+       *  - 0xFF
+       *  - FFx
+       *  - eax   that's a register!
+       * 
+       * '_'s can be used almost anywhere:
+       *  - 0x_FF
+       *  - FF_x
+       *  - _FFx  is not a number but a word!
+       *  - $FF   also a word!
+       *  - $_FF  same!
+       * 
+       * when dubious, precedence is probably along:
+       *  register > word > constant_numeric
+       */
+      function _make_num(fixes, digits) {
+        return [
+          RegExp(`0[${fixes}][${digits}]*`), // yes, '*' and not '+'
+          RegExp(`[${digits}][${digits}]*[${fixes}]`),
+        ];
+      }
+      return choice(
+        /[0-9]+/,
+        /\$[0-9][0-9A-Fa-f]*/,
+        ..._make_num('HXhx', '0123456789ABCDEFabcdef'),
+        ..._make_num('DTdt', '0123456789'),
+        ..._make_num('OQoq', '01234567'),
+        ..._make_num('BYby', '01'),
+      );
+    },
     constant_charstr: $ => choice(
-      /"[^']*"/,
-      /'[^"]*'/,
-      /`[^`]*`/, // TODO: C-style escapes
+      /'[^']*'/,
+      /"[^"]*"/,
+      /`(\\.|[^\\`])*`/,
+      // YYY: it never complains about erroneous escapes..:
+      //      << All other escape sequences are reserved. >>
+      //      .. otherwise below may be more accurate
+      /*seq(
+        '`',
+        repeat(choice(
+          seq('\\', choice(
+            /['"`\\?abtnvfre0]/,
+            /\d{1,3}/, // octal up to 3
+            /x[0-9A-Fa-f]{,2}/, // hexadecimal up to 2
+            /u[0-9A-Fa-f]{4}/, // hexadecimal unicode 4
+            /U[0-9A-Fa-f]{8}/, // hexadecimal unicode 8
+          )),
+          /[^`\\]/,
+        )),
+        '`',
+      ),*/
     ),
     constant_floatpt: $ => /[0-9]+\.[0-9]*/,
 
-    known_instruction: $ => choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB'].map(ci)),
+    known_instruction: $ => choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB'].map(ci)), // XXX: incomplete
     pseudo_instruction: $ => choice(...[
       'db', 'dw', 'dd', 'dq', 'dt', 'do', 'dy', 'dz',
       'resb', 'resw', 'resd', 'resq', 'rest', 'reso', 'resy', 'resz',
@@ -102,7 +153,7 @@ module.exports = grammar({
     ].map(ci)),
     unknown_instruction: $ => $.word,
 
-    comment: $ => seq(';', choice(/\\\r?\n/, /[^\n]/), /\r?\n/), // FIXME: \ line continuation
+    comment: $ => /;(\\\r?\n|.)*\r?\n/,
     word: $ => prec(-5, /[A-Za-z._?$][A-Za-z0-9_$#@~.?]*/), // YYY: not sure precedence will be ever needed here
 
     expression: $ => $.word, // YYY: probably not here (ie. declare earlier may be needed)

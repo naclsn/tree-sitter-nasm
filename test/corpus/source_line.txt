@@ -1,7 +1,7 @@
 ===
-label: instuction operands
+label: instuction operands comment
 ===
-label:	mov	rax, 60
+label:	mov	rax, 60 ; sys_EXIT
 
 ---
 (source_file

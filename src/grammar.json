@@ -11,6 +11,10 @@
             "name": "source_line"
           },
           {
+            "type": "SYMBOL",
+            "name": "source_line"
+          },
+          {
             "type": "PATTERN",
             "value": "\\r?\\n"
           }
@@ -109,6 +113,10 @@
             {
               "type": "SYMBOL",
               "name": "known_instruction"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "pseudo_instruction"
             },
             {
               "type": "SYMBOL",
@@ -681,31 +689,68 @@
         {
           "type": "SYMBOL",
           "name": "constant_charstr"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "constant_floatpt"
         }
       ]
     },
     "constant_numeric": {
-      "type": "PATTERN",
-      "value": "[0-9]+"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[0-9]+"
+        },
+        {
+          "type": "PATTERN",
+          "value": "\\$[0-9][0-9A-Fa-f]*"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[HXhx][0123456789ABCDEFabcdef]*"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[0123456789ABCDEFabcdef][0123456789ABCDEFabcdef]*[HXhx]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[DTdt][0123456789]*"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[0123456789][0123456789]*[DTdt]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[OQoq][01234567]*"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[01234567][01234567]*[OQoq]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[BYby][01]*"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[01][01]*[BYby]"
+        }
+      ]
     },
     "constant_charstr": {
       "type": "CHOICE",
       "members": [
         {
           "type": "PATTERN",
-          "value": "\"[^']*\""
+          "value": "'[^']*'"
         },
         {
           "type": "PATTERN",
-          "value": "'[^\"]*'"
+          "value": "\"[^\"]*\""
         },
         {
           "type": "PATTERN",
-          "value": "`[^`]*`"
+          "value": "`(\\\\.|[^\\\\`])*`"
         }
       ]
     },
@@ -738,22 +783,94 @@
         }
       ]
     },
+    "pseudo_instruction": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[dD][bB]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dD][wW]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dD][dD]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dD][qQ]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dD][tT]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dD][oO]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dD][yY]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dD][zZ]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[rR][eE][sS][bB]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[rR][eE][sS][wW]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[rR][eE][sS][dD]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[rR][eE][sS][qQ]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[rR][eE][sS][tT]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[rR][eE][sS][oO]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[rR][eE][sS][yY]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[rR][eE][sS][zZ]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[iI][nN][cC][bB][iI][nN]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[eE][qQ][uU]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[tT][iI][mM][eE][sS]"
+        }
+      ]
+    },
     "unknown_instruction": {
       "type": "SYMBOL",
       "name": "word"
     },
     "comment": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": ";"
-        },
-        {
-          "type": "PATTERN",
-          "value": ".*\\r?\\n"
-        }
-      ]
+      "type": "PATTERN",
+      "value": ";(\\\\\\r?\\n|.)*\\r?\\n"
     },
     "word": {
       "type": "PREC",

@@ -1,10 +1,5 @@
 [
   {
-    "type": "comment",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "constant",
     "named": true,
     "fields": {},
@@ -17,10 +12,6 @@
           "named": true
         },
         {
-          "type": "constant_floatpt",
-          "named": true
-        },
-        {
           "type": "constant_numeric",
           "named": true
         }
@@ -29,6 +20,11 @@
   },
   {
     "type": "constant_charstr",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "constant_numeric",
     "named": true,
     "fields": {}
   },
@@ -80,6 +76,10 @@
         },
         {
           "type": "operands",
+          "named": true
+        },
+        {
+          "type": "pseudo_instruction",
           "named": true
         },
         {
@@ -166,6 +166,11 @@
     }
   },
   {
+    "type": "pseudo_instruction",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "register",
     "named": true,
     "fields": {}
@@ -233,10 +238,6 @@
     "named": false
   },
   {
-    "type": ";",
-    "named": false
-  },
-  {
     "type": "[",
     "named": false
   },
@@ -245,11 +246,7 @@
     "named": false
   },
   {
-    "type": "constant_floatpt",
-    "named": true
-  },
-  {
-    "type": "constant_numeric",
+    "type": "comment",
     "named": true
   },
   {
