@@ -37,6 +37,7 @@ module.exports = grammar({
       optional($.instruction_prefix),
       choice(
         $.known_instruction,
+        $.pseudo_instruction,
         $.unknown_instruction,
       ),
       optional($.operands),
@@ -92,9 +93,16 @@ module.exports = grammar({
     constant_floatpt: $ => /[0-9]+\.[0-9]*/,
 
     known_instruction: $ => choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB'].map(ci)),
+    pseudo_instruction: $ => choice(...[
+      'db', 'dw', 'dd', 'dq', 'dt', 'do', 'dy', 'dz',
+      'resb', 'resw', 'resd', 'resq', 'rest', 'reso', 'resy', 'resz',
+      'incbin', // XXX: not exactly syntax, but expects filename [offset [count]]
+      'equ', // XXX: technically requires a label before it
+      'times', // XXX/FIXME: expects TIMES <number> <instruction> (NOTE: kinda like a prefix, no?)
+    ].map(ci)),
     unknown_instruction: $ => $.word,
 
-    comment: $ => seq(';', /.*\r?\n/),
+    comment: $ => seq(';', choice(/\\\r?\n/, /[^\n]/), /\r?\n/), // FIXME: \ line continuation
     word: $ => prec(-5, /[A-Za-z._?$][A-Za-z0-9_$#@~.?]*/), // YYY: not sure precedence will be ever needed here
 
     expression: $ => $.word, // YYY: probably not here (ie. declare earlier may be needed)

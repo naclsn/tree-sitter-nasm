@@ -1,1 +1,2 @@
-	mov	rax, strict byte '*'
+; com \
+  ment

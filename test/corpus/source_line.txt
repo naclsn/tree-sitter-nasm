@@ -102,3 +102,72 @@ label:	mov	rax, \
         (operand
           (constant
             (constant_numeric)))))))
+
+===
+label unknown operands
+===
+exit:	sys_exit	rax
+
+---
+(source_file
+  (source_line
+    (label
+      (word))
+    (instruction
+      (unknown_instruction
+        (word))
+      (operands
+        (operand
+          (register))))))
+
+===
+unknown operands
+===
+	sys_write	2, buf, BUFSIZE
+
+---
+(source_file
+  (source_line
+    (instruction
+      (unknown_instruction
+        (word))
+      (operands
+        (operand
+          (constant
+            (constant_numeric)))
+        (operand
+          (expression
+            (word)))
+        (operand
+          (expression
+            (word)))))))
+
+===
+coucou // XXX: could be any of: label, macro, unknown_instruction
+===
+coucou
+
+---
+(source_file
+  (source_line
+    (label
+      (word))))
+
+===
+comment
+===
+; comment
+
+---
+(source_file
+  (comment))
+
+===
+com \ ment
+===
+; com \
+  ment
+
+---
+(source_file
+  (comment))
