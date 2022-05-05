@@ -1,2 +1,1 @@
-coucou
-	mov	rax, 42
+	int	1e13h

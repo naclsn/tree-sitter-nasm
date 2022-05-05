@@ -10,6 +10,7 @@ module.exports = grammar({
 
   conflicts: $ => [
     [$.label, $.unknown_instruction],
+    [$.operand, $.expression], // XXX: not sure, which way should it be?
   ],
 
   rules: {
@@ -40,7 +41,7 @@ module.exports = grammar({
       seq($.label, $.instruction),
     ),
 
-    // question: can you have a macro over multiple files?
+    // XXX: question: can you have a macro over multiple files?
     preproc_directive: $ => seq('%', choice( // XXX: %+ %? %?? %!<env> %, %%<label> %{..} %0 %n %00 %[..] .....
       'define', 'idefine', 'xdefine', // <ident> immediat!['(' [('='|'&'|'+'|'!')<name> {',' (...)<name>} [',']] ')'] <value>
       'undef', // <name>
@@ -97,6 +98,15 @@ module.exports = grammar({
       /*_operand_size:*/ 'O16', 'O32', 'O64',
       /*_segment_register:*/ 'CS', 'DS', 'SS', 'ES', 'FS', 'GS',
     ].map(ci)),
+    known_instruction: $ => choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB', 'INT'].map(ci)), // XXX: incomplete
+    pseudo_instruction: $ => choice(...[
+      'DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ',
+      'RESB', 'RESW', 'RESD', 'RESQ', 'REST', 'RESO', 'RESY', 'RESZ',
+      'INCBIN', // XXX: not exactly syntax, but expects filename [offset [count]]
+      'EQU', // XXX: technically requires a label before it
+      'TIMES', // XXX/FIXME: expects TIMES <numeric_expression> <instruction> (NOTE: kinda like a prefix, no?)
+    ].map(ci)),
+    unknown_instruction: $ => $.word,
 
     operands: $ => seq($.operand, repeat(seq(',', $.operand))),
     operand: $ => seq(
@@ -109,7 +119,7 @@ module.exports = grammar({
       ),
     ),
     operand_prefix: $ => seq(
-      optional('STRICT'),
+      optional(ci('STRICT')),
       choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci)),
     ),
 
@@ -133,6 +143,9 @@ module.exports = grammar({
       //$.constant_floatpt, // XXX: not everywhere
     ),
 
+    // YYY: some things could be simplified if eg. _4506 or $A540 are words out of precedence
+    // @see NASM numeric constants are confusing:
+    //      https://github.dev/netwide-assembler/nasm/blob/3f9fc2a3a7134936cbbae5780beb4319694f702a/asm/stdscan.c#L192
     constant_numeric: $ => {
       /**
        * the same characters can be used in prefix or suffix notation:
@@ -152,8 +165,8 @@ module.exports = grammar({
        */
       function _make_num(fixes, digits) {
         return [
-          RegExp(`0[${fixes}][${digits}]*`), // yes, '*' and not '+'
-          RegExp(`[${digits}][${digits}]*[${fixes}]`),
+          RegExp(`0[${fixes}][${digits}_]*`), // yes, '*' and not '+'
+          RegExp(`[${digits}][${digits}_]*[${fixes}]`),
         ];
       }
       return choice(
@@ -187,22 +200,86 @@ module.exports = grammar({
         '`',
       ),*/
     ),
-    constant_floatpt: $ => /[0-9]+\.[0-9]*/, // TODO
+    constant_floatpt: $ => {
+      /**
+       * has common points with parsing constant_numeric,
+       * becomes a floating point when has dot or exponent
+       * (and no suffix notation for obvious reasons)
+       * 
+       * XXX/FIXME/CLEANME or something
+       * 
+       * this is probably not always accurate with eg.:
+       *  - 0xB1AB1Ae-0BA ; should be invalid
+       *  - 0d1.5e ; should be valid
+       * 
+       * this first one can actually introduce quite the erroneous
+       * parsing (constant_floatpt instead of a binary_expression)
+       */
+      function _make_flt(fixes, digits, expo, expd) {
+        const frac = `\.[${digits}_]*([${expo}][-+]?[${expd}]+)?`;
+        return [
+          RegExp(`0[${fixes}][${digits}_]*${frac}`),
+        ];
+      }
+      const O9 = '0123456789';
+      const OF = O9+'ABCDEFabcdef';
+      return choice(
+        /[0-9]+\.[0-9]*([Ee][0-9]+)?/, // only e[0-9]
+        /\$[0-9][0-9A-Fa-f]*\.[0-9]*([Ee][0-9A-Fa-f]+|[Pp][0-9]+)?/, // both e[0-F] and p[0-9]
+        ..._make_flt('HXhx', OF, 'Ee', OF),
+        ..._make_flt('HXhx', OF, 'Pp', O9),
+        ..._make_flt('DTdt', O9, 'Ee', O9),
+        ..._make_flt('OQoq', '01234567', 'Pp', O9),
+        ..._make_flt('BYby', '01', 'Pp', O9),
+      );
+    },
 
-    known_instruction: $ => choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB'].map(ci)), // XXX: incomplete
-    pseudo_instruction: $ => choice(...[
-      'DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ',
-      'RESB', 'RESW', 'RESD', 'RESQ', 'REST', 'RESO', 'RESY', 'RESZ',
-      'INCBIN', // XXX: not exactly syntax, but expects filename [offset [count]]
-      'EQU', // XXX: technically requires a label before it
-      'TIMES', // XXX/FIXME: expects TIMES <numeric_expression> <instruction> (NOTE: kinda like a prefix, no?)
-    ].map(ci)),
-    unknown_instruction: $ => $.word,
+    // NOTE/TODO: WRT as binary? : as binary?
+    // XXX/TODO: $ and $$ are considered special tokens
+    // TODO: preproc_expression accepting eg. %+
+    expression: $ => choice(
+      $.conditional_expression,
+      $.binary_expression,
+      $.unary_expression,
+      $.parenthesized_expression,
+      $.word, // ie. identifier
+      $.constant,
+    ),
+    conditional_expression: $ => prec.right(1, seq( // YYY: right?
+      $.expression, '?', $.expression, ':', $.expression,
+    )),
+    binary_expression: $ => {
+      const ops = [
+        ['||'],
+        ['^^'],
+        ['&&'],
+        ['=', '==', '!=', '<>', '<', '<=', '>', '>=', '<=>'],
+        ['|'],
+        ['^'],
+        ['&'],
+        ['<<', '>>', '<<<', '>>>'],
+        ['+', '-'],
+        ['*', '/', '//', '%', '%%'],
+      ];
+      // no `flatMap`, use `reduce`
+      return prec(2, choice(...ops.reduce((acc, ls, k) => acc.concat(
+        ls.map(op =>
+          prec.left(k, seq(
+            $.expression, op, $.expression,
+          )),
+        ),
+      ), []))); // [] is reduce's `initialValue`
+    },
+    unary_expression: $ => prec.left(3, seq(
+      choice('-', '+', '~', '!', ci('SEG')), $.expression,
+    )),
+    parenthesized_expression: $ => seq(
+      '(', $.expression, ')',
+    ),
 
     comment: $ => /;(\\\r?\n|.)*/,
-    word: $ => prec(-5, /[A-Za-z._?$][A-Za-z0-9_$#@~.?]*/), // YYY: not sure precedence will be ever needed here
-
-    expression: $ => $.word, // YYY: probably not here (ie. declare earlier may be needed)
+    // YYY: `@bidoof` sould not be valid as per the doc (same with `$@bidoof`)
+    word: $ => prec(-5, /\$?[A-Za-z._?][A-Za-z0-9_$#@~.?]*/),
 
   },
 

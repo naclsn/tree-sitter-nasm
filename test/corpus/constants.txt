@@ -1,0 +1,17 @@
+===
+hexadecimal suffix
+===
+	int	1e13h
+; https://github.dev/netwide-assembler/nasm/blob/3f9fc2a3a7134936cbbae5780beb4319694f702a/asm/stdscan.c#L235
+; /* 1e13 is floating-point, but 1e13h is not */
+---
+(source_file
+  (source_line
+    (instruction
+      (known_instruction)
+      (operands
+        (operand
+          (constant
+            (constant_numeric))))))
+  (comment)
+  (comment))
