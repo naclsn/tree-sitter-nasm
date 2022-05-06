@@ -7,10 +7,10 @@ register
 (source_file
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))))))
+      (known_instruction
+        (operands
+          (operand
+            (register)))))))
 
 ===
 constant_numeric
@@ -21,14 +21,14 @@ constant_numeric
 (source_file
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (constant
-            (constant_numeric)))
-        (operand
-          (constant
-            (constant_numeric)))))))
+      (known_instruction
+        (operands
+          (operand
+            (constant
+              (constant_numeric)))
+          (operand
+            (constant
+              (constant_numeric))))))))
 
 ===
 constant_charstr (simple quote)
@@ -39,13 +39,13 @@ constant_charstr (simple quote)
 (source_file
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))
-        (operand
-          (constant
-            (constant_charstr)))))))
+      (known_instruction
+        (operands
+          (operand
+            (register))
+          (operand
+            (constant
+              (constant_charstr))))))))
 
 ===
 constant_charstr (double quote)
@@ -56,13 +56,13 @@ constant_charstr (double quote)
 (source_file
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (constant
-            (constant_charstr)))
-        (operand
-          (register))))))
+      (known_instruction
+        (operands
+          (operand
+            (constant
+              (constant_charstr)))
+          (operand
+            (register)))))))
 
 ===
 effective_address
@@ -73,14 +73,14 @@ effective_address
 (source_file
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (effective_address
-            (expression
-              (word))))
-        (operand
-          (register))))))
+      (known_instruction
+        (operands
+          (operand
+            (effective_address
+              (expression
+                (word))))
+          (operand
+            (register)))))))
 
 ===
 operand_prefix
@@ -91,14 +91,14 @@ operand_prefix
 (source_file
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))
-        (operand
-          (operand_prefix)
-          (constant
-            (constant_charstr)))))))
+      (known_instruction
+        (operands
+          (operand
+            (register))
+          (operand
+            (operand_prefix)
+            (constant
+              (constant_charstr))))))))
 
 ===
 operand_prefix strict
@@ -109,11 +109,11 @@ operand_prefix strict
 (source_file
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))
-        (operand
-          (operand_prefix)
-          (constant
-            (constant_charstr)))))))
+      (known_instruction
+        (operands
+          (operand
+            (register))
+          (operand
+            (operand_prefix)
+            (constant
+              (constant_charstr))))))))

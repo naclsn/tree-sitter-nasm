@@ -9,13 +9,13 @@ label:	mov	rax, 60 ; sys_EXIT
     (label
       (word))
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))
-        (operand
-          (constant
-            (constant_numeric))))))
+      (known_instruction
+        (operands
+          (operand
+            (register))
+          (operand
+            (constant
+              (constant_numeric)))))))
   (comment))
 
 ===
@@ -29,12 +29,12 @@ label	add	rax, rbx
     (label
       (word))
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))
-        (operand
-          (register))))))
+      (known_instruction
+        (operands
+          (operand
+            (register))
+          (operand
+            (register)))))))
 
 ===
 instuction operand
@@ -45,10 +45,10 @@ instuction operand
 (source_file
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))))))
+      (known_instruction
+        (operands
+          (operand
+            (register)))))))
 
 ===
 instuction
@@ -96,13 +96,13 @@ label:	mov	rax, \
     (label
       (word))
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))
-        (operand
-          (constant
-            (constant_numeric)))))))
+      (known_instruction
+        (operands
+          (operand
+            (register))
+          (operand
+            (constant
+              (constant_numeric))))))))
 
 ===
 label unknown operands
@@ -116,10 +116,10 @@ exit:	sys_exit	rax
       (word))
     (instruction
       (unknown_instruction
-        (word))
-      (operands
-        (operand
-          (register))))))
+        (word)
+        (operands
+          (operand
+            (register)))))))
 
 ===
 unknown operands
@@ -131,17 +131,17 @@ unknown operands
   (source_line
     (instruction
       (unknown_instruction
-        (word))
-      (operands
-        (operand
-          (constant
-            (constant_numeric)))
-        (operand
-          (expression
-            (word)))
-        (operand
-          (expression
-            (word)))))))
+        (word)
+        (operands
+          (operand
+            (constant
+              (constant_numeric)))
+          (operand
+            (expression
+              (word)))
+          (operand
+            (expression
+              (word))))))))
 
 ===
 coucou
@@ -188,23 +188,23 @@ no_file:
       (word)))
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))
-        (operand
-          (constant
-            (constant_numeric))))))
+      (known_instruction
+        (operands
+          (operand
+            (register))
+          (operand
+            (constant
+              (constant_numeric)))))))
   (comment)
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))
-        (operand
-          (constant
-            (constant_numeric))))))
+      (known_instruction
+        (operands
+          (operand
+            (register))
+          (operand
+            (constant
+              (constant_numeric)))))))
   (comment)
   (source_line
     (instruction
@@ -222,13 +222,13 @@ coucou
       (word)))
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))
-        (operand
-          (constant
-            (constant_numeric)))))))
+      (known_instruction
+        (operands
+          (operand
+            (register))
+          (operand
+            (constant
+              (constant_numeric))))))))
 
 ===
 ambiguous known_instruction
@@ -242,10 +242,10 @@ syscall
       (known_instruction)))
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (register))
-        (operand
-          (constant
-            (constant_numeric)))))))
+      (known_instruction
+        (operands
+          (operand
+            (register))
+          (operand
+            (constant
+              (constant_numeric))))))))

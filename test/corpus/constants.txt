@@ -8,10 +8,10 @@ hexadecimal suffix
 (source_file
   (source_line
     (instruction
-      (known_instruction)
-      (operands
-        (operand
-          (constant
-            (constant_numeric))))))
+      (known_instruction
+        (operands
+          (operand
+            (constant
+              (constant_numeric)))))))
   (comment)
   (comment))

@@ -10,7 +10,10 @@ module.exports = grammar({
 
   conflicts: $ => [
     [$.label, $.unknown_instruction],
-    [$.operand, $.expression], // XXX: not sure, which way should it be?
+    [$.operand, $.expression],
+    [$.__pseudo_instruction_dx_atom, $.constant],
+    [$.__pseudo_instruction_dx_list],
+    [$.__pseudo_instruction_dx_atom, $.parenthesized_expression],
   ],
 
   rules: {
@@ -81,33 +84,122 @@ module.exports = grammar({
       'warning', // 'no', 'user', 'form',
     ),
 
+//#region source_line
     label: $ => prec(5, seq($.word, optional(':'))), // precedence over unknown_operation
 
+// #region instruction
     instruction: $ => seq(
-      optional($.instruction_prefix),
+      repeat($.instruction_prefix),
       choice(
         $.known_instruction,
         $.pseudo_instruction,
         $.unknown_instruction,
       ),
-      optional($.operands),
     ),
+
     instruction_prefix: $ => choice(...[
       'LOCK', 'REP', 'REPE', 'REPZ', 'REPNE', 'REPNZ', 'XACQUIRE', 'XRELEASE', 'BND', 'NOBND',
       /*_address_size:*/ 'A16', 'A32', 'A64',
       /*_operand_size:*/ 'O16', 'O32', 'O64',
       /*_segment_register:*/ 'CS', 'DS', 'SS', 'ES', 'FS', 'GS',
     ].map(ci)),
-    known_instruction: $ => choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB', 'INT'].map(ci)), // XXX: incomplete
-    pseudo_instruction: $ => choice(...[
-      'DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ',
-      'RESB', 'RESW', 'RESD', 'RESQ', 'REST', 'RESO', 'RESY', 'RESZ',
-      'INCBIN', // XXX: not exactly syntax, but expects filename [offset [count]]
-      'EQU', // XXX: technically requires a label before it
-      'TIMES', // XXX/FIXME: expects TIMES <numeric_expression> <instruction> (NOTE: kinda like a prefix, no?)
-    ].map(ci)),
-    unknown_instruction: $ => $.word,
 
+    known_instruction: $ => seq(
+      /*choice(...require('fs')
+        .readFileSync('./supported-instructions.txt')
+        .toString()
+        .split('\n')
+        .map(ci)
+      ),*/
+      choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB', 'INT'].map(ci)),
+      optional($.operands),
+    ),
+    pseudo_instruction: $ => choice(
+      $._pseudo_instruction_dx,
+      $._pseudo_instruction_resbx,
+      $._pseudo_instruction_incbin_command,
+      $._pseudo_instruction_equ_command,
+      $._pseudo_instruction_times_prefix,
+    ),
+    unknown_instruction: $ => seq(
+      $.word,
+      optional($.operands),
+    ),
+
+//  #region pseudo instruction
+    _pseudo_instruction_dx: $ => seq(
+      choice(...['DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ'].map(ci)),
+      $.__pseudo_instruction_dx_value,
+      repeat(seq(',', $.__pseudo_instruction_dx_value)),
+    ),
+    _pseudo_instruction_resbx: $ => seq(
+      choice(...['RESB', 'RESW', 'RESD', 'RESQ', 'REST', 'RESO', 'RESY', 'RESZ'].map(ci)),
+      $.critical_expression,
+    ),
+    _pseudo_instruction_incbin_command: $ => seq(
+      ci('INCBIN'),
+      choice(
+        $.constant_charstr,
+        $.word,
+      ),
+      optional(seq(
+        $.expression,
+        optional($.expression),
+      )),
+    ),
+    _pseudo_instruction_equ_command: $ => seq(
+      ci('EQU'), // XXX/FIXME: requires a label before it
+      $.expression,
+    ),
+    _pseudo_instruction_times_prefix: $ => seq(
+      ci('TIMES'),
+      $.critical_expression,
+      $.instruction,
+    ),
+
+    __pseudo_instruction_dx_type: $ => choice(...[
+      'BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'
+    ].map(ci)),
+    __pseudo_instruction_dx_atom: $ => choice(
+      $.expression,
+      $.constant_charstr, // YYY: already in $.expression
+      $.constant_floatpt,
+      '?',
+    ),
+    __pseudo_instruction_dx_parlist: $ => seq(
+      '(',
+      $.__pseudo_instruction_dx_value,
+      repeat(seq(',', $.__pseudo_instruction_dx_value)),
+      ')',
+    ),
+    __pseudo_instruction_dx_duplist: $ => seq(
+      $.expression,
+      ci('DUP'),
+      optional($.__pseudo_instruction_dx_type),
+      optional('%'),
+      $.__pseudo_instruction_dx_parlist,
+    ),
+    __pseudo_instruction_dx_list: $ => choice(
+      $.__pseudo_instruction_dx_duplist,
+      seq(
+        '%',
+        $.__pseudo_instruction_dx_parlist,
+      ),
+      seq(
+        $.__pseudo_instruction_dx_type,
+        optional('%'),
+        $.__pseudo_instruction_dx_parlist,
+      ),
+    ),
+    __pseudo_instruction_dx_value: $ => choice(
+      $.__pseudo_instruction_dx_atom,
+      seq($.__pseudo_instruction_dx_type, $.__pseudo_instruction_dx_value),
+      $.__pseudo_instruction_dx_list,
+    ),
+//  #endregion pseudo instruction
+// #endregion instruction
+
+// #region operand
     operands: $ => seq($.operand, repeat(seq(',', $.operand))),
     operand: $ => seq(
       optional($.operand_prefix),
@@ -118,6 +210,7 @@ module.exports = grammar({
         $.expression,
       ),
     ),
+
     operand_prefix: $ => seq(
       optional(ci('STRICT')),
       choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci)),
@@ -137,6 +230,7 @@ module.exports = grammar({
       ']',
     ),
 
+//  #region constant
     constant: $ => choice(
       $.constant_numeric, // XXX: no test
       $.constant_charstr, // XXX: no test
@@ -170,7 +264,9 @@ module.exports = grammar({
         ];
       }
       return choice(
+        // no prefix decimal
         /[0-9]+/,
+        // $-prefix hexadecimal
         /\$[0-9][0-9A-Fa-f]*/,
         ..._make_num('HXhx', '0123456789ABCDEFabcdef'),
         ..._make_num('DTdt', '0123456789'),
@@ -216,16 +312,22 @@ module.exports = grammar({
        * parsing (constant_floatpt instead of a binary_expression)
        */
       function _make_flt(fixes, digits, expo, expd) {
-        const frac = `\.[${digits}_]*([${expo}][-+]?[${expd}]+)?`;
+        const frac = `[${digits}_]*`;
+        const expn = `[${expo}][-+]?[${expd}]+`;
         return [
-          RegExp(`0[${fixes}][${digits}_]*${frac}`),
+          RegExp(`0[${fixes}][${digits}_]*\\.(${frac})?(${expn})?`), // try with a period
+          RegExp(`0[${fixes}][${digits}_]*(${expn})`), // no period, try with an exponent
         ];
       }
       const O9 = '0123456789';
       const OF = O9+'ABCDEFabcdef';
       return choice(
-        /[0-9]+\.[0-9]*([Ee][0-9]+)?/, // only e[0-9]
-        /\$[0-9][0-9A-Fa-f]*\.[0-9]*([Ee][0-9A-Fa-f]+|[Pp][0-9]+)?/, // both e[0-F] and p[0-9]
+        // no prefix decimal (with and without period)
+        RegExp(`[${O9}]+\\.([${O9}])([Ee][${O9}]+)?`),
+        RegExp(`[${O9}]+[Ee][${O9}]+`),
+        // $-prefix hexadecimal (with and without period)
+        RegExp(`\\$[${O9}]+\\.([${OF}])([Ee][${OF}]+|[Pp][${O9}]+)?`),
+        RegExp(`\\$[${O9}]+([Ee][${OF}]+|[Pp][${O9}]+)`),
         ..._make_flt('HXhx', OF, 'Ee', OF),
         ..._make_flt('HXhx', OF, 'Pp', O9),
         ..._make_flt('DTdt', O9, 'Ee', O9),
@@ -233,7 +335,9 @@ module.exports = grammar({
         ..._make_flt('BYby', '01', 'Pp', O9),
       );
     },
+//  #endregion constant
 
+//  #region expression
     // NOTE/TODO: WRT as binary? : as binary?
     // XXX/TODO: $ and $$ are considered special tokens
     // TODO: preproc_expression accepting eg. %+
@@ -245,6 +349,8 @@ module.exports = grammar({
       $.word, // ie. identifier
       $.constant,
     ),
+
+    critical_expression: $ => $.expression, // XXX
     conditional_expression: $ => prec.right(1, seq( // YYY: right?
       $.expression, '?', $.expression, ':', $.expression,
     )),
@@ -276,6 +382,9 @@ module.exports = grammar({
     parenthesized_expression: $ => seq(
       '(', $.expression, ')',
     ),
+//  #endregion expression
+// #endregion operand
+//#endregion source_line
 
     comment: $ => /;(\\\r?\n|.)*/,
     // YYY: `@bidoof` sould not be valid as per the doc (same with `$@bidoof`)

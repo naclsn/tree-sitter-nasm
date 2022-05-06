@@ -418,16 +418,11 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "instruction_prefix"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "instruction_prefix"
+          }
         },
         {
           "type": "CHOICE",
@@ -443,18 +438,6 @@
             {
               "type": "SYMBOL",
               "name": "unknown_instruction"
-            }
-          ]
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "operands"
-            },
-            {
-              "type": "BLANK"
             }
           ]
         }
@@ -554,31 +537,48 @@
       ]
     },
     "known_instruction": {
-      "type": "CHOICE",
+      "type": "SEQ",
       "members": [
         {
-          "type": "PATTERN",
-          "value": "[mM][oO][vV]"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[mM][oO][vV]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[aA][dD][dD]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[iI][nN][cC]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[sS][yY][sS][cC][aA][lL][lL]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[sS][cC][aA][sS][bB]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[iI][nN][tT]"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[aA][dD][dD]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[iI][nN][cC]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[sS][yY][sS][cC][aA][lL][lL]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[sS][cC][aA][sS][bB]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[iI][nN][tT]"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "operands"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -586,86 +586,441 @@
       "type": "CHOICE",
       "members": [
         {
-          "type": "PATTERN",
-          "value": "[dD][bB]"
+          "type": "SYMBOL",
+          "name": "_pseudo_instruction_dx"
         },
         {
-          "type": "PATTERN",
-          "value": "[dD][wW]"
+          "type": "SYMBOL",
+          "name": "_pseudo_instruction_resbx"
         },
         {
-          "type": "PATTERN",
-          "value": "[dD][dD]"
+          "type": "SYMBOL",
+          "name": "_pseudo_instruction_incbin_command"
         },
         {
-          "type": "PATTERN",
-          "value": "[dD][qQ]"
+          "type": "SYMBOL",
+          "name": "_pseudo_instruction_equ_command"
         },
         {
-          "type": "PATTERN",
-          "value": "[dD][tT]"
+          "type": "SYMBOL",
+          "name": "_pseudo_instruction_times_prefix"
+        }
+      ]
+    },
+    "unknown_instruction": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "word"
         },
         {
-          "type": "PATTERN",
-          "value": "[dD][oO]"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "operands"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "_pseudo_instruction_dx": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[dD][bB]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[dD][wW]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[dD][dD]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[dD][qQ]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[dD][tT]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[dD][oO]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[dD][yY]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[dD][zZ]"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[dD][yY]"
+          "type": "SYMBOL",
+          "name": "__pseudo_instruction_dx_value"
         },
         {
-          "type": "PATTERN",
-          "value": "[dD][zZ]"
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "SYMBOL",
+                "name": "__pseudo_instruction_dx_value"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "_pseudo_instruction_resbx": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[rR][eE][sS][bB]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[rR][eE][sS][wW]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[rR][eE][sS][dD]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[rR][eE][sS][qQ]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[rR][eE][sS][tT]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[rR][eE][sS][oO]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[rR][eE][sS][yY]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[rR][eE][sS][zZ]"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[rR][eE][sS][bB]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[rR][eE][sS][wW]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[rR][eE][sS][dD]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[rR][eE][sS][qQ]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[rR][eE][sS][tT]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[rR][eE][sS][oO]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[rR][eE][sS][yY]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[rR][eE][sS][zZ]"
-        },
+          "type": "SYMBOL",
+          "name": "critical_expression"
+        }
+      ]
+    },
+    "_pseudo_instruction_incbin_command": {
+      "type": "SEQ",
+      "members": [
         {
           "type": "PATTERN",
           "value": "[iI][nN][cC][bB][iI][nN]"
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "constant_charstr"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "word"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "expression"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "_pseudo_instruction_equ_command": {
+      "type": "SEQ",
+      "members": [
+        {
           "type": "PATTERN",
           "value": "[eE][qQ][uU]"
         },
         {
-          "type": "PATTERN",
-          "value": "[tT][iI][mM][eE][sS]"
+          "type": "SYMBOL",
+          "name": "expression"
         }
       ]
     },
-    "unknown_instruction": {
-      "type": "SYMBOL",
-      "name": "word"
+    "_pseudo_instruction_times_prefix": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[tT][iI][mM][eE][sS]"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "critical_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "instruction"
+        }
+      ]
+    },
+    "__pseudo_instruction_dx_type": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[bB][yY][tT][eE]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[wW][oO][rR][dD]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dD][wW][oO][rR][dD]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[qQ][wW][oO][rR][dD]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[tT][wW][oO][rR][dD]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[oO][wW][oO][rR][dD]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][wW][oO][rR][dD]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][wW][oO][rR][dD]"
+        }
+      ]
+    },
+    "__pseudo_instruction_dx_atom": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "constant_charstr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "constant_floatpt"
+        },
+        {
+          "type": "STRING",
+          "value": "?"
+        }
+      ]
+    },
+    "__pseudo_instruction_dx_parlist": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "__pseudo_instruction_dx_value"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "SYMBOL",
+                "name": "__pseudo_instruction_dx_value"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
+    "__pseudo_instruction_dx_duplist": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dD][uU][pP]"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "__pseudo_instruction_dx_type"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "%"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "__pseudo_instruction_dx_parlist"
+        }
+      ]
+    },
+    "__pseudo_instruction_dx_list": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "__pseudo_instruction_dx_duplist"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "%"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "__pseudo_instruction_dx_parlist"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "__pseudo_instruction_dx_type"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "%"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "__pseudo_instruction_dx_parlist"
+            }
+          ]
+        }
+      ]
+    },
+    "__pseudo_instruction_dx_value": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "__pseudo_instruction_dx_atom"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "__pseudo_instruction_dx_type"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "__pseudo_instruction_dx_value"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "__pseudo_instruction_dx_list"
+        }
+      ]
     },
     "operands": {
       "type": "SEQ",
@@ -1195,31 +1550,59 @@
       "members": [
         {
           "type": "PATTERN",
-          "value": "[0-9]+\\.[0-9]*([Ee][0-9]+)?"
+          "value": "[0123456789]+\\.([0123456789])([Ee][0123456789]+)?"
         },
         {
           "type": "PATTERN",
-          "value": "\\$[0-9][0-9A-Fa-f]*\\.[0-9]*([Ee][0-9A-Fa-f]+|[Pp][0-9]+)?"
+          "value": "[0123456789]+[Ee][0123456789]+"
         },
         {
           "type": "PATTERN",
-          "value": "0[HXhx][0123456789ABCDEFabcdef_]*.[0123456789ABCDEFabcdef_]*([Ee][-+]?[0123456789ABCDEFabcdef]+)?"
+          "value": "\\$[0123456789]+\\.([0123456789ABCDEFabcdef])([Ee][0123456789ABCDEFabcdef]+|[Pp][0123456789]+)?"
         },
         {
           "type": "PATTERN",
-          "value": "0[HXhx][0123456789ABCDEFabcdef_]*.[0123456789ABCDEFabcdef_]*([Pp][-+]?[0123456789]+)?"
+          "value": "\\$[0123456789]+([Ee][0123456789ABCDEFabcdef]+|[Pp][0123456789]+)"
         },
         {
           "type": "PATTERN",
-          "value": "0[DTdt][0123456789_]*.[0123456789_]*([Ee][-+]?[0123456789]+)?"
+          "value": "0[HXhx][0123456789ABCDEFabcdef_]*\\.([0123456789ABCDEFabcdef_]*)?([Ee][-+]?[0123456789ABCDEFabcdef]+)?"
         },
         {
           "type": "PATTERN",
-          "value": "0[OQoq][01234567_]*.[01234567_]*([Pp][-+]?[0123456789]+)?"
+          "value": "0[HXhx][0123456789ABCDEFabcdef_]*([Ee][-+]?[0123456789ABCDEFabcdef]+)"
         },
         {
           "type": "PATTERN",
-          "value": "0[BYby][01_]*.[01_]*([Pp][-+]?[0123456789]+)?"
+          "value": "0[HXhx][0123456789ABCDEFabcdef_]*\\.([0123456789ABCDEFabcdef_]*)?([Pp][-+]?[0123456789]+)?"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[HXhx][0123456789ABCDEFabcdef_]*([Pp][-+]?[0123456789]+)"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[DTdt][0123456789_]*\\.([0123456789_]*)?([Ee][-+]?[0123456789]+)?"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[DTdt][0123456789_]*([Ee][-+]?[0123456789]+)"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[OQoq][01234567_]*\\.([01234567_]*)?([Pp][-+]?[0123456789]+)?"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[OQoq][01234567_]*([Pp][-+]?[0123456789]+)"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[BYby][01_]*\\.([01_]*)?([Pp][-+]?[0123456789]+)?"
+        },
+        {
+          "type": "PATTERN",
+          "value": "0[BYby][01_]*([Pp][-+]?[0123456789]+)"
         }
       ]
     },
@@ -1251,6 +1634,10 @@
           "name": "constant"
         }
       ]
+    },
+    "critical_expression": {
+      "type": "SYMBOL",
+      "name": "expression"
     },
     "conditional_expression": {
       "type": "PREC_RIGHT",
@@ -1922,6 +2309,17 @@
     [
       "operand",
       "expression"
+    ],
+    [
+      "__pseudo_instruction_dx_atom",
+      "constant"
+    ],
+    [
+      "__pseudo_instruction_dx_list"
+    ],
+    [
+      "__pseudo_instruction_dx_atom",
+      "parenthesized_expression"
     ]
   ],
   "precedences": [],
