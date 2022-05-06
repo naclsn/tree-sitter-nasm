@@ -304,88 +304,741 @@
       "type": "CHOICE",
       "members": [
         {
-          "type": "STRING",
-          "value": "bits"
+          "type": "SYMBOL",
+          "name": "_assembl_directive_target"
         },
         {
-          "type": "STRING",
-          "value": "use16"
+          "type": "SYMBOL",
+          "name": "_assembl_directive_defaults"
         },
         {
-          "type": "STRING",
-          "value": "use32"
+          "type": "SYMBOL",
+          "name": "_assembl_directive_sections"
         },
         {
-          "type": "STRING",
-          "value": "default"
+          "type": "SYMBOL",
+          "name": "_assembl_directive_absolute"
         },
         {
-          "type": "STRING",
-          "value": "section"
+          "type": "SYMBOL",
+          "name": "_assembl_directive_symbols"
         },
         {
-          "type": "STRING",
-          "value": "segment"
+          "type": "SYMBOL",
+          "name": "_assembl_directive_common"
         },
         {
-          "type": "STRING",
-          "value": "absolute"
+          "type": "SYMBOL",
+          "name": "_assembl_directive_symbolfixes"
         },
         {
-          "type": "STRING",
-          "value": "extern"
+          "type": "SYMBOL",
+          "name": "_assembl_directive_cpu"
         },
         {
-          "type": "STRING",
-          "value": "required"
+          "type": "SYMBOL",
+          "name": "_assembl_directive_floathandling"
         },
         {
-          "type": "STRING",
-          "value": "global"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_assembl_directive_target"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": "static"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_assembl_directive_defaults"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": "common"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_assembl_directive_sections"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": "prefix"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_assembl_directive_absolute"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": "gprefix"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_assembl_directive_symbols"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": "lprefix"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_assembl_directive_common"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": "postfix"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_assembl_directive_symbolfixes"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": "gpostfix"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_assembl_directive_cpu"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": "lpostfix"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_assembl_directive_floathandling"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": "cpu"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[wW][aA][rR][nN][iI][nN][gG]"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "STRING",
+                              "value": "+"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "-"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "*"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "STRING",
+                              "value": "all"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "bad-pragma"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "bnd"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "environment"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "float"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "float-denorm"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "float-overflow"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "float-toolong"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "float-underflow"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "hle"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "label"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "label-orphan"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "label-redef"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "label-redef-late"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "lock"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "macro"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "macro-defaults"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "macro-params"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": "macro-params-legacy"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[pP][uU][sS][hH]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[pP][oO][pP]"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
+        }
+      ]
+    },
+    "_assembl_directive_target": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[bB][iI][tT][sS]"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "16"
+                },
+                {
+                  "type": "STRING",
+                  "value": "32"
+                },
+                {
+                  "type": "STRING",
+                  "value": "64"
+                }
+              ]
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": "float"
+          "type": "PATTERN",
+          "value": "[uU][sS][eE]16"
         },
         {
-          "type": "STRING",
-          "value": "warning"
+          "type": "PATTERN",
+          "value": "[uU][sS][eE]32"
+        }
+      ]
+    },
+    "_assembl_directive_defaults": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[dD][eE][fF][aA][uU][lL][tT]"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[rR][eE][lL]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[aA][bB][sS]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[bB][nN][dD]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[nN][oO][bB][nN][dD]"
+            }
+          ]
+        }
+      ]
+    },
+    "_assembl_directive_sections": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[sS][eE][cC][tT][iI][oO][nN]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[sS][eE][gG][mM][eE][nN][tT]"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "word"
+        }
+      ]
+    },
+    "_assembl_directive_absolute": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[aA][bB][sS][oO][lL][uU][tT][eE]"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "critical_expression"
+        }
+      ]
+    },
+    "_assembl_directive_symbols": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[eE][xX][tT][eE][rR][nN]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[rR][eE][qQ][uU][iI][rR][eE][dD]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[gG][lL][oO][bB][aA][lL]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[sS][tT][aA][tT][iI][cC]"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "word"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "word"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "word"
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": ":"
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "word"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "_assembl_directive_common": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[cC][oO][mM][mM][oO][nN]"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "word"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "critical_expression"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": ":"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[nN][eE][aA][rR]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[fF][aA][rR]"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "critical_expression"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "_assembl_directive_symbolfixes": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[pP][rR][eE][fF][iI][xX]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[gG][pP][rR][eE][fF][iI][xX]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[lL][pP][rR][eE][fF][iI][xX]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[pP][oO][sS][tT][fF][iI][xX]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[gG][pP][oO][sS][tT][fF][iI][xX]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[lL][pP][oO][sS][tT][fF][iI][xX]"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "word"
+        }
+      ]
+    },
+    "_assembl_directive_cpu": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[cC][pP][uU]"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "8086"
+            },
+            {
+              "type": "PATTERN",
+              "value": "186"
+            },
+            {
+              "type": "PATTERN",
+              "value": "286"
+            },
+            {
+              "type": "PATTERN",
+              "value": "386"
+            },
+            {
+              "type": "PATTERN",
+              "value": "486"
+            },
+            {
+              "type": "PATTERN",
+              "value": "586"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[pP][eE][nN][tT][iI][uU][mM]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "686"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[pP][pP][rR][oO]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[pP]2"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[pP]3"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[kK][aA][tT][mM][aA][iI]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[pP]4"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[wW][iI][lL][lL][aA][mM][eE][tT][tT][eE]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[pP][rR][eE][sS][cC][oO][tT][tT]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[xX]64"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[iI][aA]64"
+            }
+          ]
+        }
+      ]
+    },
+    "_assembl_directive_floathandling": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[fF][lL][oO][aA][tT]"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[dD][aA][zZ]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[nN][oO][dD][aA][zZ]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[nN][eE][aA][rR]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[uU][pP]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[dD][oO][wW][nN]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[zZ][eE][rR][oO]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[dD][eE][fF][aA][uU][lL][tT]"
+            }
+          ]
         }
       ]
     },

@@ -2,7 +2,21 @@
   {
     "type": "assembl_directive",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "critical_expression",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "binary_expression",
@@ -444,6 +458,18 @@
     "named": false
   },
   {
+    "type": "16",
+    "named": false
+  },
+  {
+    "type": "32",
+    "named": false
+  },
+  {
+    "type": "64",
+    "named": false
+  },
+  {
     "type": ":",
     "named": false
   },
@@ -516,11 +542,11 @@
     "named": false
   },
   {
-    "type": "absolute",
+    "type": "aliases",
     "named": false
   },
   {
-    "type": "aliases",
+    "type": "all",
     "named": false
   },
   {
@@ -532,7 +558,11 @@
     "named": false
   },
   {
-    "type": "bits",
+    "type": "bad-pragma",
+    "named": false
+  },
+  {
+    "type": "bnd",
     "named": false
   },
   {
@@ -544,19 +574,7 @@
     "named": true
   },
   {
-    "type": "common",
-    "named": false
-  },
-  {
-    "type": "cpu",
-    "named": false
-  },
-  {
     "type": "defalias",
-    "named": false
-  },
-  {
-    "type": "default",
     "named": false
   },
   {
@@ -600,11 +618,11 @@
     "named": false
   },
   {
-    "type": "error",
+    "type": "environment",
     "named": false
   },
   {
-    "type": "extern",
+    "type": "error",
     "named": false
   },
   {
@@ -616,15 +634,23 @@
     "named": false
   },
   {
-    "type": "global",
+    "type": "float-denorm",
     "named": false
   },
   {
-    "type": "gpostfix",
+    "type": "float-overflow",
     "named": false
   },
   {
-    "type": "gprefix",
+    "type": "float-toolong",
+    "named": false
+  },
+  {
+    "type": "float-underflow",
+    "named": false
+  },
+  {
+    "type": "hle",
     "named": false
   },
   {
@@ -668,6 +694,22 @@
     "named": false
   },
   {
+    "type": "label",
+    "named": false
+  },
+  {
+    "type": "label-orphan",
+    "named": false
+  },
+  {
+    "type": "label-redef",
+    "named": false
+  },
+  {
+    "type": "label-redef-late",
+    "named": false
+  },
+  {
     "type": "line",
     "named": false
   },
@@ -676,15 +718,23 @@
     "named": false
   },
   {
-    "type": "lpostfix",
-    "named": false
-  },
-  {
-    "type": "lprefix",
+    "type": "lock",
     "named": false
   },
   {
     "type": "macro",
+    "named": false
+  },
+  {
+    "type": "macro-defaults",
+    "named": false
+  },
+  {
+    "type": "macro-params",
+    "named": false
+  },
+  {
+    "type": "macro-params-legacy",
     "named": false
   },
   {
@@ -696,15 +746,7 @@
     "named": false
   },
   {
-    "type": "postfix",
-    "named": false
-  },
-  {
     "type": "pragma",
-    "named": false
-  },
-  {
-    "type": "prefix",
     "named": false
   },
   {
@@ -720,27 +762,11 @@
     "named": false
   },
   {
-    "type": "required",
-    "named": false
-  },
-  {
     "type": "rotate",
     "named": false
   },
   {
-    "type": "section",
-    "named": false
-  },
-  {
-    "type": "segment",
-    "named": false
-  },
-  {
     "type": "stacksize",
-    "named": false
-  },
-  {
-    "type": "static",
     "named": false
   },
   {
@@ -769,14 +795,6 @@
   },
   {
     "type": "use",
-    "named": false
-  },
-  {
-    "type": "use16",
-    "named": false
-  },
-  {
-    "type": "use32",
     "named": false
   },
   {

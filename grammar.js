@@ -72,19 +72,99 @@ module.exports = grammar({
       'clear', // [global|context] type ('define', 'defalias', 'alldefine', 'macro', 'all')
     )),
 
-    assembl_directive: $ => choice(
-      'bits', /* <number> */ 'use16', 'use32',
-      'default', // REL | ABS | BND | NOBND
-      'section', 'segment', // <dotted_name?>
-      'absolute', // <number>
-      'extern', 'required', 'global', 'static', // <ident> (depends)
-      'common', // <ident> <number>
-      'prefix', 'gprefix', 'lprefix',
-      'postfix', 'gpostfix', 'lpostfix',
-      'cpu', // <cpu_ident>
-      'float', // DAZ | NODAZ | NEAR | UP | DOWN | ZERO | DEFAULT
-      'warning', // 'no', 'user', 'form',
+//#region assembl_directive
+    assembl_directive: $ => {
+      /**
+       * the ones described in the `rules` property of the
+       * grammar are user forms
+       * 
+       * primitive forms are crafted from them here
+       */
+      function _prim_from_user(rule) {
+        return seq('[', rule, ']');
+      }
+      const user = [
+        $._assembl_directive_target,
+        $._assembl_directive_defaults,
+        $._assembl_directive_sections,
+        $._assembl_directive_absolute,
+        $._assembl_directive_symbols,
+        $._assembl_directive_common,
+        $._assembl_directive_symbolfixes,
+        $._assembl_directive_cpu,
+        $._assembl_directive_floathandling,
+      ];
+      const primitive = user.map(_prim_from_user);
+      return choice(
+        ...user,
+        ...primitive,
+        _prim_from_user(seq( // no user form for [WARNING]
+          ci('WARNING'),
+          choice(
+            seq(
+              choice('+', '-', '*'),
+              choice('all', 'bad-pragma', 'bnd', 'environment', 'float', 'float-denorm', 'float-overflow', 'float-toolong', 'float-underflow', 'hle', 'label', 'label-orphan', 'label-redef', 'label-redef-late', 'lock', 'macro', 'macro-defaults', 'macro-params', 'macro-params-legacy'),
+            ),
+            ci('PUSH'),
+            ci('POP'),
+          ),
+        )),
+      );
+    },
+
+    _assembl_directive_target: $ => choice(
+      seq(ci('BITS'), choice('16', '32', '64')),
+      ci('USE16'),
+      ci('USE32'),
     ),
+    _assembl_directive_defaults: $ => seq(
+      ci('DEFAULT'),
+      choice(...['REL', 'ABS', 'BND', 'NOBND'].map(ci))
+    ),
+    _assembl_directive_sections: $ => seq( // XXX/TODO: there is more, see 8.1.2 and 8.1.3
+      choice(...['SECTION', 'SEGMENT'].map(ci)),
+      $.word, // YYY: not sure, but hey
+    ),
+    _assembl_directive_absolute: $ => seq(
+      ci('ABSOLUTE'),
+      $.critical_expression,
+    ),
+    _assembl_directive_symbols: $ => seq(
+      choice(...['EXTERN', 'REQUIRED', 'GLOBAL', 'STATIC'].map(ci)),
+      seq( // YYY: not sure, but hey
+        $.word, optional(seq(':', $.word)),
+        repeat(seq(',', $.word, optional(seq(':', $.word)))),
+      ),
+    ),
+    _assembl_directive_common: $ => seq(
+      ci('COMMON'),
+      $.word, // YYY: not sure for any of the 3, but hey
+      $.critical_expression,
+      optional(seq(
+        ':',
+        choice(
+          ci('NEAR'),
+          ci('FAR'),
+          $.critical_expression,
+        ),
+      )),
+    ),
+    _assembl_directive_symbolfixes: $ => seq(
+      choice(...[
+        'PREFIX', 'GPREFIX', 'LPREFIX',
+        'POSTFIX', 'GPOSTFIX', 'LPOSTFIX',
+      ].map(ci)),
+      $.word, // YYY: not sure, probably
+    ),
+    _assembl_directive_cpu: $ => seq(
+      ci('CPU'),
+      choice(...['8086', '186', '286', '386', '486', '586', 'PENTIUM', '686', 'PPRO', 'P2', 'P3', 'KATMAI', 'P4', 'WILLAMETTE', 'PRESCOTT', 'X64', 'IA64'].map(ci)),
+    ),
+    _assembl_directive_floathandling: $ => seq(
+      ci('FLOAT'),
+      choice(...['DAZ', 'NODAZ', 'NEAR', 'UP', 'DOWN', 'ZERO', 'DEFAULT'].map(ci)),
+    ),
+//#endregion assembl_directive
 
 //#region source_line
     label: $ => prec(5, seq($.word, optional(':'))), // precedence over unknown_operation
@@ -340,7 +420,7 @@ module.exports = grammar({
 //  #region expression
     // NOTE/TODO: WRT as binary? : as binary?
     // XXX/TODO: $ and $$ are considered special tokens (not available in critical_expression)
-    // TODO: special operators and special tokens (__?xys?__)
+    // TODO: special operators, special tokens, standard macros (__?xyz?__)
     expression: $ => choice(
       $.conditional_expression,
       $.binary_expression,
