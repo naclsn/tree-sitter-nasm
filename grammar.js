@@ -45,7 +45,9 @@ module.exports = grammar({
     ),
 
     // XXX: question: can you have a macro over multiple files?
-    preproc_directive: $ => seq('%', choice( // XXX: %+ %? %?? %!<env> %, %%<label> %{..} %0 %n %00 %[..] .....
+    // TODO: preproc_expression accepting eg. %+
+    // XXX: %+ %? %?? %!<env> %, %%<label> %{..} %0 %n %00 %[..] .....
+    preproc_directive: $ => seq('%', choice(
       'define', 'idefine', 'xdefine', // <ident> immediat!['(' [('='|'&'|'+'|'!')<name> {',' (...)<name>} [',']] ')'] <value>
       'undef', // <name>
       'assign', 'iassign', // similar to the define family
@@ -127,7 +129,7 @@ module.exports = grammar({
     ),
 
 //  #region pseudo instruction
-    _pseudo_instruction_dx: $ => seq(
+    _pseudo_instruction_dx: $ => seq( // XXX: << DT, DO, DY and DZ do not accept numeric constants as operands. >>
       choice(...['DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ'].map(ci)),
       $.__pseudo_instruction_dx_value,
       repeat(seq(',', $.__pseudo_instruction_dx_value)),
@@ -216,7 +218,7 @@ module.exports = grammar({
       choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci)),
     ),
 
-    register: $ => choice(...[
+    register: $ => choice(...[ // XXX: stX and weird syntax `fadd    to st1  ; this sets st1 := st1 + st0`
       'AL', 'AH', 'CL', 'CH', 'DL', 'DH', 'BL', 'BH', 'SPL', 'BPL', 'SIL', 'DIL', 'R8B', 'R9B', 'R10B', 'R11B', 'R12B', 'R13B', 'R14B', 'R15B',
       'AX', 'CX', 'DX', 'BX', 'SP', 'BP', 'SI', 'DI', 'R8W', 'R9W', 'R10W', 'R11W', 'R12W', 'R13W', 'R14W', 'R15W',
       'EAX', 'ECX', 'EDX', 'EBX', 'ESP', 'EBP', 'ESI', 'EDI', 'R8D', 'R9D', 'R10D', 'R11D', 'R12D', 'R13D', 'R14D', 'R15D',
@@ -234,12 +236,10 @@ module.exports = grammar({
     constant: $ => choice(
       $.constant_numeric, // XXX: no test
       $.constant_charstr, // XXX: no test
-      //$.constant_floatpt, // XXX: not everywhere
+      //$.constant_floatpt, // XXX: not everywhere (not where again? not as instruction operands that was?)
+      // TODO: packed BCD constants
     ),
 
-    // YYY: some things could be simplified if eg. _4506 or $A540 are words out of precedence
-    // @see NASM numeric constants are confusing:
-    //      https://github.dev/netwide-assembler/nasm/blob/3f9fc2a3a7134936cbbae5780beb4319694f702a/asm/stdscan.c#L192
     constant_numeric: $ => {
       /**
        * the same characters can be used in prefix or suffix notation:
@@ -339,8 +339,8 @@ module.exports = grammar({
 
 //  #region expression
     // NOTE/TODO: WRT as binary? : as binary?
-    // XXX/TODO: $ and $$ are considered special tokens
-    // TODO: preproc_expression accepting eg. %+
+    // XXX/TODO: $ and $$ are considered special tokens (not available in critical_expression)
+    // TODO: special operators and special tokens (__?xys?__)
     expression: $ => choice(
       $.conditional_expression,
       $.binary_expression,
