@@ -1,2 +1,3 @@
-%define coucou blabla
-	mov	al, 42
+	sys_exit	rax
+	sys_read	1, [buf], BUFSIZE
+	coucou	blabla

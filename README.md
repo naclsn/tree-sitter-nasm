@@ -10,15 +10,14 @@ References
 
 ## Notes/Remarks
 
-* The fact that `':'` is optional after a label makes it inherently ambigus:
+* does not distinguish between expressions and critical expressions
+* for NASM, not all kind of expressions are valid everywhere, here they are
+* macro reserved token are always allowed (e.g. `%0`) same with `$` and `$$`
+* floating-points can be used event where NASM will reject them (and vice-versa for e.g. DT/DO/DY/DZ)
+* the fact that `':'` is optional after a label makes it inherently ambigus:
 ```
 _start:
 	word1	word2
 	; 'word1' may be a macro but it will be assumed
 	; as being a label, and 'word2' the instruction
 ```
-
-* A file by itself may not be syntaxically correct.
-For example a single macro may span multiple files.
-This in turn means that symbols such as `%0` can be valid outside a macro definition.
-Here does not account for this; `%0` is always invalid outside a macro definition.

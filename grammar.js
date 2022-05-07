@@ -11,7 +11,6 @@ module.exports = grammar({
   conflicts: $ => [
     [$.label, $.unknown_instruction],
     [$.operand, $.expression],
-    [$.operand, $.critical_expression],
     [$.__pseudo_instruction_dx_atom, $.constant],
     [$.__pseudo_instruction_dx_list],
     [$.__pseudo_instruction_dx_atom, $.parenthesized_expression],
@@ -19,23 +18,14 @@ module.exports = grammar({
 
   rules: {
 
-    // source_file ::= {[source|preproc|assembl] '\n'} [source|preproc|assembl]
-    source_file: $ => seq(
-      repeat(
-        seq(
-          optional(choice(
-            $.source_line,
-            $.preproc_directive,
-            $.assembl_directive,
-          )),
-          /\r?\n/,
-        ),
-      ),
+    // source_file ::= [source|preproc|assembl] {'\n' [source|preproc|assembl]}
+    source_file: $ => repeatSep1(
       optional(choice(
         $.source_line,
         $.preproc_directive,
         $.assembl_directive,
       )),
+      /\r?\n/,
     ),
 
     // source_line ::= [label[':']] [prefix] [instr [opr{',' opr}]] '\n'
@@ -138,34 +128,36 @@ module.exports = grammar({
       $.word,
       repeat(choice(
         choice(...['PROGBITS', 'NOBITS'].map(ci)),
-        seq(ci('ALIGN'), '=', $.critical_expression),
-        seq(ci('START'), '=', $.critical_expression),
-        seq(ci('VSTART'), '=', $.critical_expression),
+        seq(ci('ALIGN'), '=', $.expression), // critical_expression
+        seq(ci('START'), '=', $.expression), // critical_expression
+        seq(ci('VSTART'), '=', $.expression), // critical_expression
         seq(ci('FOLLOWS'), '=', $.word),
         seq(ci('VFOLLOWS'), '=', $.word),
       )),
     ),
     _assembl_directive_absolute: $ => seq(
       ci('ABSOLUTE'),
-      $.critical_expression,
+      $.expression, // critical_expression
     ),
     _assembl_directive_symbols: $ => seq(
       choice(...['EXTERN', 'REQUIRED', 'GLOBAL', 'STATIC'].map(ci)),
-      seq(
-        $.word, optional(seq(':', $.word)),
-        repeat(seq(',', $.word, optional(seq(':', $.word)))),
+      repeatSep1(
+        seq(
+          $.word, optional(seq(':', $.word)),
+        ),
+        ',',
       ),
     ),
     _assembl_directive_common: $ => seq(
       ci('COMMON'),
       $.word,
-      $.critical_expression,
+      $.expression, // critical_expression
       optional(seq(
         ':',
         choice(
           ci('NEAR'),
           ci('FAR'),
-          $.critical_expression,
+          $.expression, // critical_expression
         ),
       )),
     ),
@@ -186,7 +178,7 @@ module.exports = grammar({
     ),
     _assembl_directive_org: $ => seq(
       ci('ORG'),
-      $.critical_expression,
+      $.expression, // critical_expression
     ),
 //#endregion assembl_directive
 
@@ -235,12 +227,11 @@ module.exports = grammar({
 //  #region pseudo instruction
     _pseudo_instruction_dx: $ => seq( // XXX: << DT, DO, DY and DZ do not accept numeric constants as operands. >>
       choice(...['DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ'].map(ci)),
-      $.__pseudo_instruction_dx_value,
-      repeat(seq(',', $.__pseudo_instruction_dx_value)),
+      repeatSep1($.__pseudo_instruction_dx_value, ','),
     ),
     _pseudo_instruction_resbx: $ => seq(
       choice(...['RESB', 'RESW', 'RESD', 'RESQ', 'REST', 'RESO', 'RESY', 'RESZ'].map(ci)),
-      $.critical_expression,
+      $.expression, // critical_expression
     ),
     _pseudo_instruction_incbin_command: $ => seq(
       ci('INCBIN'),
@@ -259,7 +250,7 @@ module.exports = grammar({
     ),
     _pseudo_instruction_times_prefix: $ => seq(
       ci('TIMES'),
-      $.critical_expression,
+      $.expression, // critical_expression
       $.instruction,
     ),
 
@@ -268,15 +259,10 @@ module.exports = grammar({
     ].map(ci)),
     __pseudo_instruction_dx_atom: $ => choice(
       $.expression,
-      $.constant_charstr, // YYY: already in $.expression
-      $.constant_floatpt,
       '?',
     ),
     __pseudo_instruction_dx_parlist: $ => seq(
-      '(',
-      $.__pseudo_instruction_dx_value,
-      repeat(seq(',', $.__pseudo_instruction_dx_value)),
-      ')',
+      '(', repeatSep1($.__pseudo_instruction_dx_value, ','), ')',
     ),
     __pseudo_instruction_dx_duplist: $ => seq(
       $.expression,
@@ -306,7 +292,7 @@ module.exports = grammar({
 // #endregion instruction
 
 // #region operand
-    operands: $ => seq($.operand, repeat(seq(',', $.operand))),
+    operands: $ => repeatSep1($.operand, ','),
     operand: $ => seq(
       optional($.operand_prefix),
       choice(
@@ -354,10 +340,10 @@ module.exports = grammar({
 
 //  #region constant
     constant: $ => choice(
-      $.constant_numeric, // XXX: no test
-      $.constant_charstr, // XXX: no test
-      //$.constant_floatpt, // XXX: not everywhere << acceptable only as arguments to DB, DW, DD, DQ, DT, and DO, or as arguments to the special operators [..] >>
-      //$.constant_packbcd, // XXX: same as above
+      $.constant_numeric,
+      $.constant_charstr,
+      $.constant_floatpt,
+      $.constant_packbcd,
     ),
 
     constant_numeric: $ => {
@@ -469,21 +455,17 @@ module.exports = grammar({
     // YYY: wrt [..gotpc ..gotoff ..got ..sym ..plt] but simply $.word is ok
     // TODO: special operators, special tokens, standard macros (__?xyz?__)
     expression: $ => choice(
-      $.critical_expression,
+      $.conditional_expression,
+      $.binary_expression,
+      $.unary_expression,
+      $.call_syntax_expression,
+      $.parenthesized_expression,
+      $.word, // ie. identifier
+      $.constant,
       '$',
       '$$',
     ),
 
-    // YYY: yes this is quite wrong... but this way will at least
-    //      let eg. `TIMES 510-($-$$) DB 0` be valid (see 13.1.4)
-    critical_expression: $ => choice(
-      $.conditional_expression,
-      $.binary_expression,
-      $.unary_expression,
-      $.parenthesized_expression,
-      $.word, // ie. identifier
-      $.constant,
-    ),
     conditional_expression: $ => prec.right(1, seq( // YYY: right?
       $.expression, '?', $.expression, ':', $.expression,
     )),
@@ -512,6 +494,10 @@ module.exports = grammar({
     unary_expression: $ => prec.left(3, seq(
       choice('-', '+', '~', '!', ci('SEG')), $.expression,
     )),
+    call_syntax_expression: $ => prec(4, seq(
+      $.word, // macro
+      '(', repeatSep($.expression, ','), ')',
+    )),
     parenthesized_expression: $ => seq(
       '(', $.expression, ')',
     ),
@@ -526,6 +512,17 @@ module.exports = grammar({
   },
 
 });
+
+function repeatSep1(rule, sep) {
+  return seq(
+    rule,
+    repeat(seq(sep, rule))
+  );
+}
+
+function repeatSep(rule, sep) {
+  return optional(repeatSep1(rule, sep));
+}
 
 /**
  * @param {string} word
