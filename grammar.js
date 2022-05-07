@@ -11,6 +11,7 @@ module.exports = grammar({
   conflicts: $ => [
     [$.label, $.unknown_instruction],
     [$.operand, $.expression],
+    [$.operand, $.critical_expression],
     [$.__pseudo_instruction_dx_atom, $.constant],
     [$.__pseudo_instruction_dx_list],
     [$.__pseudo_instruction_dx_atom, $.parenthesized_expression],
@@ -98,6 +99,7 @@ module.exports = grammar({
         $._assembl_directive_symbolfixes,
         $._assembl_directive_cpu,
         $._assembl_directive_floathandling,
+        $._assembl_directive_org, // YYY: not presented as an assembler directive..?
       ];
       const primitive = user.map(_prim_from_user);
       return choice(
@@ -114,6 +116,11 @@ module.exports = grammar({
             ci('POP'),
           ),
         )),
+        _prim_from_user(seq( // no user form for [MAP]
+          ci('MAP'),
+          optional(choice(...['ALL', 'BRIEF', 'SECTIONS', 'SEGMENTS', 'SYMBOLS'].map(ci))),
+          $.word,
+        )),
       );
     },
 
@@ -126,9 +133,17 @@ module.exports = grammar({
       ci('DEFAULT'),
       choice(...['REL', 'ABS', 'BND', 'NOBND'].map(ci))
     ),
-    _assembl_directive_sections: $ => seq( // XXX/TODO: there is more, see 8.1.2 and 8.1.3
+    _assembl_directive_sections: $ => seq(
       choice(...['SECTION', 'SEGMENT'].map(ci)),
-      $.word, // YYY: not sure, but hey
+      $.word,
+      repeat(choice(
+        choice(...['PROGBITS', 'NOBITS'].map(ci)),
+        seq(ci('ALIGN'), '=', $.critical_expression),
+        seq(ci('START'), '=', $.critical_expression),
+        seq(ci('VSTART'), '=', $.critical_expression),
+        seq(ci('FOLLOWS'), '=', $.word),
+        seq(ci('VFOLLOWS'), '=', $.word),
+      )),
     ),
     _assembl_directive_absolute: $ => seq(
       ci('ABSOLUTE'),
@@ -136,14 +151,14 @@ module.exports = grammar({
     ),
     _assembl_directive_symbols: $ => seq(
       choice(...['EXTERN', 'REQUIRED', 'GLOBAL', 'STATIC'].map(ci)),
-      seq( // YYY: not sure, but hey
+      seq(
         $.word, optional(seq(':', $.word)),
         repeat(seq(',', $.word, optional(seq(':', $.word)))),
       ),
     ),
     _assembl_directive_common: $ => seq(
       ci('COMMON'),
-      $.word, // YYY: not sure for any of the 3, but hey
+      $.word,
       $.critical_expression,
       optional(seq(
         ':',
@@ -159,7 +174,7 @@ module.exports = grammar({
         'PREFIX', 'GPREFIX', 'LPREFIX',
         'POSTFIX', 'GPOSTFIX', 'LPOSTFIX',
       ].map(ci)),
-      $.word, // YYY: not sure, probably
+      $.word,
     ),
     _assembl_directive_cpu: $ => seq(
       ci('CPU'),
@@ -168,6 +183,10 @@ module.exports = grammar({
     _assembl_directive_floathandling: $ => seq(
       ci('FLOAT'),
       choice(...['DAZ', 'NODAZ', 'NEAR', 'UP', 'DOWN', 'ZERO', 'DEFAULT'].map(ci)),
+    ),
+    _assembl_directive_org: $ => seq(
+      ci('ORG'),
+      $.critical_expression,
     ),
 //#endregion assembl_directive
 
@@ -301,13 +320,29 @@ module.exports = grammar({
     operand_prefix: $ => seq(
       optional(ci('STRICT')),
       choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci)),
+      // YYY: `optional(choice('FAR', ..))`?
     ),
 
-    register: $ => choice(...[ // XXX: stX and weird syntax `fadd    to st1  ; this sets st1 := st1 + st0`
+    register: $ => choice(...[ // XXX: weird syntax such as `fadd    to st1  ; this sets st1 := st1 + st0`
       'AL', 'AH', 'CL', 'CH', 'DL', 'DH', 'BL', 'BH', 'SPL', 'BPL', 'SIL', 'DIL', 'R8B', 'R9B', 'R10B', 'R11B', 'R12B', 'R13B', 'R14B', 'R15B',
       'AX', 'CX', 'DX', 'BX', 'SP', 'BP', 'SI', 'DI', 'R8W', 'R9W', 'R10W', 'R11W', 'R12W', 'R13W', 'R14W', 'R15W',
       'EAX', 'ECX', 'EDX', 'EBX', 'ESP', 'EBP', 'ESI', 'EDI', 'R8D', 'R9D', 'R10D', 'R11D', 'R12D', 'R13D', 'R14D', 'R15D',
       'RAX', 'RCX', 'RDX', 'RBX', 'RSP', 'RBP', 'RSI', 'RDI', 'R8', 'R9', 'R10', 'R11', 'R12', 'R13', 'R14', 'R15',
+      // floating-point registers
+      'ST0', 'ST1', 'ST2', 'ST3', 'ST4', 'ST5', 'ST6', 'ST7',
+      // 64-bit MMX registers
+      'MM0', 'MM1', 'MM2', 'MM3', 'MM4', 'MM5', 'MM6', 'MM7',
+      // control registers
+      'CR0', 'CR2', 'CR3', 'CR4',
+      // debug registers
+      'DR0', 'DR1', 'DR2', 'DR3', 'DR6', 'DR7',
+      // test registers
+      'TR3', 'TR4', 'TR5', 'TR6', 'TR7',
+      // alternate register names
+      'R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7',
+      'R8L', 'R9L', 'R10L', 'R11L', 'R12L', 'R13L', 'R14L', 'R15L',
+      'R0H', 'R1H', 'R2H', 'R3H',
+      'R0L', 'R1L', 'R2L', 'R3L',
     ].map(ci)),
 
     effective_address: $ => seq(
@@ -321,8 +356,8 @@ module.exports = grammar({
     constant: $ => choice(
       $.constant_numeric, // XXX: no test
       $.constant_charstr, // XXX: no test
-      //$.constant_floatpt, // XXX: not everywhere (not where again? not as instruction operands that was?)
-      // TODO: packed BCD constants
+      //$.constant_floatpt, // XXX: not everywhere << acceptable only as arguments to DB, DW, DD, DQ, DT, and DO, or as arguments to the special operators [..] >>
+      //$.constant_packbcd, // XXX: same as above
     ),
 
     constant_numeric: $ => {
@@ -420,13 +455,28 @@ module.exports = grammar({
         ..._make_flt('BYby', '01', 'Pp', O9),
       );
     },
+    constant_packbcd: $ => {
+      // YYY: not covered: << can include up to 18 decimal digits >>
+      return choice(
+        /0[Pp][0-9_]*/, // yes, '*' and not '+'
+        /[0-9][0-9_]*[Pp]/,
+      );
+    },
 //  #endregion constant
 
 //  #region expression
     // NOTE/TODO: WRT as binary? : as binary?
-    // XXX/TODO: $ and $$ are considered special tokens (not available in critical_expression)
+    // YYY: wrt [..gotpc ..gotoff ..got ..sym ..plt] but simply $.word is ok
     // TODO: special operators, special tokens, standard macros (__?xyz?__)
     expression: $ => choice(
+      $.critical_expression,
+      '$',
+      '$$',
+    ),
+
+    // YYY: yes this is quite wrong... but this way will at least
+    //      let eg. `TIMES 510-($-$$) DB 0` be valid (see 13.1.4)
+    critical_expression: $ => choice(
       $.conditional_expression,
       $.binary_expression,
       $.unary_expression,
@@ -434,8 +484,6 @@ module.exports = grammar({
       $.word, // ie. identifier
       $.constant,
     ),
-
-    critical_expression: $ => $.expression, // XXX
     conditional_expression: $ => prec.right(1, seq( // YYY: right?
       $.expression, '?', $.expression, ':', $.expression,
     )),
