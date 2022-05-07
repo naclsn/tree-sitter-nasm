@@ -542,19 +542,7 @@
     "named": false
   },
   {
-    "type": "aliases",
-    "named": false
-  },
-  {
     "type": "all",
-    "named": false
-  },
-  {
-    "type": "arg",
-    "named": false
-  },
-  {
-    "type": "assign",
     "named": false
   },
   {
@@ -566,67 +554,11 @@
     "named": false
   },
   {
-    "type": "clear",
-    "named": false
-  },
-  {
     "type": "comment",
     "named": true
   },
   {
-    "type": "defalias",
-    "named": false
-  },
-  {
-    "type": "define",
-    "named": false
-  },
-  {
-    "type": "defstr",
-    "named": false
-  },
-  {
-    "type": "deftok",
-    "named": false
-  },
-  {
-    "type": "depend",
-    "named": false
-  },
-  {
-    "type": "elif",
-    "named": false
-  },
-  {
-    "type": "elifn",
-    "named": false
-  },
-  {
-    "type": "else",
-    "named": false
-  },
-  {
-    "type": "endif",
-    "named": false
-  },
-  {
-    "type": "endmacro",
-    "named": false
-  },
-  {
-    "type": "endrep",
-    "named": false
-  },
-  {
     "type": "environment",
-    "named": false
-  },
-  {
-    "type": "error",
-    "named": false
-  },
-  {
-    "type": "fatal",
     "named": false
   },
   {
@@ -654,46 +586,6 @@
     "named": false
   },
   {
-    "type": "iassign",
-    "named": false
-  },
-  {
-    "type": "idefalias",
-    "named": false
-  },
-  {
-    "type": "idefine",
-    "named": false
-  },
-  {
-    "type": "idefstr",
-    "named": false
-  },
-  {
-    "type": "ideftok",
-    "named": false
-  },
-  {
-    "type": "if",
-    "named": false
-  },
-  {
-    "type": "ifdefalias",
-    "named": false
-  },
-  {
-    "type": "ifn",
-    "named": false
-  },
-  {
-    "type": "imacro",
-    "named": false
-  },
-  {
-    "type": "include",
-    "named": false
-  },
-  {
     "type": "label",
     "named": false
   },
@@ -707,14 +599,6 @@
   },
   {
     "type": "label-redef-late",
-    "named": false
-  },
-  {
-    "type": "line",
-    "named": false
-  },
-  {
-    "type": "local",
     "named": false
   },
   {
@@ -735,74 +619,6 @@
   },
   {
     "type": "macro-params-legacy",
-    "named": false
-  },
-  {
-    "type": "pathsearch",
-    "named": false
-  },
-  {
-    "type": "pop",
-    "named": false
-  },
-  {
-    "type": "pragma",
-    "named": false
-  },
-  {
-    "type": "push",
-    "named": false
-  },
-  {
-    "type": "rep",
-    "named": false
-  },
-  {
-    "type": "repl",
-    "named": false
-  },
-  {
-    "type": "rotate",
-    "named": false
-  },
-  {
-    "type": "stacksize",
-    "named": false
-  },
-  {
-    "type": "strcat",
-    "named": false
-  },
-  {
-    "type": "strlen",
-    "named": false
-  },
-  {
-    "type": "substr",
-    "named": false
-  },
-  {
-    "type": "undef",
-    "named": false
-  },
-  {
-    "type": "undefalias",
-    "named": false
-  },
-  {
-    "type": "unmacro",
-    "named": false
-  },
-  {
-    "type": "use",
-    "named": false
-  },
-  {
-    "type": "warning",
-    "named": false
-  },
-  {
-    "type": "xdefine",
     "named": false
   },
   {

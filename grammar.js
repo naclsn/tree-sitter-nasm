@@ -44,33 +44,38 @@ module.exports = grammar({
       seq($.label, $.instruction),
     ),
 
-    // XXX: question: can you have a macro over multiple files?
+//#region preproc_directive
     // TODO: preproc_expression accepting eg. %+
-    // XXX: %+ %? %?? %!<env> %, %%<label> %{..} %0 %n %00 %[..] .....
-    preproc_directive: $ => seq('%', choice(
-      'define', 'idefine', 'xdefine', // <ident> immediat!['(' [('='|'&'|'+'|'!')<name> {',' (...)<name>} [',']] ')'] <value>
-      'undef', // <name>
-      'assign', 'iassign', // similar to the define family
-      'defstr', 'idefstr', // 
-      'deftok', 'ideftok', // 
-      'defalias', 'idefalias', 'undefalias', 'clear', 'aliases', 'ifdefalias',
-      'strcat', 'strlen', 'substr',
-      'macro', 'imacro', 'endmacro', 'unmacro',
-      'rotate',
-      'if', 'ifn', 'elif', 'elifn', 'else', 'endif', // .. and variants 'ifdef', 'ifmacro', 'ifctx', 'ifidn', 'ifidni', 'ifid', 'ifnum', 'ifstr', 'iftoken', 'ifempty', 'ifenv'
-      'rep', 'endrep',
-      'include',
-      'pathsearch',
-      'depend',
-      'use',
-      'push', 'pop',
-      'repl',
-      'arg', 'stacksize', 'local',
-      'error', 'warning', 'fatal',
-      'pragma', // 'ignore', 'preproc', 'limit', 'asm', 'list', 'file', 'input', 'output', 'debug', but also << output or debug format, and sometimes groups thereof >>
-      'line',
-      'clear', // [global|context] type ('define', 'defalias', 'alldefine', 'macro', 'all')
-    )),
+    //       %+ %? %?? %!<env> %, %%<label> %{..} %0 %n %00 %[..] .....
+    preproc_directive: $ => seq(
+      '%',
+      token.immediate(choice(...[
+        'DEFINE', 'IDEFINE', 'XDEFINE', // <ident> immediat!['(' [('='|'&'|'+'|'!')<name> {',' (...)<name>} [',']] ')'] <value>
+        'UNDEF', // <name>
+        'ASSIGN', 'IASSIGN', // similar to the define family
+        'DEFSTR', 'IDEFSTR', // 
+        'DEFTOK', 'IDEFTOK', // 
+        'DEFALIAS', 'IDEFALIAS', 'UNDEFALIAS', 'CLEAR', 'ALIASES', 'IFDEFALIAS',
+        'STRCAT', 'STRLEN', 'SUBSTR',
+        'MACRO', 'IMACRO', 'ENDMACRO', 'UNMACRO',
+        'ROTATE',
+        'IF', 'IFN', 'ELIF', 'ELIFN', 'ELSE', 'ENDIF', // .. and variants 'IFDEF', 'IFMACRO', 'IFCTX', 'IFIDN', 'IFIDNI', 'IFID', 'IFNUM', 'IFSTR', 'IFTOKEN', 'IFEMPTY', 'IFENV'
+        'REP', 'ENDREP',
+        'INCLUDE',
+        'PATHSEARCH',
+        'DEPEND',
+        'USE',
+        'PUSH', 'POP',
+        'REPL',
+        'ARG', 'STACKSIZE', 'LOCAL',
+        'ERROR', 'WARNING', 'FATAL',
+        'PRAGMA', // 'IGNORE', 'PREPROC', 'LIMIT', 'ASM', 'LIST', 'FILE', 'INPUT', 'OUTPUT', 'DEBUG', but also << output or debug format, and sometimes groups thereof >>
+        'LINE',
+        'CLEAR', // [global|context] type ('DEFINE', 'DEFALIAS', 'ALLDEFINE', 'MACRO', 'ALL')
+      ].map(ci))),
+      /.*/,
+    ),
+//#endregion preproc_directive
 
 //#region assembl_directive
     assembl_directive: $ => {
@@ -475,15 +480,11 @@ module.exports = grammar({
 });
 
 /**
- * @param {string|RegExp} it
+ * @param {string} word
  * @see https://github.com/tree-sitter/tree-sitter/issues/261
  */
-function ci(it) {
-  const src = 'string' === typeof it
-    ? it
-    : it.source
-    ;
-  const pat = src
+function ci(word) {
+  const pat = word
     .split('')
     .map(c => c.toUpperCase() === c.toLowerCase()
       ? c
@@ -491,5 +492,5 @@ function ci(it) {
     )
     .join('')
     ;
-  return RegExp(pat, (it.flags ?? '') + 'i');
+  return RegExp(pat, 'i');
 }
