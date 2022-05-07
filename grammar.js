@@ -36,8 +36,6 @@ module.exports = grammar({
     ),
 
 //#region preproc_directive
-    // TODO: preproc_expression accepting eg. %+
-    //       %+ %? %?? %!<env> %, %%<label> %{..} %0 %n %00 %[..] .....
     preproc_directive: $ => seq(
       '%',
       token.immediate(choice(...[
@@ -460,6 +458,8 @@ module.exports = grammar({
       $.unary_expression,
       $.call_syntax_expression,
       $.parenthesized_expression,
+      $.grouped_expression,
+      $.preproc_expression,
       $.word, // ie. identifier
       $.constant,
       '$',
@@ -481,6 +481,7 @@ module.exports = grammar({
         ['<<', '>>', '<<<', '>>>'],
         ['+', '-'],
         ['*', '/', '//', '%', '%%'],
+        ['%+', '%,'], // preprocessor (hence higher precedence)
       ];
       // no `flatMap`, use `reduce`
       return prec(2, choice(...ops.reduce((acc, ls, k) => acc.concat(
@@ -501,6 +502,23 @@ module.exports = grammar({
     parenthesized_expression: $ => seq(
       '(', $.expression, ')',
     ),
+    grouped_expression: $ => seq(
+      '{', repeatSep1($.expression, ','), '}',
+    ),
+    preproc_expression: $ => seq('%', choice(
+      // environement variables
+      seq(token.immediate('!'), token.immediate(/[A-Z_a-z][0-9A-Z_a-z]+/)),
+      // "macro indirection" YYY: or `$.expression`?
+      seq(token.immediate('['), $.word, ']'),
+      // macro local and context local
+      seq(token.immediate(choice('$', '$$', '%')), token.immediate(/[A-Za-z._?][A-Za-z0-9_$#@~.?]*/)),
+      // macro context tokens
+      token.immediate(choice('?', '??', '0', '00')),
+      // macro parameters
+      token.immediate(/[-+]?[0-9]+/),
+      // other expansion
+      seq(token.immediate('{'), choice(/[0-9]+/, seq('%', optional('$'), $.word)), '}'),
+    )),
 //  #endregion expression
 // #endregion operand
 //#endregion source_line
