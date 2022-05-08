@@ -23,7 +23,3 @@ _start:
 	; 'word2' the instruction or an operand
 ```
 Here opts for `'word1'` as an instruction (and thus `'word2'` as its first operand).
-
----
-
-https://github.dev/netwide-assembler/nasm/blob/90b1ccff86d530b140eb391ede3c50e33bcf9410/macros/standard.mac#L82
