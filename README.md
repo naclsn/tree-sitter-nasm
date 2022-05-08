@@ -5,6 +5,7 @@ NASM grammars with [tree-sitter](https://github.com/tree-sitter/tree-sitter).
 References
 
 * [NASM - The Netwide Assembler](https://www.nasm.us/xdoc/2.15/html/nasmdoc0.html)
+* [official NASM git repository](https://github.com/netwide-assembler/nasm)
 
 ---
 

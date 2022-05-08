@@ -98,7 +98,7 @@ module.exports = grammar({
           choice(
             seq(
               choice('+', '-', '*'),
-              choice('all', 'bad-pragma', 'bnd', 'environment', 'float', 'float-denorm', 'float-overflow', 'float-toolong', 'float-underflow', 'hle', 'label', 'label-orphan', 'label-redef', 'label-redef-late', 'lock', 'macro', 'macro-defaults', 'macro-params', 'macro-params-legacy'),
+              /\w[-\w]+/, // 'all', 'bad-pragma', 'bnd', 'environment', 'float', 'float-denorm', 'float-overflow', 'float-toolong', 'float-underflow', 'hle', 'label', 'label-orphan', 'label-redef', 'label-redef-late', 'lock', 'macro', 'macro-defaults', 'macro-params', 'macro-params-legacy'
             ),
             ci('PUSH'),
             ci('POP'),
@@ -106,14 +106,14 @@ module.exports = grammar({
         )),
         _prim_from_user(seq( // no user form for [MAP]
           ci('MAP'),
-          optional(choice(...['ALL', 'BRIEF', 'SECTIONS', 'SEGMENTS', 'SYMBOLS'].map(ci))),
-          $.word,
+          optional(/[A-Za-z]/), //'ALL', 'BRIEF', 'SECTIONS', 'SEGMENTS', 'SYMBOLS'
+          $.word, // YYY: filename?
         )),
       );
     },
 
     _assembl_directive_target: $ => choice(
-      seq(ci('BITS'), choice('16', '32', '64')),
+      seq(ci('BITS'), /[0-9]+/), // '16', '32', '64'
       ci('USE16'),
       ci('USE32'),
     ),
@@ -124,14 +124,10 @@ module.exports = grammar({
     _assembl_directive_sections: $ => seq(
       choice(...['SECTION', 'SEGMENT'].map(ci)),
       $.word,
-      repeat(choice(
-        choice(...['PROGBITS', 'NOBITS'].map(ci)),
-        seq(ci('ALIGN'), '=', $.expression), // critical_expression
-        seq(ci('START'), '=', $.expression), // critical_expression
-        seq(ci('VSTART'), '=', $.expression), // critical_expression
-        seq(ci('FOLLOWS'), '=', $.word),
-        seq(ci('VFOLLOWS'), '=', $.word),
-      )),
+      repeat(seq(
+        /[A-Za-z]+/,
+        optional(seq('=', $.expression)),
+      )), // 'PROGBITS', 'NOBITS', 'ALIGN='critical_expression, 'START='critical_expression, 'VSTART='critical_expression, 'FOLLOWS='word, 'VFOLLOWS='word
     ),
     _assembl_directive_absolute: $ => seq(
       ci('ABSOLUTE'),
@@ -168,7 +164,7 @@ module.exports = grammar({
     ),
     _assembl_directive_cpu: $ => seq(
       ci('CPU'),
-      choice(...['8086', '186', '286', '386', '486', '586', 'PENTIUM', '686', 'PPRO', 'P2', 'P3', 'KATMAI', 'P4', 'WILLAMETTE', 'PRESCOTT', 'X64', 'IA64'].map(ci)),
+      /[-0-9A-Z_a-z]+/, // '8086', '186', '286', '386', '486', '586', 'PENTIUM', '686', 'PPRO', 'P2', 'P3', 'KATMAI', 'P4', 'WILLAMETTE', 'PRESCOTT', 'X64', 'IA64' [... 16 more]
     ),
     _assembl_directive_floathandling: $ => seq(
       ci('FLOAT'),
@@ -194,10 +190,11 @@ module.exports = grammar({
     ),
 
     instruction_prefix: $ => choice(...[
-      'LOCK', 'REP', 'REPE', 'REPZ', 'REPNE', 'REPNZ', 'XACQUIRE', 'XRELEASE', 'BND', 'NOBND',
+      'LOCK', 'REP', 'REPE', 'REPZ', 'REPNE', 'REPNZ', 'XACQUIRE', 'XRELEASE', 'BND', 'NOBND', 'OSP', 'WAIT',
       /*_address_size:*/ 'A16', 'A32', 'A64',
       /*_operand_size:*/ 'O16', 'O32', 'O64',
       /*_segment_register:*/ 'CS', 'DS', 'SS', 'ES', 'FS', 'GS',
+      '{REX}', '{EVEX}', '{VEX}', '{VEX2}', '{VEX3}'
     ].map(ci)),
 
     known_instruction: $ => seq(
@@ -207,7 +204,7 @@ module.exports = grammar({
         .split('\n')
         .map(ci)
       ),*/
-      choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB', 'INT'].map(ci)),
+      choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB', 'INT'].map(ci)), // ZZZ: not -- /[A-Za-z]+/
       optional($.operands),
     ),
     pseudo_instruction: $ => choice(
@@ -217,13 +214,13 @@ module.exports = grammar({
       $._pseudo_instruction_equ_command,
       $._pseudo_instruction_times_prefix,
     ),
-    unknown_instruction: $ => seq(
+    unknown_instruction: $ => seq( // ZZZ: du coup not (all `known_instruction`)
       $.word,
       optional($.operands),
     ),
 
 //  #region pseudo instruction
-    _pseudo_instruction_dx: $ => seq( // XXX: << DT, DO, DY and DZ do not accept numeric constants as operands. >>
+    _pseudo_instruction_dx: $ => seq( // YYY: << DT, DO, DY and DZ do not accept numeric constants as operands. >>
       choice(...['DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ'].map(ci)),
       repeatSep1($.__pseudo_instruction_dx_value, ','),
     ),
@@ -534,7 +531,7 @@ module.exports = grammar({
 function repeatSep1(rule, sep) {
   return seq(
     rule,
-    repeat(seq(sep, rule))
+    repeat(seq(sep, rule)),
   );
 }
 

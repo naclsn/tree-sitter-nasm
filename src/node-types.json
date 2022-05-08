@@ -525,18 +525,6 @@
     "named": false
   },
   {
-    "type": "16",
-    "named": false
-  },
-  {
-    "type": "32",
-    "named": false
-  },
-  {
-    "type": "64",
-    "named": false
-  },
-  {
     "type": ":",
     "named": false
   },
@@ -609,84 +597,8 @@
     "named": false
   },
   {
-    "type": "all",
-    "named": false
-  },
-  {
-    "type": "bad-pragma",
-    "named": false
-  },
-  {
-    "type": "bnd",
-    "named": false
-  },
-  {
     "type": "comment",
     "named": true
-  },
-  {
-    "type": "environment",
-    "named": false
-  },
-  {
-    "type": "float",
-    "named": false
-  },
-  {
-    "type": "float-denorm",
-    "named": false
-  },
-  {
-    "type": "float-overflow",
-    "named": false
-  },
-  {
-    "type": "float-toolong",
-    "named": false
-  },
-  {
-    "type": "float-underflow",
-    "named": false
-  },
-  {
-    "type": "hle",
-    "named": false
-  },
-  {
-    "type": "label",
-    "named": false
-  },
-  {
-    "type": "label-orphan",
-    "named": false
-  },
-  {
-    "type": "label-redef",
-    "named": false
-  },
-  {
-    "type": "label-redef-late",
-    "named": false
-  },
-  {
-    "type": "lock",
-    "named": false
-  },
-  {
-    "type": "macro",
-    "named": false
-  },
-  {
-    "type": "macro-defaults",
-    "named": false
-  },
-  {
-    "type": "macro-params",
-    "named": false
-  },
-  {
-    "type": "macro-params-legacy",
-    "named": false
   },
   {
     "type": "{",

@@ -1,3 +1,3 @@
-	sys_exit	rax
-	sys_read	1, [buf], BUFSIZE
-	coucou	blabla
+	inst1	rax
+	inst2	ray
+	inst3	raz, 1
