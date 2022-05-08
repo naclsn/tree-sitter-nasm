@@ -1,5 +1,24 @@
 [
   {
+    "type": "actual_instruction",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "operands",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "assembl_directive",
     "named": true,
     "fields": {},
@@ -200,19 +219,15 @@
       "required": true,
       "types": [
         {
+          "type": "actual_instruction",
+          "named": true
+        },
+        {
           "type": "instruction_prefix",
           "named": true
         },
         {
-          "type": "known_instruction",
-          "named": true
-        },
-        {
           "type": "pseudo_instruction",
-          "named": true
-        },
-        {
-          "type": "unknown_instruction",
           "named": true
         }
       ]
@@ -222,21 +237,6 @@
     "type": "instruction_prefix",
     "named": true,
     "fields": {}
-  },
-  {
-    "type": "known_instruction",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "operands",
-          "named": true
-        }
-      ]
-    }
   },
   {
     "type": "label",
@@ -423,25 +423,6 @@
       "types": [
         {
           "type": "expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "unknown_instruction",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "operands",
-          "named": true
-        },
-        {
-          "type": "word",
           "named": true
         }
       ]

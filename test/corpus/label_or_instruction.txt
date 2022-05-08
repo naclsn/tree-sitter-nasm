@@ -1,0 +1,116 @@
+===
+labl1:			; label
+===
+labl1:
+---
+(source_file
+  (source_line
+    (label
+      (word))))
+===
+	inst1	rax	; instruction operand
+===
+	inst1	rax
+---
+(source_file
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register)))))))
+===
+	inst2	ray	; instruction operand
+===
+	inst2	ray
+---
+(source_file
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (expression
+                  (word))))))))
+===
+labl2	inst2	ray	; label instruction operand
+===
+labl2	inst2	ray
+---
+(source_file
+  (source_line
+    (label
+      (word))
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (expression
+              (word))))))))
+===
+	inst3	raz, 1	; instruction operand operand
+===
+	inst3	raz, 1
+---
+(source_file
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (expression
+              (word)))
+          (operand
+            (constant
+              (constant_numeric))))))))
+===
+labl3	inst3	raz, 1	; label instruction operand operand
+===
+labl3	inst3	raz, 1
+---
+(source_file
+  (source_line
+    (label
+      (word))
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (expression
+              (word)))
+          (operand
+            (constant
+              (constant_numeric))))))))
+===
+	inst3	1, raz	; instruction operand operand
+===
+	inst3	1, raz
+---
+(source_file
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (constant
+              (constant_numeric)))
+          (operand
+            (expression
+              (word))))))))
+===
+rep	inst1		; prefix instruction
+===
+rep	inst1
+---
+(source_file
+  (source_line
+    (instruction
+      (instruction_prefix)
+      (actual_instruction
+        (word)))))

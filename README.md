@@ -11,14 +11,14 @@ References
 
 ## Notes/Remarks
 
-* does not distinguish between expressions and critical expressions
-* for NASM, not all kind of expressions are valid everywhere, here they are
+* for NASM, not all kind of expressions are valid everywhere, here an expression is an expression (e.g. no critical expressions)
 * macro reserved token are always allowed (e.g. `%0`) same with `$` and `$$`
-* floating-points can be used event where NASM will reject them (and vice-versa for e.g. DT/DO/DY/DZ)
+* floating-points can be used event where NASM will syntactically reject them (and vice-versa for e.g. DT/DO/DY/DZ)
 * the fact that `':'` is optional after a label makes it inherently ambigus:
 ```
 _start:
 	word1	word2
-	; 'word1' may be a macro but it will be assumed
-	; as being a label, and 'word2' the instruction
+	; 'word1' may be a macro or the label and
+	; 'word2' the instruction or an operand
 ```
+Here opts for `'word1'` as an instruction (and thus `'word2'` as its first operand).

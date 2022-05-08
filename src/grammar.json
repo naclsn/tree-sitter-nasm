@@ -1006,29 +1006,25 @@
       ]
     },
     "label": {
-      "type": "PREC",
-      "value": 5,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "word"
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "STRING",
-                "value": ":"
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
-          }
-        ]
-      }
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "word"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ":"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
     },
     "instruction": {
       "type": "SEQ",
@@ -1045,15 +1041,11 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "known_instruction"
+              "name": "actual_instruction"
             },
             {
               "type": "SYMBOL",
               "name": "pseudo_instruction"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "unknown_instruction"
             }
           ]
         }
@@ -1180,37 +1172,12 @@
         }
       ]
     },
-    "known_instruction": {
+    "actual_instruction": {
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "PATTERN",
-              "value": "[mM][oO][vV]"
-            },
-            {
-              "type": "PATTERN",
-              "value": "[aA][dD][dD]"
-            },
-            {
-              "type": "PATTERN",
-              "value": "[iI][nN][cC]"
-            },
-            {
-              "type": "PATTERN",
-              "value": "[sS][yY][sS][cC][aA][lL][lL]"
-            },
-            {
-              "type": "PATTERN",
-              "value": "[sS][cC][aA][sS][bB]"
-            },
-            {
-              "type": "PATTERN",
-              "value": "[iI][nN][tT]"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "word"
         },
         {
           "type": "CHOICE",
@@ -1248,27 +1215,6 @@
         {
           "type": "SYMBOL",
           "name": "_pseudo_instruction_times_prefix"
-        }
-      ]
-    },
-    "unknown_instruction": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "word"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "operands"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
         }
       ]
     },
@@ -3506,8 +3452,8 @@
   ],
   "conflicts": [
     [
-      "label",
-      "unknown_instruction"
+      "actual_instruction",
+      "label"
     ],
     [
       "operand",

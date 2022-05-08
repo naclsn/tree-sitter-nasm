@@ -9,7 +9,7 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
-    [$.label, $.unknown_instruction],
+    [$.actual_instruction, $.label],
     [$.operand, $.expression],
     [$.__pseudo_instruction_dx_atom, $.constant],
     [$.__pseudo_instruction_dx_list],
@@ -177,15 +177,14 @@ module.exports = grammar({
 //#endregion assembl_directive
 
 //#region source_line
-    label: $ => prec(5, seq($.word, optional(':'))), // precedence over unknown_operation
+    label: $ => seq($.word, optional(':')),
 
 // #region instruction
     instruction: $ => seq(
       repeat($.instruction_prefix),
       choice(
-        $.known_instruction,
+        $.actual_instruction,
         $.pseudo_instruction,
-        $.unknown_instruction,
       ),
     ),
 
@@ -197,14 +196,8 @@ module.exports = grammar({
       '{REX}', '{EVEX}', '{VEX}', '{VEX2}', '{VEX3}'
     ].map(ci)),
 
-    known_instruction: $ => seq(
-      /*choice(...require('fs')
-        .readFileSync('./supported-instructions.txt')
-        .toString()
-        .split('\n')
-        .map(ci)
-      ),*/
-      choice(...['MOV', 'ADD', 'INC', 'SYSCALL', 'SCASB', 'INT'].map(ci)), // ZZZ: not -- /[A-Za-z]+/
+    actual_instruction: $ => seq(
+      $.word,
       optional($.operands),
     ),
     pseudo_instruction: $ => choice(
@@ -213,10 +206,6 @@ module.exports = grammar({
       $._pseudo_instruction_incbin_command,
       $._pseudo_instruction_equ_command,
       $._pseudo_instruction_times_prefix,
-    ),
-    unknown_instruction: $ => seq( // ZZZ: du coup not (all `known_instruction`)
-      $.word,
-      optional($.operands),
     ),
 
 //  #region pseudo instruction
