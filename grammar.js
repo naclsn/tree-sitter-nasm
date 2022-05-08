@@ -46,7 +46,7 @@ module.exports = grammar({
         'DEFTOK', 'IDEFTOK', // 
         'DEFALIAS', 'IDEFALIAS', 'UNDEFALIAS', 'CLEAR', 'ALIASES', 'IFDEFALIAS',
         'STRCAT', 'STRLEN', 'SUBSTR',
-        'MACRO', 'IMACRO', 'ENDMACRO', 'UNMACRO',
+        'MACRO', 'IMACRO', 'ENDMACRO', 'UNMACRO', // YYY: what's '.nolist'? e.g. `%imacro align 1-2+.nolist nop`?
         'ROTATE',
         'IF', 'IFN', 'ELIF', 'ELIFN', 'ELSE', 'ENDIF', // .. and variants 'IFDEF', 'IFMACRO', 'IFCTX', 'IFIDN', 'IFIDNI', 'IFID', 'IFNUM', 'IFSTR', 'IFTOKEN', 'IFEMPTY', 'IFENV'
         'REP', 'ENDREP',
@@ -87,7 +87,8 @@ module.exports = grammar({
         $._assembl_directive_symbolfixes,
         $._assembl_directive_cpu,
         $._assembl_directive_floathandling,
-        $._assembl_directive_org, // YYY: not presented as an assembler directive..?
+        $._assembl_directive_org, // YYY: not presented as an assembler directive..? does it have a primitive form again?
+        $._assembl_directive_sectalign, // YYY: 'ON' and 'OFF' in primitive form? probably not
       ];
       const primitive = user.map(_prim_from_user);
       return choice(
@@ -174,6 +175,14 @@ module.exports = grammar({
       ci('ORG'),
       $.expression, // critical_expression
     ),
+    _assembl_directive_sectalign: $ => seq(
+      ci('SECTALIGN'),
+      choice(
+        ci('ON'),
+        ci('OFF'),
+        /[0-9]+/,
+      ),
+    ),
 //#endregion assembl_directive
 
 //#region source_line
@@ -206,6 +215,7 @@ module.exports = grammar({
       $._pseudo_instruction_incbin_command,
       $._pseudo_instruction_equ_command,
       $._pseudo_instruction_times_prefix,
+      $._pseudo_instruction_alignx_macro,
     ),
 
 //  #region pseudo instruction
@@ -236,6 +246,11 @@ module.exports = grammar({
       ci('TIMES'),
       $.expression, // critical_expression
       $.instruction,
+    ),
+    _pseudo_instruction_alignx_macro: $ => seq(
+      choice(...['ALIGN', 'ALIGNB'].map(ci)),
+      $.expression, // critical_expression
+      optional($.instruction),
     ),
 
     __pseudo_instruction_dx_type: $ => choice(...[

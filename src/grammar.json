@@ -351,6 +351,10 @@
           "name": "_assembl_directive_org"
         },
         {
+          "type": "SYMBOL",
+          "name": "_assembl_directive_sectalign"
+        },
+        {
           "type": "SEQ",
           "members": [
             {
@@ -513,6 +517,23 @@
             {
               "type": "SYMBOL",
               "name": "_assembl_directive_org"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_assembl_directive_sectalign"
             },
             {
               "type": "STRING",
@@ -1005,6 +1026,32 @@
         }
       ]
     },
+    "_assembl_directive_sectalign": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[sS][eE][cC][tT][aA][lL][iI][gG][nN]"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[oO][nN]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[oO][fF][fF]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[0-9]+"
+            }
+          ]
+        }
+      ]
+    },
     "label": {
       "type": "SEQ",
       "members": [
@@ -1215,6 +1262,10 @@
         {
           "type": "SYMBOL",
           "name": "_pseudo_instruction_times_prefix"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_pseudo_instruction_alignx_macro"
         }
       ]
     },
@@ -1409,6 +1460,40 @@
         {
           "type": "SYMBOL",
           "name": "instruction"
+        }
+      ]
+    },
+    "_pseudo_instruction_alignx_macro": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[aA][lL][iI][gG][nN]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[aA][lL][iI][gG][nN][bB]"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "instruction"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },

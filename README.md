@@ -14,6 +14,7 @@ References
 * for NASM, not all kind of expressions are valid everywhere, here an expression is an expression (e.g. no critical expressions)
 * macro reserved token are always allowed (e.g. `%0`) same with `$` and `$$`
 * floating-points can be used event where NASM will syntactically reject them (and vice-versa for e.g. DT/DO/DY/DZ)
+* handling of e.g. struc and align standard macros (even though they are just macros)
 * the fact that `':'` is optional after a label makes it inherently ambigus:
 ```
 _start:
@@ -22,3 +23,7 @@ _start:
 	; 'word2' the instruction or an operand
 ```
 Here opts for `'word1'` as an instruction (and thus `'word2'` as its first operand).
+
+---
+
+https://github.dev/netwide-assembler/nasm/blob/90b1ccff86d530b140eb391ede3c50e33bcf9410/macros/standard.mac#L82
