@@ -73,7 +73,7 @@ module.exports = grammar({
     ),
 
 //#region preproc_directive
-    preproc_directive: $ => seq(
+    preproc_directive: $ => seq( // TODO!
       '%',
       token.immediate(choice(...[
         'DEFINE', 'IDEFINE', 'XDEFINE', // <ident> immediat!['(' [('='|'&'|'+'|'!')<name> {',' (...)<name>} [',']] ')'] <value>
@@ -119,8 +119,8 @@ module.exports = grammar({
         $._assembl_directive_defaults,
         $._assembl_directive_sections,
         $._assembl_directive_absolute,
-        $._assembl_directive_symbols,
-        $._assembl_directive_common,
+        $._assembl_directive_symbols, // YYY: << like EXTERN and GLOBAL, the primitive form of COMMON differs from the
+        $._assembl_directive_common,  //         user-level form only in that it can take only one argument at a time >>
         $._assembl_directive_symbolfixes,
         $._assembl_directive_cpu,
         $._assembl_directive_floathandling,
@@ -172,10 +172,12 @@ module.exports = grammar({
       $.expression, // critical_expression
     ),
     _assembl_directive_symbols: $ => seq(
+      // YYY: grouping all 4 is a bit hacky as they do not have the exact same syntax apparently (e.g. see 7.9)
       choice(...['EXTERN', 'REQUIRED', 'GLOBAL', 'STATIC'].map(ci)),
       repeatSep1(
         seq(
-          $.word, optional(seq(':', $.word)),
+          $.word,
+          optional(seq(':', /[^,]+/)), // YYY: "object-format specific text"?
         ),
         ',',
       ),
@@ -184,14 +186,7 @@ module.exports = grammar({
       ci('COMMON'),
       $.word,
       $.expression, // critical_expression
-      optional(seq(
-        ':',
-        choice(
-          ci('NEAR'),
-          ci('FAR'),
-          $.expression, // critical_expression
-        ),
-      )),
+      optional(seq(':', /[^,]+/)), // YYY: "object-format specific extensions"?
     ),
     _assembl_directive_symbolfixes: $ => seq(
       choice(...[
@@ -244,7 +239,10 @@ module.exports = grammar({
 
     actual_instruction: $ => seq(
       $.word,
-      optional($.operands),
+      choice(
+        seq(ci('TO'), $.operand), // weird NASM syntax for float instructions
+        optional(repeatSep1($.operand, ',')),
+      ),
     ),
     pseudo_instruction: $ => choice(
       $._pseudo_instruction_dx,
@@ -328,7 +326,6 @@ module.exports = grammar({
 // #endregion instruction
 
 // #region operand
-    operands: $ => repeatSep1($.operand, ','),
     operand: $ => seq(
       optional($.operand_prefix),
       choice(
@@ -345,11 +342,13 @@ module.exports = grammar({
       // YYY: `optional(choice('FAR', ..))`?
     ),
 
-    register: $ => choice(...[ // XXX: weird syntax such as `fadd    to st1  ; this sets st1 := st1 + st0`
+    register: $ => choice(...[
       'AL', 'AH', 'CL', 'CH', 'DL', 'DH', 'BL', 'BH', 'SPL', 'BPL', 'SIL', 'DIL', 'R8B', 'R9B', 'R10B', 'R11B', 'R12B', 'R13B', 'R14B', 'R15B',
       'AX', 'CX', 'DX', 'BX', 'SP', 'BP', 'SI', 'DI', 'R8W', 'R9W', 'R10W', 'R11W', 'R12W', 'R13W', 'R14W', 'R15W',
       'EAX', 'ECX', 'EDX', 'EBX', 'ESP', 'EBP', 'ESI', 'EDI', 'R8D', 'R9D', 'R10D', 'R11D', 'R12D', 'R13D', 'R14D', 'R15D',
       'RAX', 'RCX', 'RDX', 'RBX', 'RSP', 'RBP', 'RSI', 'RDI', 'R8', 'R9', 'R10', 'R11', 'R12', 'R13', 'R14', 'R15',
+      // segment registers
+      'CS', 'DS', 'SS', 'ES', 'FS', 'GS',
       // floating-point registers
       'ST0', 'ST1', 'ST2', 'ST3', 'ST4', 'ST5', 'ST6', 'ST7',
       // 64-bit MMX registers
@@ -369,7 +368,10 @@ module.exports = grammar({
 
     effective_address: $ => seq(
       '[',
+      // YYY: somehow, both optionals could even be moved to expression
+      //      this (e.g./maybe) would enable weird macro to be still parsed
       optional(choice(...['BYTE', 'WORD', 'DWORD', 'NOSPLIT', 'REL', 'ABS'].map(ci))),
+      optional(seq(choice(...['CS', 'DS', 'SS', 'ES', 'FS', 'GS'].map(ci)), ':')),
       $.expression,
       ']',
     ),
@@ -487,9 +489,6 @@ module.exports = grammar({
 //  #endregion constant
 
 //  #region expression
-    // NOTE/TODO: WRT as binary? : as binary?
-    // YYY: wrt [..gotpc ..gotoff ..got ..sym ..plt] but simply $.word is ok
-    // TODO: special operators, special tokens, standard macros (__?xyz?__)
     expression: $ => choice(
       $.conditional_expression,
       $.binary_expression,
@@ -509,6 +508,7 @@ module.exports = grammar({
     )),
     binary_expression: $ => {
       const ops = [
+        [ci('WRT')],
         ['||'],
         ['^^'],
         ['&&'],

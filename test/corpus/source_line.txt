@@ -249,3 +249,46 @@ syscall
           (operand
             (constant
               (constant_numeric))))))))
+
+===
+floating-point instructions
+===
+        fadd    st1             ; this sets st0 := st0 + st1
+        fadd    st0,st1         ; so does this
+
+        fadd    st1,st0         ; this sets st1 := st1 + st0
+        fadd    to st1          ; so does this
+---
+(source_file
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operand
+          (register)))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operand
+          (register))
+        (operand
+          (register)))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operand
+          (register))
+        (operand
+          (register)))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operand
+          (register)))))
+  (comment))

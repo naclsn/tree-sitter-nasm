@@ -8,7 +8,7 @@
       "required": true,
       "types": [
         {
-          "type": "operands",
+          "type": "operand",
           "named": true
         },
         {
@@ -288,21 +288,6 @@
     "type": "operand_prefix",
     "named": true,
     "fields": {}
-  },
-  {
-    "type": "operands",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "operand",
-          "named": true
-        }
-      ]
-    }
   },
   {
     "type": "parenthesized_expression",
