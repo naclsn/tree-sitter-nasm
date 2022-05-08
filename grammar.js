@@ -21,12 +21,49 @@ module.exports = grammar({
     // source_file ::= [source|preproc|assembl] {'\n' [source|preproc|assembl]}
     source_file: $ => repeatSep1(
       optional(choice(
+        $.struc_declaration,
+        $.struc_instance,
         $.source_line,
         $.preproc_directive,
         $.assembl_directive,
       )),
       /\r?\n/,
     ),
+
+//#region struc
+    struc_declaration: $ => seq(
+      ci('STRUC'), $.word,
+        // only 'RESX' and 'ALIGNX'
+      repeatSep1(
+        seq(
+          optional($.label),
+          optional(choice(
+            $._pseudo_instruction_resx,
+            $._pseudo_instruction_alignx_macro,
+          )),
+        ),
+        /\r?\n/,
+      ),
+      ci('ENDSTRUC'),
+    ),
+
+    struc_instance: $ => seq(
+      ci('ISTRUC'), $.word,
+      repeatSep1(
+        seq(
+          optional($.label),
+          optional(
+            seq(
+              ci('AT'), $.word,
+              optional(seq(',', $._pseudo_instruction_dx)),
+            ),
+          ),
+        ),
+        /\r?\n/,
+      ),
+      ci('IEND'),
+    ),
+//#endregion struc
 
     // source_line ::= [label[':']] [prefix] [instr [opr{',' opr}]] '\n'
     source_line: $ => choice(
@@ -211,7 +248,7 @@ module.exports = grammar({
     ),
     pseudo_instruction: $ => choice(
       $._pseudo_instruction_dx,
-      $._pseudo_instruction_resbx,
+      $._pseudo_instruction_resx,
       $._pseudo_instruction_incbin_command,
       $._pseudo_instruction_equ_command,
       $._pseudo_instruction_times_prefix,
@@ -223,7 +260,7 @@ module.exports = grammar({
       choice(...['DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ'].map(ci)),
       repeatSep1($.__pseudo_instruction_dx_value, ','),
     ),
-    _pseudo_instruction_resbx: $ => seq(
+    _pseudo_instruction_resx: $ => seq(
       choice(...['RESB', 'RESW', 'RESD', 'RESQ', 'REST', 'RESO', 'RESY', 'RESZ'].map(ci)),
       $.expression, // critical_expression
     ),
