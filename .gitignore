@@ -2,3 +2,7 @@
 node_modules/
 target/
 build/
+test/hello.asm
+package-lock.json
+Cargo.lock
+
