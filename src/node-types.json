@@ -305,12 +305,271 @@
     }
   },
   {
-    "type": "preproc_directive",
+    "type": "preproc_alias",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_arg",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_clear",
     "named": true,
     "fields": {}
   },
   {
+    "type": "preproc_def",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_depend",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "preproc_directive",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "preproc_alias",
+          "named": true
+        },
+        {
+          "type": "preproc_arg",
+          "named": true
+        },
+        {
+          "type": "preproc_clear",
+          "named": true
+        },
+        {
+          "type": "preproc_def",
+          "named": true
+        },
+        {
+          "type": "preproc_depend",
+          "named": true
+        },
+        {
+          "type": "preproc_function_def",
+          "named": true
+        },
+        {
+          "type": "preproc_include",
+          "named": true
+        },
+        {
+          "type": "preproc_line",
+          "named": true
+        },
+        {
+          "type": "preproc_local",
+          "named": true
+        },
+        {
+          "type": "preproc_multiline_macro",
+          "named": true
+        },
+        {
+          "type": "preproc_multiline_unmacro",
+          "named": true
+        },
+        {
+          "type": "preproc_pathsearch",
+          "named": true
+        },
+        {
+          "type": "preproc_pop",
+          "named": true
+        },
+        {
+          "type": "preproc_pragma",
+          "named": true
+        },
+        {
+          "type": "preproc_push",
+          "named": true
+        },
+        {
+          "type": "preproc_rep_loop",
+          "named": true
+        },
+        {
+          "type": "preproc_repl",
+          "named": true
+        },
+        {
+          "type": "preproc_reporting",
+          "named": true
+        },
+        {
+          "type": "preproc_rotate",
+          "named": true
+        },
+        {
+          "type": "preproc_stacksize",
+          "named": true
+        },
+        {
+          "type": "preproc_undef",
+          "named": true
+        },
+        {
+          "type": "preproc_use",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "preproc_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_function_def",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_include",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "preproc_line",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "preproc_local",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_multiline_macro",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "assembl_directive",
+          "named": true
+        },
+        {
+          "type": "preproc_directive",
+          "named": true
+        },
+        {
+          "type": "source_line",
+          "named": true
+        },
+        {
+          "type": "struc_declaration",
+          "named": true
+        },
+        {
+          "type": "struc_instance",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_multiline_unmacro",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "preproc_pathsearch",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_pop",
     "named": true,
     "fields": {},
     "children": {
@@ -323,6 +582,131 @@
         }
       ]
     }
+  },
+  {
+    "type": "preproc_pragma",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_push",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_rep_loop",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "assembl_directive",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "preproc_directive",
+          "named": true
+        },
+        {
+          "type": "source_line",
+          "named": true
+        },
+        {
+          "type": "struc_declaration",
+          "named": true
+        },
+        {
+          "type": "struc_instance",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_repl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_reporting",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "preproc_rotate",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_stacksize",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "preproc_undef",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "preproc_use",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "pseudo_instruction",
