@@ -1,21 +1,39 @@
 {
-  "name": "tree-sittest",
-  "version": "1.0.0",
-  "description": "",
+  "name": "tree-sitter-nasm",
+  "version": "0.0.1",
+  "description": "NASM grammar with tree-sitter",
   "main": "bindings/node",
+  "keywords": [
+    "parser",
+    "lexer"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PictElm/tree-sitter-nasm.git"
+  },
+  "author": "Grenier Célestin",
+  "license": "MIT",
   "scripts": {
     "build": "tree-sitter generate",
     "test": "tree-sitter test",
     "hello": "tree-sitter parse test/hello.asm"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@types/node": "^17.0.31",
     "tree-sitter-cli": "^0.20.6"
   },
   "dependencies": {
     "nan": "^2.15.0"
-  }
+  },
+  "tree-sitter": [
+    {
+      "file-types": [
+        "asm",
+        "nasm"
+      ],
+      "highlights": [
+        "queries/highlights.scm"
+      ]
+    }
+  ]
 }

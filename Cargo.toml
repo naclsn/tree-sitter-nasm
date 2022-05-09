@@ -1,10 +1,10 @@
 [package]
-name = "tree-sitter-test"
-description = "test grammar for the tree-sitter parsing library"
+name = "tree-sitter-nasm"
+description = "nasm grammar for the tree-sitter parsing library"
 version = "0.0.1"
-keywords = ["incremental", "parsing", "test"]
+keywords = ["incremental", "parsing", "nasm"]
 categories = ["parsing", "text-editors"]
-repository = "https://github.com/tree-sitter/tree-sitter-test"
+repository = "https://github.com/tree-sitter/tree-sitter-nasm"
 edition = "2018"
 license = "MIT"
 
