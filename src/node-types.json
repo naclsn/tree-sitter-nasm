@@ -392,6 +392,10 @@
           "named": true
         },
         {
+          "type": "preproc_if",
+          "named": true
+        },
+        {
           "type": "preproc_include",
           "named": true
         },
@@ -493,6 +497,41 @@
     }
   },
   {
+    "type": "preproc_if",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "assembl_directive",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "preproc_directive",
+          "named": true
+        },
+        {
+          "type": "source_line",
+          "named": true
+        },
+        {
+          "type": "struc_declaration",
+          "named": true
+        },
+        {
+          "type": "struc_instance",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "preproc_include",
     "named": true,
     "fields": {}
@@ -523,10 +562,14 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "assembl_directive",
+          "named": true
+        },
+        {
+          "type": "expression",
           "named": true
         },
         {
@@ -543,6 +586,10 @@
         },
         {
           "type": "struc_instance",
+          "named": true
+        },
+        {
+          "type": "word",
           "named": true
         }
       ]

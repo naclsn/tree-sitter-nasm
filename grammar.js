@@ -74,6 +74,7 @@ module.exports = grammar({
         $.preproc_alias,
         $.preproc_multiline_macro,
         $.preproc_multiline_unmacro,
+        $.preproc_if,
         $.preproc_rotate,
         $.preproc_rep_loop,
         $.preproc_include,
@@ -133,7 +134,9 @@ module.exports = grammar({
     _preproc_multiline_macro_arg_spec: $ => /[0-9]+(-[*0-9])?\+?(.nolist)?/,
     preproc_multiline_macro: $ => seq(
       token.immediate(...['MACRO', 'IMACRO'].map(ci)),
+      $.word,
       $._preproc_multiline_macro_arg_spec,
+      repeatSep($.expression, ','),
       /\r?\n/,
       source_lines($),
       ci('%ENDMACRO'),
@@ -151,12 +154,12 @@ module.exports = grammar({
       const elifs = [...bases.map(_make_elif), ...bases.map(_make_n).map(_make_elif)]; // ifs.map(it => 'EL'+it);
       return seq(
         token.immediate(choice(...ifs.map(ci))),
-        $.expression, // preproc_expression
+        $.expression, // preproc_expression? (critical_expression?)
         /\r?\n/,
         source_lines($),
         repeat(seq(
           choice(...elifs.map(ci)),
-          $.expression, // preproc_expression
+          $.expression, // preproc_expression? (critical_expression?)
           /\r?\n/,
           source_lines($),
         )),
@@ -170,11 +173,11 @@ module.exports = grammar({
     },
     preproc_rotate: $ => seq(
       token.immediate(ci('ROTATE')),
-      $.expression, // preproc_expression
+      $.expression, // preproc_expression? (critical_expression?)
     ),
     preproc_rep_loop: $ => seq(
       token.immediate(ci('REP')),
-      $.expression, // preproc_expression
+      $.expression, // preproc_expression? (critical_expression?)
       /\r?\n/,
       source_lines($),
       ci('%ENDREP'),
