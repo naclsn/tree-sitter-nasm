@@ -79,48 +79,44 @@ module.exports = grammar({
     ),
 
 //#region preproc_directive
-    _preproc_directive: $ => seq(
-      '%',
-      choice(
-        $.preproc_def,
-        $.preproc_function_def,
-        $.preproc_undef,
-        $.preproc_alias,
-        $.preproc_multiline_macro,
-        $.preproc_multiline_unmacro,
-        $.preproc_if,
-        $.preproc_rotate,
-        $.preproc_rep_loop,
-        $.preproc_include,
-        $.preproc_pathsearch,
-        $.preproc_depend,
-        $.preproc_use,
-        $.preproc_push,
-        $.preproc_pop,
-        $.preproc_repl,
-        $.preproc_arg,
-        $.preproc_stacksize,
-        $.preproc_local,
-        $.preproc_reporting,
-        $.preproc_pragma,
-        $.preproc_line,
-        $.preproc_clear,
-        //.*/, // YYY: sink?
-      ),
-      //.*/, // YYY: sink?
+    _preproc_directive: $ => choice(
+      $.preproc_def,
+      $.preproc_function_def,
+      $.preproc_undef,
+      $.preproc_alias,
+      $.preproc_multiline_macro,
+      $.preproc_multiline_unmacro,
+      $.preproc_if,
+      $.preproc_rotate,
+      $.preproc_rep_loop,
+      $.preproc_include,
+      $.preproc_pathsearch,
+      $.preproc_depend,
+      $.preproc_use,
+      $.preproc_push,
+      $.preproc_pop,
+      $.preproc_repl,
+      $.preproc_arg,
+      $.preproc_stacksize,
+      $.preproc_local,
+      $.preproc_reporting,
+      $.preproc_pragma,
+      $.preproc_line,
+      $.preproc_clear,
+      /%.*/, // sink
     ),
 
     preproc_def: $ => seq(
-      token.immediate(...[
-        'DEFINE', 'IDEFINE', 'XDEFINE',
-        'DEFSTR', 'IDEFSTR',
-        'DEFTOK', 'IDEFTOK',
-        'DEFALIAS', 'IDEFALIAS',
-        'STRCAT', 'STRLEN', 'SUBSTR',
+      choice(...[
+        '%DEFINE', '%IDEFINE', '%XDEFINE',
+        '%DEFSTR', '%IDEFSTR',
+        '%DEFTOK', '%IDEFTOK',
+        '%DEFALIAS', '%IDEFALIAS',
+        '%STRCAT', '%STRLEN', '%SUBSTR',
       ].map(ci)),
       field('name', $.word),
       token.immediate(/[^(]/), // hack to get preproc_function_def over preproc_def
-      field('value', alias(/.*/, $.preproc_expression)), // expression
+      field('value', alias(/.*/, $.preproc_arg)), // expression
     ),
     preproc_function_def_parameters: $ => seq(
       token.immediate('('),
@@ -135,23 +131,23 @@ module.exports = grammar({
       ')',
     ),
     preproc_function_def: $ => seq(
-      token.immediate(...['DEFINE', 'IDEFINE', 'XDEFINE'].map(ci)),
+      choice(...['%DEFINE', '%IDEFINE', '%XDEFINE'].map(ci)),
       field('name', $.word),
       field('parameters', $.preproc_function_def_parameters),
-      field('value', alias(/.*/, $.preproc_expression)), // expression
+      field('value', alias(/.*/, $.preproc_arg)), // expression
     ),
     preproc_undef: $ => seq(
-      token.immediate(ci('UNDEF', 'UNDEFALIAS')),
+      choice(...['%UNDEF', '%UNDEFALIAS'].map(ci)),
       field('name', $.word),
     ),
     preproc_alias: $ => seq(
-      choice(...['ALIASES', 'IFDEFALIAS'].map(ci)),
+      choice(...['%ALIASES', '%IFDEFALIAS'].map(ci)),
       field('name', $.word),
       field('value', $.word),
     ),
     preproc_multiline_macro_arg_spec: $ => /[0-9]+(-[*0-9])?\+?(.nolist)?/,
     preproc_multiline_macro: $ => seq(
-      token.immediate(...['MACRO', 'IMACRO'].map(ci)),
+      choice(...['%MACRO', '%IMACRO'].map(ci)),
       field('name', $.word),
       field('spec', $.preproc_multiline_macro_arg_spec),
       field('default', repeatSep($._expression, ',')),
@@ -160,25 +156,24 @@ module.exports = grammar({
       ci('%ENDMACRO'),
     ),
     preproc_multiline_unmacro: $ => seq(
-      token.immediate(ci('UNMACRO')),
+      ci('%UNMACRO'),
       field('name', $.word),
       field('spec', $.preproc_multiline_macro_arg_spec),
     ),
     preproc_if: $ => {
       function _make_n(base) { return 'N' + base; }
-      function _make_if(base) { return 'IF' + base; }
-      function _make_elif(base) { return 'ELIF' + base; }
+      function _make_if(base) { return '%IF' + base; }
+      function _make_elif(base) { return '%ELIF' + base; }
       const bases = ['', 'CTX', 'DEF', 'EMPTY', 'ENV', 'ID', 'IDN', 'IDNI', 'MACRO', 'NUM', 'STR', 'TOKEN'];
       const ifs = [...bases.map(_make_if), ...bases.map(_make_n).map(_make_if)];
       const elifs = [...bases.map(_make_elif), ...bases.map(_make_n).map(_make_elif)]; // ifs.map(it => 'EL'+it);
       return seq(
-        token.immediate(choice(...ifs.map(ci))),
+        choice(...ifs.map(ci)),
         field('condition', $._expression), // preproc_expression? (critical_expression?)
         field('consequence', $.body),
         repeat(field('alternative', seq(
           /\r?\n/,
-          '%',
-          token.immediate(choice(...elifs.map(ci))),
+          choice(...elifs.map(ci)),
           field('condition', $._expression), // preproc_expression? (critical_expression?)
           field('consequence', $.body),
         ))),
@@ -192,47 +187,47 @@ module.exports = grammar({
       );
     },
     preproc_rotate: $ => seq(
-      token.immediate(ci('ROTATE')),
+      ci('%ROTATE'),
       $._expression, // preproc_expression? (critical_expression?)
     ),
     preproc_rep_loop: $ => seq(
-      token.immediate(ci('REP')),
+      ci('%REP'),
       field('count', $._expression), // preproc_expression? (critical_expression?)
       field('body', $.body),
       /\r?\n/,
       ci('%ENDREP'),
     ),
     preproc_include: $ => seq(
-      token.immediate(ci('INCLUDE')),
+      ci('%INCLUDE'),
       field('path', $.string_literal),
     ),
     preproc_pathsearch: $ => seq(
-      token.immediate(ci('PATHSEARCH')),
+      ci('%PATHSEARCH'),
       $.word,
       field('path', $.string_literal),
     ),
     preproc_depend: $ => seq(
-      token.immediate(ci('DEPEND')),
+      ci('%DEPEND'),
       field('path', $.string_literal),
     ),
     preproc_use: $ => seq(
-      token.immediate(ci('USE')),
+      ci('%USE'),
       field('path', $.string_literal),
     ),
     preproc_push: $ => seq(
-      token.immediate(ci('PUSH')),
+      ci('%PUSH'),
       optional(field('name', $.word)),
     ),
     preproc_pop: $ => seq(
-      token.immediate(ci('POP')),
+      ci('%POP'),
       optional(field('name', $.word)),
     ),
     preproc_repl: $ => seq(
-      token.immediate(ci('REPL')),
+      ci('%REPL'),
       optional(field('name', $.word)),
     ),
     preproc_arg: $ => seq(
-      token.immediate(ci('ARG')),
+      ci('%ARG'),
       repeatSep1(
         seq(
           field('name', $.word), ':',
@@ -242,11 +237,11 @@ module.exports = grammar({
       ),
     ),
     preproc_stacksize: $ => seq(
-      token.immediate(ci('STACKSIZE')),
+      ci('%STACKSIZE'),
       choice(...['FLAT', 'FLAT64', 'LARGE', 'SMALL'].map(ci)),
     ),
     preproc_local: $ => seq(
-      token.immediate(ci('LOCAL')),
+      ci('%LOCAL'),
       repeatSep1(
         seq(
           field('name', $.word), ':',
@@ -256,22 +251,22 @@ module.exports = grammar({
       ),
     ),
     preproc_reporting: $ => seq(
-      token.immediate(choice(...['ERROR', 'WARNING', 'FATAL'].map(ci))),
-      field('message', alias(/.*/, $.preproc_expression)), // constant_charstr (not quite)
+      choice(...['%ERROR', '%WARNING', '%FATAL'].map(ci)),
+      field('message', alias(/.*/, $.string_literal)), // constant_charstr (not quite)
     ),
     preproc_pragma: $ => seq(
-      token.immediate(ci('PRAGMA')),
+      ci('%PRAGMA'),
       field('namespace', $.word),
       field('directive', $.word),
-      optional(field('argument', alias(/.*/, $.preproc_expression))),
+      optional(field('argument', alias(/.*/, $.string_literal))),
     ),
     preproc_line: $ => seq(
-      token.immediate(ci('LINE')),
+      ci('%LINE'),
       /[0-9]+(\+[0-9]+)?/,
-      optional(field('path', alias(/.*/, $.preproc_expression))), // constant_charstr
+      optional(field('path', alias(/.*/, $.string_literal))), // constant_charstr
     ),
     preproc_clear: $ => seq(
-      token.immediate(ci('CLEAR')),
+      ci('%CLEAR'),
       optional(choice(...['GLOBAL', 'CONTEXT'].map(ci))),
       repeat(choice(...['DEFINE', 'DEFALIAS', 'ALLDEFINE', 'MACRO', 'ALL'].map(ci))),
     ),
@@ -286,7 +281,11 @@ module.exports = grammar({
        * primitive forms are crafted from them here
        */
       function _prim_from_user(rule) {
-        return seq('[', rule, ']');
+        const baseName = (rule.name || rule.value).replace(
+          "assembl_directive_",
+          "assembl_directive_primitive_",
+        );
+        return alias(seq('[', rule, ']'), $[baseName]);
       }
       const user = [
         $.assembl_directive_target,
@@ -305,19 +304,19 @@ module.exports = grammar({
       return choice(
         ...user,
         ...primitive,
-        _prim_from_user(seq( // no user form for [WARNING]
+        _prim_from_user(alias(seq( // no user form for [WARNING]
           ci('WARNING'),
           choice(
             /[-*+]\w[-\w]+/, // 'all', 'bad-pragma', 'bnd', 'environment', 'float', 'float-denorm', 'float-overflow', 'float-toolong', 'float-underflow', 'hle', 'label', 'label-orphan', 'label-redef', 'label-redef-late', 'lock', 'macro', 'macro-defaults', 'macro-params', 'macro-params-legacy'
             ci('PUSH'),
             ci('POP'),
           ),
-        )),
-        _prim_from_user(seq( // no user form for [MAP]
+        ), $.assembl_directive_warning)),
+        _prim_from_user(alias(seq( // no user form for [MAP]
           ci('MAP'),
           optional(choice(...['ALL', 'BRIEF', 'SECTIONS', 'SEGMENTS', 'SYMBOLS'].map(ci))),
           field('filename', $.word), // no, it is not quoted
-        )),
+        ), $.assembl_directive_map)),
       );
     },
 
@@ -719,20 +718,20 @@ module.exports = grammar({
     grouped_expression: $ => seq(
       '{', repeatSep1($._expression, ','), '}',
     ),
-    preproc_expression: $ => seq('%', choice(
+    preproc_expression: $ => choice(
       // environement variables
-      seq(token.immediate('!'), token.immediate(choice(/[A-Z_a-z][0-9A-Z_a-z]+/, /'[^']*'/, /"[^"]*"/))),
+      /%!([A-Z_a-z][0-9A-Z_a-z]+|'[^']*'|"[^"]*")/,
       // "macro indirection"
-      seq(token.immediate('['), $._expression, ']'),
+      seq('%[', $._expression, ']'),
       // macro local and context local
-      seq(token.immediate(choice('$', '$$', '%')), token.immediate(/[A-Za-z._?][A-Za-z0-9_$#@~.?]*/)),
+      /(%\$|%\$\$|%%)[A-Za-z._?][A-Za-z0-9_$#@~.?]*/,
       // macro context tokens
-      token.immediate(choice('?', '??', '*?', '*??', '0', '00')),
+      choice('%?', '%??', '%*?', '%*??', '%0', '%00'),
       // macro parameters
-      token.immediate(/[-+]?[0-9]+/),
+      /%[-+]?[0-9]+/,
       // other expansion
-      seq(token.immediate('{'), $._expression, optional(seq(':', $._expression)), '}'), 
-    )),
+      seq('%{', $._expression, optional(seq(':', $._expression)), '}'), 
+    ),
 //  #endregion expression
 // #endregion operand
 //#endregion source_line
@@ -783,5 +782,5 @@ function ci(word) {
     )
     .join('')
     ;
-  return RegExp(pat, 'i');
+  return RegExp(pat);
 }

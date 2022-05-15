@@ -207,6 +207,11 @@
     "fields": {}
   },
   {
+    "type": "assembl_directive_map",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "assembl_directive_org",
     "named": true,
     "fields": {},
@@ -272,6 +277,332 @@
         }
       ]
     }
+  },
+  {
+    "type": "assembl_directive_primitive_absolute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_syntax_expression",
+          "named": true
+        },
+        {
+          "type": "conditional_expression",
+          "named": true
+        },
+        {
+          "type": "float_literal",
+          "named": true
+        },
+        {
+          "type": "grouped_expression",
+          "named": true
+        },
+        {
+          "type": "line_here_token",
+          "named": true
+        },
+        {
+          "type": "number_literal",
+          "named": true
+        },
+        {
+          "type": "packed_bcd_literal",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "preproc_expression",
+          "named": true
+        },
+        {
+          "type": "section_here_token",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "assembl_directive_primitive_common",
+    "named": true,
+    "fields": {
+      "extension": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "symbol_extension",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "call_syntax_expression",
+            "named": true
+          },
+          {
+            "type": "conditional_expression",
+            "named": true
+          },
+          {
+            "type": "float_literal",
+            "named": true
+          },
+          {
+            "type": "grouped_expression",
+            "named": true
+          },
+          {
+            "type": "line_here_token",
+            "named": true
+          },
+          {
+            "type": "number_literal",
+            "named": true
+          },
+          {
+            "type": "packed_bcd_literal",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "preproc_expression",
+            "named": true
+          },
+          {
+            "type": "section_here_token",
+            "named": true
+          },
+          {
+            "type": "string_literal",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "assembl_directive_primitive_cpu",
+    "named": true,
+    "fields": {
+      "dependency": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "cpu_instruction_set",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "assembl_directive_primitive_defaults",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "assembl_directive_primitive_floathandling",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "assembl_directive_primitive_org",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_syntax_expression",
+          "named": true
+        },
+        {
+          "type": "conditional_expression",
+          "named": true
+        },
+        {
+          "type": "float_literal",
+          "named": true
+        },
+        {
+          "type": "grouped_expression",
+          "named": true
+        },
+        {
+          "type": "line_here_token",
+          "named": true
+        },
+        {
+          "type": "number_literal",
+          "named": true
+        },
+        {
+          "type": "packed_bcd_literal",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "preproc_expression",
+          "named": true
+        },
+        {
+          "type": "section_here_token",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "assembl_directive_primitive_sectalign",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "assembl_directive_primitive_sections",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      },
+      "properties": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "assembl_directive_sections_properties",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "assembl_directive_primitive_symbolfixes",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "assembl_directive_primitive_symbols",
+    "named": true,
+    "fields": {
+      "extension": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "symbol_extension",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "word",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "assembl_directive_primitive_target",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "assembl_directive_sectalign",
@@ -675,7 +1006,7 @@
         "required": false,
         "types": [
           {
-            "type": "word",
+            "type": "assembl_directive_map",
             "named": true
           }
         ]
@@ -706,7 +1037,63 @@
           "named": true
         },
         {
+          "type": "assembl_directive_map",
+          "named": true
+        },
+        {
           "type": "assembl_directive_org",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_absolute",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_common",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_cpu",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_defaults",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_floathandling",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_map",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_org",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_sectalign",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_sections",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_symbolfixes",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_symbols",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_target",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_warning",
           "named": true
         },
         {
@@ -727,6 +1114,10 @@
         },
         {
           "type": "assembl_directive_target",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_warning",
           "named": true
         },
         {
@@ -1538,7 +1929,7 @@
     "fields": {
       "name": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "word",
@@ -1548,7 +1939,7 @@
       },
       "size": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "size_hint",
@@ -1582,7 +1973,7 @@
         "required": true,
         "types": [
           {
-            "type": "preproc_expression",
+            "type": "preproc_arg",
             "named": true
           }
         ]
@@ -1701,7 +2092,7 @@
         "required": true,
         "types": [
           {
-            "type": "preproc_expression",
+            "type": "preproc_arg",
             "named": true
           }
         ]
@@ -1727,16 +2118,6 @@
     "type": "preproc_if",
     "named": true,
     "fields": {
-      "alternative": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "%",
-            "named": false
-          }
-        ]
-      },
       "condition": {
         "multiple": true,
         "required": true,
@@ -1836,7 +2217,7 @@
         "required": false,
         "types": [
           {
-            "type": "preproc_expression",
+            "type": "string_literal",
             "named": true
           }
         ]
@@ -2048,7 +2429,7 @@
         "required": false,
         "types": [
           {
-            "type": "preproc_expression",
+            "type": "string_literal",
             "named": true
           }
         ]
@@ -2194,7 +2575,7 @@
         "required": true,
         "types": [
           {
-            "type": "preproc_expression",
+            "type": "string_literal",
             "named": true
           }
         ]
@@ -2870,7 +3251,7 @@
         "required": false,
         "types": [
           {
-            "type": "word",
+            "type": "assembl_directive_map",
             "named": true
           }
         ]
@@ -2901,7 +3282,63 @@
           "named": true
         },
         {
+          "type": "assembl_directive_map",
+          "named": true
+        },
+        {
           "type": "assembl_directive_org",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_absolute",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_common",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_cpu",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_defaults",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_floathandling",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_map",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_org",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_sectalign",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_sections",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_symbolfixes",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_symbols",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_target",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_primitive_warning",
           "named": true
         },
         {
@@ -2922,6 +3359,10 @@
         },
         {
           "type": "assembl_directive_target",
+          "named": true
+        },
+        {
+          "type": "assembl_directive_warning",
           "named": true
         },
         {
@@ -3265,11 +3706,43 @@
     "named": false
   },
   {
+    "type": "%*?",
+    "named": false
+  },
+  {
+    "type": "%*??",
+    "named": false
+  },
+  {
     "type": "%+",
     "named": false
   },
   {
     "type": "%,",
+    "named": false
+  },
+  {
+    "type": "%0",
+    "named": false
+  },
+  {
+    "type": "%00",
+    "named": false
+  },
+  {
+    "type": "%?",
+    "named": false
+  },
+  {
+    "type": "%??",
+    "named": false
+  },
+  {
+    "type": "%[",
+    "named": false
+  },
+  {
+    "type": "%{",
     "named": false
   },
   {
@@ -3383,6 +3856,18 @@
   {
     "type": "^^",
     "named": false
+  },
+  {
+    "type": "assembl_directive_primitive_map",
+    "named": true
+  },
+  {
+    "type": "assembl_directive_primitive_warning",
+    "named": true
+  },
+  {
+    "type": "assembl_directive_warning",
+    "named": true
   },
   {
     "type": "comment",
