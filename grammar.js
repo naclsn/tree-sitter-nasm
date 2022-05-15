@@ -14,18 +14,20 @@ module.exports = grammar({
     [$.__pseudo_instruction_dx_atom, $._constant],
     [$.__pseudo_instruction_dx_list],
     [$.__pseudo_instruction_dx_atom, $.parenthesized_expression],
+    [$.body],
+    [$.struc_declaration_body],
+    [$.struc_instance_body],
   ],
 
   rules: {
 
     source_file: $ => _source_lines($),
+    body: $ => seq(/\r?\n/, _source_lines($)),
 
 //#region struc
-    struc_declaration: $ => seq(
-      ci('STRUC'),
-      field('name', $.word),
+    struc_declaration_body: $ => seq(
       /\r?\n/,
-      field('body', repeatSep1(
+      repeatSep1(
         seq(
           optional($.label),
           optional(choice(
@@ -34,15 +36,19 @@ module.exports = grammar({
           )),
         ),
         /\r?\n/,
-      )),
+      ),
+    ),
+    struc_declaration: $ => seq(
+      ci('STRUC'),
+      field('name', $.word),
+      field('body', $.struc_declaration_body),
+      /\r?\n/,
       ci('ENDSTRUC'),
     ),
 
-    struc_instance: $ => seq(
-      ci('ISTRUC'),
-      field('name', $.word),
+    struc_instance_body: $ => seq(
       /\r?\n/,
-      field('body', repeatSep1(
+      repeatSep1(
         seq(
           optional($.label),
           optional(
@@ -53,7 +59,13 @@ module.exports = grammar({
           ),
         ),
         /\r?\n/,
-      )),
+      ),
+    ),
+    struc_instance: $ => seq(
+      ci('ISTRUC'),
+      field('name', $.word),
+      field('body', $.struc_instance_body),
+      /\r?\n/,
       ci('IEND'),
     ),
 //#endregion struc
@@ -107,24 +119,26 @@ module.exports = grammar({
         'STRCAT', 'STRLEN', 'SUBSTR',
       ].map(ci)),
       field('name', $.word),
-      field('value', /.*/), // expression
+      token.immediate(/[^(]/), // hack to get preproc_function_def over preproc_def
+      field('value', alias(/.*/, $.preproc_expression)), // expression
+    ),
+    preproc_function_def_parameters: $ => seq(
+      token.immediate('('),
+      repeatSep(
+        seq(
+          optional(/[=&+!]/),
+          $.word,
+        ),
+        ',',
+      ),
+      optional(','),
+      ')',
     ),
     preproc_function_def: $ => seq(
       token.immediate(...['DEFINE', 'IDEFINE', 'XDEFINE'].map(ci)),
       field('name', $.word),
-      field('parameters', seq(
-        token.immediate('('),
-        repeatSep(
-          seq(
-            optional(/[=&+!]/),
-            $.word,
-          ),
-          ',',
-        ),
-        optional(','),
-        ')',
-      )),
-      field('value', /.*/), // expression
+      field('parameters', $.preproc_function_def_parameters),
+      field('value', alias(/.*/, $.preproc_expression)), // expression
     ),
     preproc_undef: $ => seq(
       token.immediate(ci('UNDEF', 'UNDEFALIAS')),
@@ -135,20 +149,20 @@ module.exports = grammar({
       field('name', $.word),
       field('value', $.word),
     ),
-    _preproc_multiline_macro_arg_spec: $ => /[0-9]+(-[*0-9])?\+?(.nolist)?/,
+    preproc_multiline_macro_arg_spec: $ => /[0-9]+(-[*0-9])?\+?(.nolist)?/,
     preproc_multiline_macro: $ => seq(
       token.immediate(...['MACRO', 'IMACRO'].map(ci)),
       field('name', $.word),
-      field('spec', $._preproc_multiline_macro_arg_spec),
+      field('spec', $.preproc_multiline_macro_arg_spec),
       field('default', repeatSep($._expression, ',')),
+      field('body', $.body),
       /\r?\n/,
-      field('body', _source_lines($)),
       ci('%ENDMACRO'),
     ),
     preproc_multiline_unmacro: $ => seq(
       token.immediate(ci('UNMACRO')),
       field('name', $.word),
-      field('spec', $._preproc_multiline_macro_arg_spec),
+      field('spec', $.preproc_multiline_macro_arg_spec),
     ),
     preproc_if: $ => {
       function _make_n(base) { return 'N' + base; }
@@ -160,19 +174,20 @@ module.exports = grammar({
       return seq(
         token.immediate(choice(...ifs.map(ci))),
         field('condition', $._expression), // preproc_expression? (critical_expression?)
-        /\r?\n/,
-        field('consequence', _source_lines($)),
+        field('consequence', $.body),
         repeat(field('alternative', seq(
-          choice(...elifs.map(ci)),
-          field('condition', $._expression), // preproc_expression? (critical_expression?)
           /\r?\n/,
-          field('consequence', _source_lines($)),
+          '%',
+          token.immediate(choice(...elifs.map(ci))),
+          field('condition', $._expression), // preproc_expression? (critical_expression?)
+          field('consequence', $.body),
         ))),
         optional(field('alternative', seq(
-          choice(ci('%ELSE')),
           /\r?\n/,
-          field('consequence', _source_lines($)),
+          ci('%ELSE'),
+          field('consequence', $.body),
         ))),
+        /\r?\n/,
         ci('%ENDIF'),
       );
     },
@@ -183,8 +198,8 @@ module.exports = grammar({
     preproc_rep_loop: $ => seq(
       token.immediate(ci('REP')),
       field('count', $._expression), // preproc_expression? (critical_expression?)
+      field('body', $.body),
       /\r?\n/,
-      field('body', _source_lines($)),
       ci('%ENDREP'),
     ),
     preproc_include: $ => seq(
@@ -221,7 +236,7 @@ module.exports = grammar({
       repeatSep1(
         seq(
           field('name', $.word), ':',
-          field('size', choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci))),
+          field('size', $.size_hint),
         ),
         ',',
       ),
@@ -235,26 +250,25 @@ module.exports = grammar({
       repeatSep1(
         seq(
           field('name', $.word), ':',
-          field('size', choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci))),
+          field('size', $.size_hint),
         ),
         ',',
       ),
     ),
     preproc_reporting: $ => seq(
       token.immediate(choice(...['ERROR', 'WARNING', 'FATAL'].map(ci))),
-      field('message', /.*/), // constant_charstr (not quite)
+      field('message', alias(/.*/, $.preproc_expression)), // constant_charstr (not quite)
     ),
     preproc_pragma: $ => seq(
       token.immediate(ci('PRAGMA')),
       field('namespace', $.word),
       field('directive', $.word),
-      optional(field('argument', /.*/)),
+      optional(field('argument', alias(/.*/, $.preproc_expression))),
     ),
     preproc_line: $ => seq(
       token.immediate(ci('LINE')),
-      /[0-9]+/,
-      optional(seq('+', /[0-9]+/)),
-      optional(field('path', /.*/)), // constant_charstr
+      /[0-9]+(\+[0-9]+)?/,
+      optional(field('path', alias(/.*/, $.preproc_expression))), // constant_charstr
     ),
     preproc_clear: $ => seq(
       token.immediate(ci('CLEAR')),
@@ -294,10 +308,7 @@ module.exports = grammar({
         _prim_from_user(seq( // no user form for [WARNING]
           ci('WARNING'),
           choice(
-            seq(
-              choice('+', '-', '*'),
-              /\w[-\w]+/, // 'all', 'bad-pragma', 'bnd', 'environment', 'float', 'float-denorm', 'float-overflow', 'float-toolong', 'float-underflow', 'hle', 'label', 'label-orphan', 'label-redef', 'label-redef-late', 'lock', 'macro', 'macro-defaults', 'macro-params', 'macro-params-legacy'
-            ),
+            /[-*+]\w[-\w]+/, // 'all', 'bad-pragma', 'bnd', 'environment', 'float', 'float-denorm', 'float-overflow', 'float-toolong', 'float-underflow', 'hle', 'label', 'label-orphan', 'label-redef', 'label-redef-late', 'lock', 'macro', 'macro-defaults', 'macro-params', 'macro-params-legacy'
             ci('PUSH'),
             ci('POP'),
           ),
@@ -319,13 +330,14 @@ module.exports = grammar({
       ci('DEFAULT'),
       choice(...['REL', 'ABS', 'BND', 'NOBND'].map(ci))
     ),
+    assembl_directive_sections_properties: $ => repeat1(seq(
+      /[A-Za-z]+/,
+      optional(seq('=', $._expression)),
+    )), // 'PROGBITS', 'NOBITS', 'ALIGN='critical_expression, 'START='critical_expression, 'VSTART='critical_expression, 'FOLLOWS='word, 'VFOLLOWS='word
     assembl_directive_sections: $ => seq(
       choice(...['SECTION', 'SEGMENT'].map(ci)),
       field('name', $.word),
-      field('properties', repeat(seq(
-        /[A-Za-z]+/,
-        optional(seq('=', $._expression)),
-      ))), // 'PROGBITS', 'NOBITS', 'ALIGN='critical_expression, 'START='critical_expression, 'VSTART='critical_expression, 'FOLLOWS='word, 'VFOLLOWS='word
+      optional(field('properties', $.assembl_directive_sections_properties)),
     ),
     assembl_directive_absolute: $ => seq(
       ci('ABSOLUTE'),
@@ -337,7 +349,7 @@ module.exports = grammar({
       repeatSep1(
         seq(
           field('name', $.word),
-          optional(field('extension', seq(':', /[^,]+/))),
+          optional(field('extension', alias(seq(':', /[^,]+/), $.symbol_extension))),
         ),
         ',',
       ),
@@ -346,7 +358,7 @@ module.exports = grammar({
       ci('COMMON'),
       field('name', $.word),
       field('value', $._expression), // critical_expression
-      optional(field('extension', seq(':', /[^,]+/))),
+      optional(field('extension', alias(seq(':', /[^,]+/), $.symbol_extension))),
     ),
     assembl_directive_symbolfixes: $ => seq(
       choice(...[
@@ -357,7 +369,7 @@ module.exports = grammar({
     ),
     assembl_directive_cpu: $ => seq(
       ci('CPU'),
-      field('dependency', /[-0-9A-Z_a-z]+/), // '8086', '186', '286', '386', '486', '586', 'PENTIUM', '686', 'PPRO', 'P2', 'P3', 'KATMAI', 'P4', 'WILLAMETTE', 'PRESCOTT', 'X64', 'IA64' [... 16 more]
+      field('dependency', alias(/[-0-9A-Z_a-z]+/, $.cpu_instruction_set)), // '8086', '186', '286', '386', '486', '586', 'PENTIUM', '686', 'PPRO', 'P2', 'P3', 'KATMAI', 'P4', 'WILLAMETTE', 'PRESCOTT', 'X64', 'IA64' [... 16 more]
     ),
     assembl_directive_floathandling: $ => seq(
       ci('FLOAT'),
@@ -399,10 +411,7 @@ module.exports = grammar({
 
     actual_instruction: $ => seq(
       field('instruction', $.word),
-      field('operands', choice(
-        seq(ci('TO'), $.operand), // weird NASM syntax for float instructions
-        optional(repeatSep1($.operand, ',')),
-      )),
+      optional(field('operands', $.operands)),
     ),
     _pseudo_instruction: $ => choice(
       $.pseudo_instruction_dx,
@@ -445,9 +454,7 @@ module.exports = grammar({
       optional(seq(',', $.instruction)),
     ),
 
-    __pseudo_instruction_dx_type: $ => choice(...[
-      'BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'
-    ].map(ci)),
+    __pseudo_instruction_dx_type: $ => $.size_hint,
     __pseudo_instruction_dx_atom: $ => choice(
       $._expression,
       '?',
@@ -483,6 +490,10 @@ module.exports = grammar({
 // #endregion instruction
 
 // #region operand
+    operands: $ => choice(
+      seq(ci('TO'), $.operand), // weird NASM syntax for float instructions
+      repeatSep1($.operand, ','),
+    ),
     operand: $ => seq(
       optional($.operand_prefix),
       choice(
@@ -494,9 +505,11 @@ module.exports = grammar({
 
     operand_prefix: $ => seq(
       optional(ci('STRICT')),
-      choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci)),
+      $.size_hint,
       // YYY: `optional(choice('FAR', ..))`?
     ),
+
+    size_hint: $ => choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci)),
 
     register: $ => choice(...[
       'AL', 'AH', 'CL', 'CH', 'DL', 'DH', 'BL', 'BH', 'SPL', 'BPL', 'SIL', 'DIL', 'R8B', 'R9B', 'R10B', 'R11B', 'R12B', 'R13B', 'R14B', 'R15B',
@@ -698,7 +711,7 @@ module.exports = grammar({
     )),
     call_syntax_expression: $ => prec(4, seq(
       field('base', $.word), // macro
-      field('arguments', '(', repeatSep($._expression, ','), ')'),
+      field('arguments', seq('(', repeatSep($._expression, ','), ')')),
     )),
     parenthesized_expression: $ => seq(
       '(', $._expression, ')',

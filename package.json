@@ -27,12 +27,10 @@
   },
   "tree-sitter": [
     {
+      "scope": "source.nasm",
       "file-types": [
         "asm",
         "nasm"
-      ],
-      "highlights": [
-        "queries/highlights.scm"
       ]
     }
   ]
