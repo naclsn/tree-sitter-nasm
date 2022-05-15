@@ -1228,79 +1228,82 @@
     }
   },
   {
+    "type": "call_syntax_arguments",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_syntax_expression",
+          "named": true
+        },
+        {
+          "type": "conditional_expression",
+          "named": true
+        },
+        {
+          "type": "float_literal",
+          "named": true
+        },
+        {
+          "type": "grouped_expression",
+          "named": true
+        },
+        {
+          "type": "line_here_token",
+          "named": true
+        },
+        {
+          "type": "number_literal",
+          "named": true
+        },
+        {
+          "type": "packed_bcd_literal",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "preproc_expression",
+          "named": true
+        },
+        {
+          "type": "section_here_token",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "call_syntax_expression",
     "named": true,
     "fields": {
       "arguments": {
-        "multiple": true,
+        "multiple": false,
         "required": true,
         "types": [
           {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "binary_expression",
-            "named": true
-          },
-          {
-            "type": "call_syntax_expression",
-            "named": true
-          },
-          {
-            "type": "conditional_expression",
-            "named": true
-          },
-          {
-            "type": "float_literal",
-            "named": true
-          },
-          {
-            "type": "grouped_expression",
-            "named": true
-          },
-          {
-            "type": "line_here_token",
-            "named": true
-          },
-          {
-            "type": "number_literal",
-            "named": true
-          },
-          {
-            "type": "packed_bcd_literal",
-            "named": true
-          },
-          {
-            "type": "parenthesized_expression",
-            "named": true
-          },
-          {
-            "type": "preproc_expression",
-            "named": true
-          },
-          {
-            "type": "section_here_token",
-            "named": true
-          },
-          {
-            "type": "string_literal",
-            "named": true
-          },
-          {
-            "type": "unary_expression",
-            "named": true
-          },
-          {
-            "type": "word",
+            "type": "call_syntax_arguments",
             "named": true
           }
         ]

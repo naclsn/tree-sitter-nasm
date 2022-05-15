@@ -708,9 +708,10 @@ module.exports = grammar({
       field('operator', choice('-', '+', '~', '!', ci('SEG'))),
       field('argument', $._expression),
     )),
+    call_syntax_arguments: $ => seq('(', repeatSep($._expression, ','), ')'),
     call_syntax_expression: $ => prec(4, seq(
-      field('base', $.word), // macro
-      field('arguments', seq('(', repeatSep($._expression, ','), ')')),
+      field('base', $.word),
+      field('arguments', $.call_syntax_arguments),
     )),
     parenthesized_expression: $ => seq(
       '(', $._expression, ')',

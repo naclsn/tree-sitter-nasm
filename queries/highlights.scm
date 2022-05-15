@@ -1,5 +1,8 @@
 ;;; Highlighting for NASM
 
+(comment) @comment
+(ERROR) @error
+
 [
   (preproc_expression)
   (line_here_token)
@@ -166,6 +169,3 @@
 ; and same, again, but for the primitive only capture
 ; the second literal (skip the '[')
 ] @keyword
-
-(comment) @comment
-(ERROR) @error
