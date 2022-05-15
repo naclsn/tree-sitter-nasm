@@ -106,3 +106,43 @@ rep	inst1
       (instruction_prefix)
       (actual_instruction
         (word)))))
+===
+labels
+===
+label1:                         ; a non-local label
+.local:                         ; this is really label1.local
+..@foo:                         ; this is a special symbol (still a label)
+label2:                         ; another non-local label
+.local:                         ; this is really label2.local
+
+        jmp     ..@foo          ; this will jump three lines up
+---
+(source_file
+  (source_line
+    (label
+      (word)))
+  (comment)
+  (source_line
+    (label
+      (word)))
+  (comment)
+  (source_line
+    (label
+      (word)))
+  (comment)
+  (source_line
+    (label
+      (word)))
+  (comment)
+  (source_line
+    (label
+      (word)))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (word))))))
+  (comment))

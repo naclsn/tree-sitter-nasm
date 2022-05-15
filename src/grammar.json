@@ -3113,6 +3113,10 @@
               "type": "SEQ",
               "members": [
                 {
+                  "type": "STRING",
+                  "value": ","
+                },
+                {
                   "type": "FIELD",
                   "name": "offset",
                   "content": {
@@ -3124,12 +3128,21 @@
                   "type": "CHOICE",
                   "members": [
                     {
-                      "type": "FIELD",
-                      "name": "length",
-                      "content": {
-                        "type": "SYMBOL",
-                        "name": "_expression"
-                      }
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": ","
+                        },
+                        {
+                          "type": "FIELD",
+                          "name": "length",
+                          "content": {
+                            "type": "SYMBOL",
+                            "name": "_expression"
+                          }
+                        }
+                      ]
                     },
                     {
                       "type": "BLANK"
@@ -4142,6 +4155,27 @@
           "name": "_expression"
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": ","
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "STRING",
           "value": "]"
         }
@@ -4235,23 +4269,23 @@
       "members": [
         {
           "type": "PATTERN",
-          "value": "[0123456789]+\\.([0123456789])([Ee][0123456789]+)?"
+          "value": "[0123456789][0123456789_]*\\.[0123456789_]*([Ee][-+]?[0123456789_]+)?"
         },
         {
           "type": "PATTERN",
-          "value": "[0123456789]+[Ee][0123456789]+"
+          "value": "[0123456789][0123456789_]*[Ee][-+]?[0123456789_]+"
         },
         {
           "type": "PATTERN",
-          "value": "\\$[0123456789]+\\.([0123456789ABCDEFabcdef])([Ee][0123456789ABCDEFabcdef]+|[Pp][0123456789]+)?"
+          "value": "\\$[0123456789][0123456789ABCDEFabcdef_]*\\.[0123456789ABCDEFabcdef_]*([Ee][-+]?[0123456789ABCDEFabcdef_]+|[Pp][-+]?[0123456789_]+)?"
         },
         {
           "type": "PATTERN",
-          "value": "\\$[0123456789]+([Ee][0123456789ABCDEFabcdef]+|[Pp][0123456789]+)"
+          "value": "\\$[0123456789][0123456789ABCDEFabcdef_]*([Ee][-+]?[0123456789ABCDEFabcdef_]+|[Pp][-+]?[0123456789_]+)"
         },
         {
           "type": "PATTERN",
-          "value": "0[HXhx][0123456789ABCDEFabcdef_]*\\.([0123456789ABCDEFabcdef_]*)?([Ee][-+]?[0123456789ABCDEFabcdef]+)?"
+          "value": "0[HXhx][0123456789ABCDEFabcdef_]*\\.[0123456789ABCDEFabcdef_]*([Ee][-+]?[0123456789ABCDEFabcdef]+)?"
         },
         {
           "type": "PATTERN",
@@ -4259,7 +4293,7 @@
         },
         {
           "type": "PATTERN",
-          "value": "0[HXhx][0123456789ABCDEFabcdef_]*\\.([0123456789ABCDEFabcdef_]*)?([Pp][-+]?[0123456789]+)?"
+          "value": "0[HXhx][0123456789ABCDEFabcdef_]*\\.[0123456789ABCDEFabcdef_]*([Pp][-+]?[0123456789]+)?"
         },
         {
           "type": "PATTERN",
@@ -4267,7 +4301,7 @@
         },
         {
           "type": "PATTERN",
-          "value": "0[DTdt][0123456789_]*\\.([0123456789_]*)?([Ee][-+]?[0123456789]+)?"
+          "value": "0[DTdt][0123456789_]*\\.[0123456789_]*([Ee][-+]?[0123456789]+)?"
         },
         {
           "type": "PATTERN",
@@ -4275,7 +4309,7 @@
         },
         {
           "type": "PATTERN",
-          "value": "0[OQoq][01234567_]*\\.([01234567_]*)?([Pp][-+]?[0123456789]+)?"
+          "value": "0[OQoq][01234567_]*\\.[01234567_]*([Pp][-+]?[0123456789]+)?"
         },
         {
           "type": "PATTERN",
@@ -4283,7 +4317,7 @@
         },
         {
           "type": "PATTERN",
-          "value": "0[BYby][01_]*\\.([01_]*)?([Pp][-+]?[0123456789]+)?"
+          "value": "0[BYby][01_]*\\.[01_]*([Pp][-+]?[0123456789]+)?"
         },
         {
           "type": "PATTERN",

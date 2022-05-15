@@ -13,44 +13,10 @@
 (preproc_expression
   "}" @variable.builtin)
 
-[
-  "-"
-  "+"
-  "~"
-  "!"
-  ; ci(SEG)
-] @operator.unary
-[
-  ; ci(WRT)
-  "||"
-  "^^"
-  "&&"
-  "="
-  "=="
-  "!="
-  "<>"
-  "<"
-  "<="
-  ">"
-  ">="
-  "<=>"
-  "|"
-  "^"
-  "&"
-  "<<"
-  ">>"
-  "<<<"
-  ">>>"
-  "+"
-  "-"
-  "*"
-  "/"
-  "//"
-  "%"
-  "%%"
-  "%+"
-  "%,"
-] @operator.binary
+(unary_expression
+  operator: _ @operator.unary)
+(binary_expression
+  operator: _ @operator.binary)
 (conditional_expression
   "?" @operator
   ":" @operator)
@@ -100,6 +66,8 @@
 
 ((word) @constant
   (#match? @constant "^[A-Z_][?A-Z_0-9]+$"))
+((word) @constant
+  (#match? @constant.builtin "^__\\?[A-Z_a-z0-9]+\\?__$"))
 (word) @variable
 
 (preproc_arg) @keyword

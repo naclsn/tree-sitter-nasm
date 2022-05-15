@@ -24,3 +24,399 @@ hexadecimal
         (operands
           (operand
             (number_literal)))))))
+===
+numeric
+===
+        mov     ax,200          ; decimal 
+        mov     ax,0200         ; still decimal 
+        mov     ax,0200d        ; explicitly decimal 
+        mov     ax,0d200        ; also decimal 
+        mov     ax,0c8h         ; hex 
+        mov     ax,$0c8         ; hex again: the 0 is required 
+        mov     ax,0xc8         ; hex yet again 
+        mov     ax,0hc8         ; still hex 
+        mov     ax,310q         ; octal 
+        mov     ax,310o         ; octal again 
+        mov     ax,0o310        ; octal yet again 
+        mov     ax,0q310        ; octal yet again 
+        mov     ax,11001000b    ; binary 
+        mov     ax,1100_1000b   ; same binary constant 
+        mov     ax,1100_1000y   ; same binary constant once more 
+        mov     ax,0b1100_1000  ; same binary constant yet again 
+        mov     ax,0y1100_1000  ; same binary constant yet again
+---
+(source_file
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (number_literal))))))
+  (comment))
+===
+charstr
+===
+      db    'a',0x55            ; character constants are OK
+      db    'hello',13,10,'$'   ; so are string constants
+      dw    'a'                 ; 0x61 0x00 (it's just a number)
+      dw    'ab'                ; 0x61 0x62 (character constant)
+      dw    'abc'               ; 0x61 0x62 0x63 0x00 (string)
+      db `\u263a`            ; UTF-8 smiley face
+      db `\xe2\x98\xba`      ; UTF-8 smiley face
+      db 0E2h, 098h, 0BAh    ; UTF-8 smiley face
+      db    'hello'               ; string constant 
+      db    'h','e','l','l','o'   ; equivalent character constants
+      dd    'ninechars'           ; doubleword string constant 
+      dd    'nine','char','s'     ; becomes three doublewords 
+      db    'ninechars',0,0,0     ; and really looks like this
+      dw __?utf16?__('C:\WINDOWS'), 0       ; Pathname in UTF-16
+---
+(source_file
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal)
+        (number_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal)
+        (number_literal)
+        (number_literal)
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (number_literal)
+        (number_literal)
+        (number_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal)
+        (string_literal)
+        (string_literal)
+        (string_literal)
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal)
+        (string_literal)
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal)
+        (number_literal)
+        (number_literal)
+        (number_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (call_syntax_expression
+          (word)
+          (call_syntax_arguments
+            (string_literal)))
+        (number_literal))))
+  (comment))
+===
+floatpt
+===
+      db    -0.2                    ; "Quarter precision"
+      dw    -0.5                    ; IEEE 754r/SSE5 half precision
+      dd    1.2                     ; an easy one
+      dd    1.222_222_222           ; underscores are permitted
+      dd    0x1p+2                  ; 1.0x2^2 = 4.0
+      dq    0x1p+32                 ; 1.0x2^32 = 4 294 967 296.0
+      dq    1.e10                   ; 10 000 000 000.0
+      dq    1.e+10                  ; synonymous with 1.e10
+      dq    1.e-10                  ; 0.000 000 000 1
+      dt    3.141592653589793238462 ; pi
+      do    1.e+4000                ; IEEE 754r quad precision
+      mov    rax,__?float64?__(3.141592653589793238462)
+      dq    +1.5, -Inf, NaN         ; Double-precision constants
+---
+(source_file
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (unary_expression
+          (float_literal)))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (unary_expression
+          (float_literal)))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (float_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (float_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (float_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (float_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (float_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (float_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (float_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (float_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (float_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (call_syntax_expression
+              (word)
+              (call_syntax_arguments
+                (float_literal))))))))
+  (source_line
+    (instruction
+      (pseudo_instruction_dx
+        (unary_expression
+          (float_literal))
+        (unary_expression
+          (word))
+        (word))))
+  (comment))

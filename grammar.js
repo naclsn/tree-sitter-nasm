@@ -433,8 +433,12 @@ module.exports = grammar({
       ci('INCBIN'),
       field('path', $._expression), // constant_charstr
       optional(seq(
+        ',',
         field('offset', $._expression),
-        optional(field('length', $._expression)),
+        optional(seq(
+          ',',
+          field('length', $._expression),
+        )),
       )),
     ),
     pseudo_instruction_equ_command: $ => seq(
@@ -540,6 +544,7 @@ module.exports = grammar({
       optional(choice(...['BYTE', 'WORD', 'DWORD', 'NOSPLIT', 'REL', 'ABS'].map(ci))),
       optional(seq(choice(...['CS', 'DS', 'SS', 'ES', 'FS', 'GS'].map(ci)), ':')),
       $._expression,
+      optional(seq(',', $._expression)),
       ']',
     ),
 
@@ -626,7 +631,7 @@ module.exports = grammar({
         const frac = `[${digits}_]*`;
         const expn = `[${expo}][-+]?[${expd}]+`;
         return [
-          RegExp(`0[${fixes}][${digits}_]*\\.(${frac})?(${expn})?`), // try with a period
+          RegExp(`0[${fixes}][${digits}_]*\\.${frac}(${expn})?`), // try with a period
           RegExp(`0[${fixes}][${digits}_]*(${expn})`), // no period, try with an exponent
         ];
       }
@@ -634,11 +639,11 @@ module.exports = grammar({
       const OF = O9+'ABCDEFabcdef';
       return choice(
         // no prefix decimal (with and without period)
-        RegExp(`[${O9}]+\\.([${O9}])([Ee][${O9}]+)?`),
-        RegExp(`[${O9}]+[Ee][${O9}]+`),
+        RegExp(`[${O9}][${O9}_]*\\.[${O9}_]*([Ee][-+]?[${O9}_]+)?`),
+        RegExp(`[${O9}][${O9}_]*[Ee][-+]?[${O9}_]+`),
         // $-prefix hexadecimal (with and without period)
-        RegExp(`\\$[${O9}]+\\.([${OF}])([Ee][${OF}]+|[Pp][${O9}]+)?`),
-        RegExp(`\\$[${O9}]+([Ee][${OF}]+|[Pp][${O9}]+)`),
+        RegExp(`\\$[${O9}][${OF}_]*\\.[${OF}_]*([Ee][-+]?[${OF}_]+|[Pp][-+]?[${O9}_]+)?`),
+        RegExp(`\\$[${O9}][${OF}_]*([Ee][-+]?[${OF}_]+|[Pp][-+]?[${O9}_]+)`),
         ..._make_flt('HXhx', OF, 'Ee', OF),
         ..._make_flt('HXhx', OF, 'Pp', O9),
         ..._make_flt('DTdt', O9, 'Ee', O9),

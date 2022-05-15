@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-nasm",
-  "version": "0.0.1",
+  "version": "0.1.4",
   "description": "NASM grammar with tree-sitter",
   "main": "bindings/node",
   "keywords": [

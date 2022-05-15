@@ -1,0 +1,181 @@
+===
+resx
+===
+buffer:         resb    64              ; reserve 64 bytes
+wordvar:        resw    1               ; reserve a word
+realarray       resq    10              ; array of ten reals
+ymmval:         resy    1               ; one YMM register
+zmmvals:        resz    32              ; 32 ZMM registers
+---
+(source_file
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_resx
+        (number_literal))))
+  (comment)
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_resx
+        (number_literal))))
+  (comment)
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_resx
+        (number_literal))))
+  (comment)
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_resx
+        (number_literal))))
+  (comment)
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_resx
+        (number_literal))))
+  (comment))
+===
+dx with ?
+===
+buffer:         db      64 dup (?)      ; reserve 64 bytes
+wordvar:        dw      ?               ; reserve a word
+realarray       dq      10 dup (?)      ; array of ten reals
+ymmval:         dy      ?               ; one YMM register
+zmmvals:        dz      32 dup (?)      ; 32 ZMM registers
+---
+(source_file
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_dx
+        (number_literal))))
+  (comment)
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_dx)))
+  (comment)
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_dx
+        (number_literal))))
+  (comment)
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_dx)))
+  (comment)
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_dx
+        (number_literal))))
+  (comment))
+===
+incbin
+===
+    incbin  "file.dat"             ; include the whole file
+    incbin  "file.dat",1024        ; skip the first 1024 bytes
+    incbin  "file.dat",1024,512    ; skip the first 1024, and
+                                   ; actually include at most 512
+---
+(source_file
+  (source_line
+    (instruction
+      (pseudo_instruction_incbin_command
+        (string_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_incbin_command
+        (string_literal)
+        (number_literal))))
+  (comment)
+  (source_line
+    (instruction
+      (pseudo_instruction_incbin_command
+        (string_literal)
+        (number_literal)
+        (number_literal))))
+  (comment)
+  (comment))
+===
+equ (note: does not care about label..)
+===
+message         db      'hello, world'
+msglen          equ     $-message
+---
+(source_file
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal))))
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_equ_command
+        (binary_expression
+          (line_here_token)
+          (word))))))
+===
+times
+===
+zerobuf:        times 64 db 0
+
+buffer: db      'hello, world'
+        times 64-$+buffer db ' '
+
+        times 100 movsb
+---
+(source_file
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_times_prefix
+        (number_literal)
+        (instruction
+          (pseudo_instruction_dx
+            (number_literal))))))
+  (source_line
+    (label
+      (word))
+    (instruction
+      (pseudo_instruction_dx
+        (string_literal))))
+  (source_line
+    (instruction
+      (pseudo_instruction_times_prefix
+        (binary_expression
+          (binary_expression
+            (number_literal)
+            (line_here_token))
+          (word))
+        (instruction
+          (pseudo_instruction_dx
+            (string_literal))))))
+  (source_line
+    (instruction
+      (pseudo_instruction_times_prefix
+        (number_literal)
+        (instruction
+          (actual_instruction
+            (word)))))))
