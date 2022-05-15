@@ -10,54 +10,56 @@ module.exports = grammar({
 
   conflicts: $ => [
     [$.actual_instruction, $.label],
-    [$.operand, $.expression],
-    [$.__pseudo_instruction_dx_atom, $.constant],
+    [$.operand, $._expression],
+    [$.__pseudo_instruction_dx_atom, $._constant],
     [$.__pseudo_instruction_dx_list],
     [$.__pseudo_instruction_dx_atom, $.parenthesized_expression],
   ],
 
   rules: {
 
-    source_file: $ => source_lines($),
+    source_file: $ => _source_lines($),
 
 //#region struc
     struc_declaration: $ => seq(
       ci('STRUC'),
-      $.word,
+      field('name', $.word),
       /\r?\n/,
-      repeatSep1(
+      field('body', repeatSep1(
         seq(
           optional($.label),
           optional(choice(
-            $._pseudo_instruction_resx,
-            $._pseudo_instruction_alignx_macro,
+            $.pseudo_instruction_resx,
+            $.pseudo_instruction_alignx_macro,
           )),
         ),
         /\r?\n/,
-      ),
+      )),
       ci('ENDSTRUC'),
     ),
 
     struc_instance: $ => seq(
       ci('ISTRUC'),
-      $.word,
+      field('name', $.word),
       /\r?\n/,
-      repeatSep1(
+      field('body', repeatSep1(
         seq(
           optional($.label),
           optional(
             seq(
               ci('AT'), $.word,
-              optional(seq(',', $._pseudo_instruction_dx)),
+              optional(seq(',', $.pseudo_instruction_dx)),
             ),
           ),
         ),
         /\r?\n/,
-      ),
+      )),
       ci('IEND'),
     ),
 //#endregion struc
 
+    // using this (rather than eg. `choice(optional(..), optional(..))`) is to avoid matching empty string
+    // ends up the same as `source_line` is used inside an `optional` (see `source_lines`)
     source_line: $ => choice(
       $.label,
       $.instruction,
@@ -65,7 +67,7 @@ module.exports = grammar({
     ),
 
 //#region preproc_directive
-    preproc_directive: $ => seq(
+    _preproc_directive: $ => seq(
       '%',
       choice(
         $.preproc_def,
@@ -104,46 +106,49 @@ module.exports = grammar({
         'DEFALIAS', 'IDEFALIAS',
         'STRCAT', 'STRLEN', 'SUBSTR',
       ].map(ci)),
-      $.word,
-      /.*/, // expression
+      field('name', $.word),
+      field('value', /.*/), // expression
     ),
     preproc_function_def: $ => seq(
       token.immediate(...['DEFINE', 'IDEFINE', 'XDEFINE'].map(ci)),
-      $.word,
-      token.immediate('('),
-      repeatSep(
-        seq(
-          optional(/[=&+!]/),
-          $.word,
+      field('name', $.word),
+      field('parameters', seq(
+        token.immediate('('),
+        repeatSep(
+          seq(
+            optional(/[=&+!]/),
+            $.word,
+          ),
+          ',',
         ),
-        ',',
-      ),
-      optional(','),
-      ')',
-      /.*/, // expression
+        optional(','),
+        ')',
+      )),
+      field('value', /.*/), // expression
     ),
     preproc_undef: $ => seq(
       token.immediate(ci('UNDEF', 'UNDEFALIAS')),
-      $.word,
+      field('name', $.word),
     ),
     preproc_alias: $ => seq(
       choice(...['ALIASES', 'IFDEFALIAS'].map(ci)),
-      $.word,
-      $.word,
+      field('name', $.word),
+      field('value', $.word),
     ),
     _preproc_multiline_macro_arg_spec: $ => /[0-9]+(-[*0-9])?\+?(.nolist)?/,
     preproc_multiline_macro: $ => seq(
       token.immediate(...['MACRO', 'IMACRO'].map(ci)),
-      $.word,
-      $._preproc_multiline_macro_arg_spec,
-      repeatSep($.expression, ','),
+      field('name', $.word),
+      field('spec', $._preproc_multiline_macro_arg_spec),
+      field('default', repeatSep($._expression, ',')),
       /\r?\n/,
-      source_lines($),
+      field('body', _source_lines($)),
       ci('%ENDMACRO'),
     ),
     preproc_multiline_unmacro: $ => seq(
       token.immediate(ci('UNMACRO')),
-      $._preproc_multiline_macro_arg_spec,
+      field('name', $.word),
+      field('spec', $._preproc_multiline_macro_arg_spec),
     ),
     preproc_if: $ => {
       function _make_n(base) { return 'N' + base; }
@@ -154,64 +159,64 @@ module.exports = grammar({
       const elifs = [...bases.map(_make_elif), ...bases.map(_make_n).map(_make_elif)]; // ifs.map(it => 'EL'+it);
       return seq(
         token.immediate(choice(...ifs.map(ci))),
-        $.expression, // preproc_expression? (critical_expression?)
+        field('condition', $._expression), // preproc_expression? (critical_expression?)
         /\r?\n/,
-        source_lines($),
-        repeat(seq(
+        field('consequence', _source_lines($)),
+        repeat(field('alternative', seq(
           choice(...elifs.map(ci)),
-          $.expression, // preproc_expression? (critical_expression?)
+          field('condition', $._expression), // preproc_expression? (critical_expression?)
           /\r?\n/,
-          source_lines($),
-        )),
-        optional(seq(
+          field('consequence', _source_lines($)),
+        ))),
+        optional(field('alternative', seq(
           choice(ci('%ELSE')),
           /\r?\n/,
-          source_lines($),
-        )),
+          field('consequence', _source_lines($)), // YYY: or 'body'?
+        ))),
         ci('%ENDIF'),
       );
     },
     preproc_rotate: $ => seq(
       token.immediate(ci('ROTATE')),
-      $.expression, // preproc_expression? (critical_expression?)
+      $._expression, // preproc_expression? (critical_expression?)
     ),
     preproc_rep_loop: $ => seq(
       token.immediate(ci('REP')),
-      $.expression, // preproc_expression? (critical_expression?)
+      field('count', $._expression), // preproc_expression? (critical_expression?)
       /\r?\n/,
-      source_lines($),
+      field('body', _source_lines($)),
       ci('%ENDREP'),
     ),
     preproc_include: $ => seq(
       token.immediate(ci('INCLUDE')),
-      /.*/, // YYY: constant_charstr
+      field('path', /.*/), // YYY: constant_charstr | identifier | preproc_call_expression
     ),
     preproc_pathsearch: $ => seq(
       token.immediate(ci('PATHSEARCH')),
       $.word,
-      /.*/, // YYY: constant_charstr
+      field('path', /.*/), // YYY: constant_charstr | identifier | preproc_call_expression
     ),
     preproc_depend: $ => seq(
       token.immediate(ci('DEPEND')),
-      /.*/, // YYY: constant_charstr
+      field('path', /.*/), // YYY: constant_charstr | identifier | preproc_call_expression
     ),
     preproc_use: $ => seq(
       token.immediate(ci('USE')),
-      /.*/, // YYY: constant_charstr
+      field('path', /.*/), // YYY: constant_charstr | identifier | preproc_call_expression
     ),
     preproc_push: $ => seq(
       token.immediate(ci('PUSH')),
-      optional($.word),
+      optional(field('name', $.word)),
     ),
     preproc_pop: $ => seq(
       token.immediate(ci('POP')),
-      optional($.word),
+      optional(field('name', $.word)),
     ),
     preproc_repl: $ => seq(
       token.immediate(ci('REPL')),
-      optional($.word),
+      optional(field('name', $.word)),
     ),
-    preproc_arg: $ => seq(
+    preproc_arg: $ => seq( // YYY: name fields?
       token.immediate(ci('ARG')),
       repeatSep1(
         seq($.word, ':', choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci))),
@@ -222,7 +227,7 @@ module.exports = grammar({
       token.immediate(ci('STACKSIZE')),
       choice(...['FLAT', 'FLAT64', 'LARGE', 'SMALL'].map(ci)),
     ),
-    preproc_local: $ => seq(
+    preproc_local: $ => seq( // YYY: name fields?
       token.immediate(ci('LOCAL')),
       repeatSep1(
         seq($.word, ':', choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci))),
@@ -231,13 +236,13 @@ module.exports = grammar({
     ),
     preproc_reporting: $ => seq(
       token.immediate(choice(...['ERROR', 'WARNING', 'FATAL'].map(ci))),
-      /.*/, // YYY: constant_charstr (not quite)
+      field('message', /.*/), // YYY: constant_charstr (not quite)
     ),
     preproc_pragma: $ => seq(
       token.immediate(ci('PRAGMA')),
-      $.word, // <namespace>
-      $.word, // <directive>
-      optional(/.*/), // [<argument>]
+      field('namespace', $.word),
+      field('directive', $.word),
+      optional(field('argument', /.*/)),
     ),
     preproc_line: $ => seq(
       token.immediate(ci('LINE')),
@@ -253,7 +258,7 @@ module.exports = grammar({
 //#endregion preproc_directive
 
 //#region assembl_directive
-    assembl_directive: $ => {
+    _assembl_directive: $ => {
       /**
        * the ones described in the `rules` property of the
        * grammar are user forms
@@ -264,17 +269,17 @@ module.exports = grammar({
         return seq('[', rule, ']');
       }
       const user = [
-        $._assembl_directive_target,
-        $._assembl_directive_defaults,
-        $._assembl_directive_sections,
-        $._assembl_directive_absolute,
-        $._assembl_directive_symbols, // YYY: << like EXTERN and GLOBAL, the primitive form of COMMON differs from the
-        $._assembl_directive_common,  //         user-level form only in that it can take only one argument at a time >>
-        $._assembl_directive_symbolfixes,
-        $._assembl_directive_cpu,
-        $._assembl_directive_floathandling,
-        $._assembl_directive_org, // YYY: not presented as an assembler directive..? does it have a primitive form again?
-        $._assembl_directive_sectalign, // YYY: 'ON' and 'OFF' in primitive form? probably not
+        $.assembl_directive_target,
+        $.assembl_directive_defaults,
+        $.assembl_directive_sections,
+        $.assembl_directive_absolute,
+        $.assembl_directive_symbols, // YYY: << like EXTERN and GLOBAL, the primitive form of COMMON differs from the
+        $.assembl_directive_common,  //         user-level form only in that it can take only one argument at a time >>
+        $.assembl_directive_symbolfixes,
+        $.assembl_directive_cpu,
+        $.assembl_directive_floathandling,
+        $.assembl_directive_org, // YYY: not presented as an assembler directive..? does it have a primitive form again?
+        $.assembl_directive_sectalign, // YYY: 'ON' and 'OFF' in primitive form? probably not
       ];
       const primitive = user.map(_prim_from_user);
       return choice(
@@ -299,64 +304,64 @@ module.exports = grammar({
       );
     },
 
-    _assembl_directive_target: $ => choice(
-      seq(ci('BITS'), /[0-9]+/), // '16', '32', '64'
+    assembl_directive_target: $ => choice(
+      seq(ci('BITS'), field('target', /[0-9]+/)), // '16', '32', '64'
       ci('USE16'),
       ci('USE32'),
     ),
-    _assembl_directive_defaults: $ => seq(
+    assembl_directive_defaults: $ => seq(
       ci('DEFAULT'),
       choice(...['REL', 'ABS', 'BND', 'NOBND'].map(ci))
     ),
-    _assembl_directive_sections: $ => seq(
+    assembl_directive_sections: $ => seq(
       choice(...['SECTION', 'SEGMENT'].map(ci)),
-      $.word,
-      repeat(seq(
+      field('name', $.word),
+      field('properties', repeat(seq(
         /[A-Za-z]+/,
-        optional(seq('=', $.expression)),
-      )), // 'PROGBITS', 'NOBITS', 'ALIGN='critical_expression, 'START='critical_expression, 'VSTART='critical_expression, 'FOLLOWS='word, 'VFOLLOWS='word
+        optional(seq('=', $._expression)),
+      ))), // 'PROGBITS', 'NOBITS', 'ALIGN='critical_expression, 'START='critical_expression, 'VSTART='critical_expression, 'FOLLOWS='word, 'VFOLLOWS='word
     ),
-    _assembl_directive_absolute: $ => seq(
+    assembl_directive_absolute: $ => seq(
       ci('ABSOLUTE'),
-      $.expression, // critical_expression
+      $._expression, // critical_expression
     ),
-    _assembl_directive_symbols: $ => seq(
+    assembl_directive_symbols: $ => seq(
       // YYY: grouping all 4 is a bit hacky as they do not have the exact same syntax apparently (e.g. see 7.9)
       choice(...['EXTERN', 'REQUIRED', 'GLOBAL', 'STATIC'].map(ci)),
       repeatSep1(
         seq(
-          $.word,
-          optional(seq(':', /[^,]+/)), // YYY: "object-format specific text"?
+          field('name', $.word),
+          optional(field('extension', seq(':', /[^,]+/))), // YYY: "object-format specific text"?
         ),
         ',',
       ),
     ),
-    _assembl_directive_common: $ => seq(
+    assembl_directive_common: $ => seq(
       ci('COMMON'),
-      $.word,
-      $.expression, // critical_expression
-      optional(seq(':', /[^,]+/)), // YYY: "object-format specific extensions"?
+      field('name', $.word),
+      field('value', $._expression), // critical_expression
+      optional(field('extension', seq(':', /[^,]+/))), // YYY: "object-format specific extensions"?
     ),
-    _assembl_directive_symbolfixes: $ => seq(
+    assembl_directive_symbolfixes: $ => seq(
       choice(...[
         'PREFIX', 'GPREFIX', 'LPREFIX',
         'POSTFIX', 'GPOSTFIX', 'LPOSTFIX',
       ].map(ci)),
-      $.word,
+      field('name', $.word),
     ),
-    _assembl_directive_cpu: $ => seq(
+    assembl_directive_cpu: $ => seq(
       ci('CPU'),
-      /[-0-9A-Z_a-z]+/, // '8086', '186', '286', '386', '486', '586', 'PENTIUM', '686', 'PPRO', 'P2', 'P3', 'KATMAI', 'P4', 'WILLAMETTE', 'PRESCOTT', 'X64', 'IA64' [... 16 more]
+      field('dependency', /[-0-9A-Z_a-z]+/), // '8086', '186', '286', '386', '486', '586', 'PENTIUM', '686', 'PPRO', 'P2', 'P3', 'KATMAI', 'P4', 'WILLAMETTE', 'PRESCOTT', 'X64', 'IA64' [... 16 more]
     ),
-    _assembl_directive_floathandling: $ => seq(
+    assembl_directive_floathandling: $ => seq(
       ci('FLOAT'),
       choice(...['DAZ', 'NODAZ', 'NEAR', 'UP', 'DOWN', 'ZERO', 'DEFAULT'].map(ci)),
     ),
-    _assembl_directive_org: $ => seq(
+    assembl_directive_org: $ => seq(
       ci('ORG'),
-      $.expression, // critical_expression
+      $._expression, // critical_expression
     ),
-    _assembl_directive_sectalign: $ => seq(
+    assembl_directive_sectalign: $ => seq(
       ci('SECTALIGN'),
       choice(
         ci('ON'),
@@ -374,7 +379,7 @@ module.exports = grammar({
       repeat($.instruction_prefix),
       choice(
         $.actual_instruction,
-        $.pseudo_instruction,
+        $._pseudo_instruction,
       ),
     ),
 
@@ -386,69 +391,66 @@ module.exports = grammar({
       '{REX}', '{EVEX}', '{VEX}', '{VEX2}', '{VEX3}'
     ].map(ci)),
 
-    actual_instruction: $ => seq(
-      $.word,
-      choice(
+    actual_instruction: $ => seq( // YYY: should or not be hidden?
+      field('instruction', $.word),
+      field('operands', choice(
         seq(ci('TO'), $.operand), // weird NASM syntax for float instructions
         optional(repeatSep1($.operand, ',')),
-      ),
+      )),
     ),
-    pseudo_instruction: $ => choice(
-      $._pseudo_instruction_dx,
-      $._pseudo_instruction_resx,
-      $._pseudo_instruction_incbin_command,
-      $._pseudo_instruction_equ_command,
-      $._pseudo_instruction_times_prefix,
-      $._pseudo_instruction_alignx_macro,
+    _pseudo_instruction: $ => choice(
+      $.pseudo_instruction_dx,
+      $.pseudo_instruction_resx,
+      $.pseudo_instruction_incbin_command,
+      $.pseudo_instruction_equ_command,
+      $.pseudo_instruction_times_prefix,
+      $.pseudo_instruction_alignx_macro,
     ),
 
 //  #region pseudo instruction
-    _pseudo_instruction_dx: $ => seq( // YYY: << DT, DO, DY and DZ do not accept numeric constants as operands. >>
+    pseudo_instruction_dx: $ => seq( // YYY: << DT, DO, DY and DZ do not accept numeric constants as operands. >>
       choice(...['DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ'].map(ci)),
       repeatSep1($.__pseudo_instruction_dx_value, ','),
     ),
-    _pseudo_instruction_resx: $ => seq(
+    pseudo_instruction_resx: $ => seq(
       choice(...['RESB', 'RESW', 'RESD', 'RESQ', 'REST', 'RESO', 'RESY', 'RESZ'].map(ci)),
-      $.expression, // critical_expression
+      $._expression, // critical_expression
     ),
-    _pseudo_instruction_incbin_command: $ => seq(
+    pseudo_instruction_incbin_command: $ => seq(
       ci('INCBIN'),
-      choice(
-        $.constant_charstr,
-        $.word,
-      ),
+      field('path', $._expression), // constant_charstr
       optional(seq(
-        $.expression,
-        optional($.expression),
+        field('offset', $._expression),
+        optional(field('length', $._expression)),
       )),
     ),
-    _pseudo_instruction_equ_command: $ => seq(
+    pseudo_instruction_equ_command: $ => seq(
       ci('EQU'), // XXX/FIXME: requires a label before it
-      $.expression,
+      $._expression,
     ),
-    _pseudo_instruction_times_prefix: $ => seq(
+    pseudo_instruction_times_prefix: $ => seq(
       ci('TIMES'),
-      $.expression, // critical_expression
+      field('count', $._expression), // critical_expression
       $.instruction,
     ),
-    _pseudo_instruction_alignx_macro: $ => seq(
+    pseudo_instruction_alignx_macro: $ => seq(
       choice(...['ALIGN', 'ALIGNB'].map(ci)),
-      $.expression, // critical_expression
-      optional($.instruction),
+      $._expression, // critical_expression
+      optional(seq(',', $.instruction)),
     ),
 
     __pseudo_instruction_dx_type: $ => choice(...[
       'BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'
     ].map(ci)),
     __pseudo_instruction_dx_atom: $ => choice(
-      $.expression,
+      $._expression,
       '?',
     ),
     __pseudo_instruction_dx_parlist: $ => seq(
       '(', repeatSep1($.__pseudo_instruction_dx_value, ','), ')',
     ),
     __pseudo_instruction_dx_duplist: $ => seq(
-      $.expression,
+      $._expression,
       ci('DUP'),
       optional($.__pseudo_instruction_dx_type),
       optional('%'),
@@ -480,8 +482,7 @@ module.exports = grammar({
       choice(
         $.register,
         $.effective_address,
-        $.constant,
-        $.expression,
+        $._expression,
       ),
     ),
 
@@ -521,19 +522,19 @@ module.exports = grammar({
       //      this (e.g./maybe) would enable weird macro to be still parsed
       optional(choice(...['BYTE', 'WORD', 'DWORD', 'NOSPLIT', 'REL', 'ABS'].map(ci))),
       optional(seq(choice(...['CS', 'DS', 'SS', 'ES', 'FS', 'GS'].map(ci)), ':')),
-      $.expression,
+      $._expression,
       ']',
     ),
 
 //  #region constant
-    constant: $ => choice(
-      $.constant_numeric,
-      $.constant_charstr,
-      $.constant_floatpt,
-      $.constant_packbcd,
+    _constant: $ => choice(
+      $.number_literal,
+      $.string_literal,
+      $.float_literal,
+      $.packed_bcd_literal,
     ),
 
-    constant_numeric: $ => {
+    number_literal: $ => {
       /**
        * the same characters can be used in prefix or suffix notation:
        *  - 0xFF
@@ -567,7 +568,7 @@ module.exports = grammar({
         ..._make_num('BYby', '01'),
       );
     },
-    constant_charstr: $ => choice(
+    string_literal: $ => choice(
       /'[^']*'/,
       /"[^"]*"/,
       /`(\\.|[^\\`])*`/,
@@ -589,7 +590,7 @@ module.exports = grammar({
         '`',
       ),*/
     ),
-    constant_floatpt: $ => {
+    float_literal: $ => {
       /**
        * has common points with parsing constant_numeric,
        * becomes a floating point when has dot or exponent
@@ -628,7 +629,7 @@ module.exports = grammar({
         ..._make_flt('BYby', '01', 'Pp', O9),
       );
     },
-    constant_packbcd: $ => {
+    packed_bcd_literal: $ => {
       // YYY: not covered: << can include up to 18 decimal digits >>
       return choice(
         /0[Pp][0-9_]*/, // yes, '*' and not '+'
@@ -638,7 +639,7 @@ module.exports = grammar({
 //  #endregion constant
 
 //  #region expression
-    expression: $ => choice(
+    _expression: $ => choice(
       $.conditional_expression,
       $.binary_expression,
       $.unary_expression,
@@ -646,14 +647,18 @@ module.exports = grammar({
       $.parenthesized_expression,
       $.grouped_expression,
       $.preproc_expression,
-      $.word, // ie. identifier
-      $.constant,
-      '$',
+      $.word,
+      $._constant,
+      '$', // XXX: don't like it (literal -> anonymous node or whatever)
       '$$',
     ),
 
-    conditional_expression: $ => prec.right(1, seq( // YYY: right?
-      $.expression, '?', $.expression, ':', $.expression,
+    conditional_expression: $ => prec.right(1, seq(
+      field('condition', $._expression),
+      '?',
+      field('consequence', $._expression),
+      ':',
+      field('alternative', $._expression),
     )),
     binary_expression: $ => {
       const ops = [
@@ -674,28 +679,31 @@ module.exports = grammar({
       return prec(2, choice(...ops.reduce((acc, ls, k) => acc.concat(
         ls.map(op =>
           prec.left(k, seq(
-            $.expression, op, $.expression,
+            field('left', $._expression),
+            field('operator', op),
+            field('right', $._expression),
           )),
         ),
       ), []))); // [] is reduce's `initialValue`
     },
     unary_expression: $ => prec.left(3, seq(
-      choice('-', '+', '~', '!', ci('SEG')), $.expression,
+      field('operator', choice('-', '+', '~', '!', ci('SEG'))),
+      field('argument', $._expression),
     )),
     call_syntax_expression: $ => prec(4, seq(
-      $.word, // macro
-      '(', repeatSep($.expression, ','), ')',
+      field('base', $.word), // macro
+      field('arguments', '(', repeatSep($._expression, ','), ')'),
     )),
     parenthesized_expression: $ => seq(
-      '(', $.expression, ')',
+      '(', $._expression, ')',
     ),
     grouped_expression: $ => seq(
-      '{', repeatSep1($.expression, ','), '}',
+      '{', repeatSep1($._expression, ','), '}',
     ),
     preproc_expression: $ => seq('%', choice(
       // environement variables
       seq(token.immediate('!'), token.immediate(choice(/[A-Z_a-z][0-9A-Z_a-z]+/, /'[^']*'/, /"[^"]*"/))),
-      // "macro indirection" YYY: or `$.expression`?
+      // "macro indirection" YYY: or `$._expression`?
       seq(token.immediate('['), $.word, ']'),
       // macro local and context local
       seq(token.immediate(choice('$', '$$', '%')), token.immediate(/[A-Za-z._?][A-Za-z0-9_$#@~.?]*/)),
@@ -704,7 +712,7 @@ module.exports = grammar({
       // macro parameters
       token.immediate(/[-+]?[0-9]+/),
       // other expansion
-      seq(token.immediate('{'), $.expression, optional(seq(':', $.expression)), '}'), 
+      seq(token.immediate('{'), $._expression, optional(seq(':', $._expression)), '}'), 
     )),
 //  #endregion expression
 // #endregion operand
@@ -719,14 +727,14 @@ module.exports = grammar({
 });
 
 /** to circumvent 'rule maches empty string' while not duplicating code */
-function source_lines($) {
+function _source_lines($) {
   return repeatSep1(
     optional(choice(
       $.struc_declaration,
       $.struc_instance,
       $.source_line,
-      $.preproc_directive,
-      $.assembl_directive,
+      $._preproc_directive,
+      $._assembl_directive,
     )),
     /\r?\n/,
   );
