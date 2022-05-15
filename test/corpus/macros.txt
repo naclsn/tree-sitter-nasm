@@ -7,16 +7,14 @@ header guard
 %endif ;__SOME_INC__
 ---
 (source_file
-  (preproc_directive
-    (preproc_if
-      (expression
-        (word))
-      (preproc_directive
-        (preproc_def
-          (word)))
-      (comment)))
+  (preproc_if
+    (word)
+    (body
+      (preproc_def
+        (word)
+        (preproc_arg)))
+    (comment))
   (comment))
-
 ===
 x86_64 sys_write
 ===
@@ -29,48 +27,47 @@ x86_64 sys_write
 %endmacro
 ---
 (source_file
-  (preproc_directive
-    (preproc_multiline_macro
-      (word)
-      (expression
-        (constant
-          (constant_numeric)))
+  (preproc_multiline_macro
+    (word)
+    (preproc_multiline_macro_arg_spec)
+    (number_literal)
+    (body
       (source_line
         (instruction
           (actual_instruction
             (word)
-            (operand
-              (register))
-            (operand
-              (expression
+            (operands
+              (operand
+                (register))
+              (operand
                 (preproc_expression))))))
       (source_line
         (instruction
           (actual_instruction
             (word)
-            (operand
-              (register))
-            (operand
-              (expression
+            (operands
+              (operand
+                (register))
+              (operand
                 (preproc_expression))))))
       (source_line
         (instruction
           (actual_instruction
             (word)
-            (operand
-              (register))
-            (operand
-              (expression
+            (operands
+              (operand
+                (register))
+              (operand
                 (preproc_expression))))))
       (source_line
         (instruction
           (actual_instruction
             (word)
-            (operand
-              (register))
-            (operand
-              (constant
-                (constant_numeric))))))
+            (operands
+              (operand
+                (register))
+              (operand
+                (number_literal))))))
       (source_line
         (instruction
           (actual_instruction

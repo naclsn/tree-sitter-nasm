@@ -1,170 +1,196 @@
 ===
-should probably break this test in smaller ones
+1
 ===
     db 33
-    db (44)               ; Integer expression
-    db (44,55)            ; Invalid - error
-    db %(44,55)
-    db %('XX','YY')
-    db ('AA')             ; Integer expression - outputs single byte
-    db %('BB')            ; List, containing a string
-    db ?
-    db 6 dup (33)
-    db 6 dup (33, 34)
-    db 6 dup (33, 34), 35
-    db 7 dup (99)
-    db 7 dup dword (?, word ?, ?)
-    dw byte (?,44)
-    dw 3 dup (0xcc, 4 dup byte ('PQR'), ?), 0xabcd
-    dd 16 dup (0xaaaa, ?, 0xbbbbbb)
-    dd 64 dup (?)
 ---
-
 (source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric))))))
+      (pseudo_instruction_dx
+        (number_literal)))))
+===
+2
+===
+    db (44)               ; Integer expression
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (parenthesized_expression
-            (expression
-              (constant
-                (constant_numeric))))))))
-  (comment)
+      (pseudo_instruction_dx
+        (parenthesized_expression
+          (number_literal)))))
+  (comment))
+===
+3
+===
+    db (44,55)            ; Invalid - error
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (parenthesized_expression
-            (expression
-              (constant
-                (constant_numeric)))
-            (ERROR))))))
-  (comment)
+      (pseudo_instruction_dx
+        (parenthesized_expression
+          (number_literal)
+          (ERROR)))))
+  (comment))
+===
+4
+===
+    db %(44,55)
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric))))))
+      (pseudo_instruction_dx
+        (number_literal)
+        (number_literal)))))
+===
+5
+===
+    db %('XX','YY')
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (constant_charstr)
-        (constant_charstr))))
+      (pseudo_instruction_dx
+        (string_literal)
+        (string_literal)))))
+===
+6
+===
+    db ('AA')             ; Integer expression - outputs single byte
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (parenthesized_expression
-            (expression
-              (constant
-                (constant_charstr))))))))
-  (comment)
+      (pseudo_instruction_dx
+        (parenthesized_expression
+          (string_literal)))))
+  (comment))
+===
+7
+===
+    db %('BB')            ; List, containing a string
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (constant_charstr))))
-  (comment)
+      (pseudo_instruction_dx
+        (string_literal))))
+  (comment))
+===
+8
+===
+    db ?
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction)))
+      (pseudo_instruction_dx))))
+===
+9
+===
+    db 6 dup (33)
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric))))))
+      (pseudo_instruction_dx
+        (number_literal)
+        (number_literal)))))
+===
+10
+===
+    db 6 dup (33, 34)
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric))))))
+      (pseudo_instruction_dx
+        (number_literal)
+        (number_literal)
+        (number_literal)))))
+===
+11
+===
+    db 6 dup (33, 34), 35
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric))))))
+      (pseudo_instruction_dx
+        (number_literal)
+        (number_literal)
+        (number_literal)
+        (number_literal)))))
+===
+12
+===
+    db 7 dup (99)
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric))))))
+      (pseudo_instruction_dx
+        (number_literal)
+        (number_literal)))))
+===
+13
+===
+    db 7 dup dword (?, word ?, ?)
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric))))))
+      (pseudo_instruction_dx
+        (number_literal)
+        (size_hint)
+        (size_hint)))))
+===
+14
+===
+    dw byte (?,44)
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric))))))
+      (pseudo_instruction_dx
+        (size_hint)
+        (number_literal)))))
+===
+15
+===
+    dw 3 dup (0xcc, 4 dup byte ('PQR'), ?), 0xabcd
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric)))
-        (constant_charstr)
-        (expression
-          (constant
-            (constant_numeric))))))
+      (pseudo_instruction_dx
+        (number_literal)
+        (number_literal)
+        (number_literal)
+        (size_hint)
+        (string_literal)
+        (number_literal)))))
+===
+16
+===
+    dd 16 dup (0xaaaa, ?, 0xbbbbbb)
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric)))
-        (expression
-          (constant
-            (constant_numeric))))))
+      (pseudo_instruction_dx
+        (number_literal)
+        (number_literal)
+        (number_literal)))))
+===
+17
+===
+    dd 64 dup (?)
+---
+(source_file
   (source_line
     (instruction
-      (pseudo_instruction
-        (expression
-          (constant
-            (constant_numeric)))))))
+      (pseudo_instruction_dx
+        (number_literal)))))

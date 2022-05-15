@@ -13,26 +13,23 @@ endstruc
 (source_file
   (struc_declaration
     (word)
-    (label
-      (word))
-    (expression
-      (constant
-        (constant_numeric)))
-    (label
-      (word))
-    (expression
-      (constant
-        (constant_numeric)))
-    (label
-      (word))
-    (expression
-      (constant
-        (constant_numeric)))
-    (label
-      (word))
-    (expression
-      (constant
-        (constant_numeric)))))
+    (struc_declaration_body
+      (label
+        (word))
+      (pseudo_instruction_resx
+        (number_literal))
+      (label
+        (word))
+      (pseudo_instruction_resx
+        (number_literal))
+      (label
+        (word))
+      (pseudo_instruction_resx
+        (number_literal))
+      (label
+        (word))
+      (pseudo_instruction_resx
+        (number_literal)))))
 ===
 struc instance
 ===
@@ -52,31 +49,22 @@ iend
       (word)))
   (struc_instance
     (word)
-    (word)
-    (expression
-      (constant
-        (constant_numeric)))
-    (word)
-    (expression
-      (constant
-        (constant_numeric)))
-    (word)
-    (expression
-      (constant
-        (constant_charstr)))
-    (word)
-    (expression
-      (constant
-        (constant_charstr)))
-    (expression
-      (constant
-        (constant_numeric)))
-    (expression
-      (constant
-        (constant_numeric)))
-    (expression
-      (constant
-        (constant_numeric)))))
+    (struc_instance_body
+      (word)
+      (pseudo_instruction_dx
+        (number_literal))
+      (word)
+      (pseudo_instruction_dx
+        (number_literal))
+      (word)
+      (pseudo_instruction_dx
+        (string_literal))
+      (word)
+      (pseudo_instruction_dx
+        (string_literal)
+        (number_literal)
+        (number_literal)
+        (number_literal)))))
 ===
 declaration 2
 ===
@@ -98,29 +86,24 @@ endstruc
 (source_file
   (struc_declaration
     (word)
-    (label
-      (word))
-    (expression
-      (constant
-        (constant_numeric)))
-    (expression
-      (constant
-        (constant_numeric)))
-    (label
-      (word))
-    (expression
-      (constant
-        (constant_numeric)))
-    (expression
-      (constant
-        (constant_numeric)))
-    (label
-      (word))
-    (expression
-      (constant
-        (constant_numeric)))
-    (label
-      (word))
-    (expression
-      (constant
-        (constant_numeric)))))
+    (struc_declaration_body
+      (label
+        (word))
+      (pseudo_instruction_resx
+        (number_literal))
+      (pseudo_instruction_alignx_macro
+        (number_literal))
+      (label
+        (word))
+      (pseudo_instruction_resx
+        (number_literal))
+      (pseudo_instruction_alignx_macro
+        (number_literal))
+      (label
+        (word))
+      (pseudo_instruction_resx
+        (number_literal))
+      (label
+        (word))
+      (pseudo_instruction_resx
+        (number_literal)))))

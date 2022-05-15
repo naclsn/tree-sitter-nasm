@@ -32,8 +32,7 @@ labl1:
         (word)
         (operands
           (operand
-            (expression
-                  (word))))))))
+            (word)))))))
 ===
 labl2	inst2	ray	; label instruction operand
 ===
@@ -48,8 +47,7 @@ labl2	inst2	ray
         (word)
         (operands
           (operand
-            (expression
-              (word))))))))
+            (word)))))))
 ===
 	inst3	raz, 1	; instruction operand operand
 ===
@@ -62,11 +60,9 @@ labl2	inst2	ray
         (word)
         (operands
           (operand
-            (expression
-              (word)))
+            (word))
           (operand
-            (constant
-              (constant_numeric))))))))
+            (number_literal)))))))
 ===
 labl3	inst3	raz, 1	; label instruction operand operand
 ===
@@ -81,11 +77,9 @@ labl3	inst3	raz, 1
         (word)
         (operands
           (operand
-            (expression
-              (word)))
+            (word))
           (operand
-            (constant
-              (constant_numeric))))))))
+            (number_literal)))))))
 ===
 	inst3	1, raz	; instruction operand operand
 ===
@@ -98,11 +92,9 @@ labl3	inst3	raz, 1
         (word)
         (operands
           (operand
-            (constant
-              (constant_numeric)))
+            (number_literal))
           (operand
-            (expression
-              (word))))))))
+            (word)))))))
 ===
 rep	inst1		; prefix instruction
 ===

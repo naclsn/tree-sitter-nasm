@@ -608,10 +608,6 @@
         {
           "type": "SYMBOL",
           "name": "preproc_clear"
-        },
-        {
-          "type": "PATTERN",
-          "value": "%.*"
         }
       ]
     },

@@ -2,118 +2,107 @@
 register
 ===
 	inc	rax
-
 ---
 (source_file
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register)))))))
-
 ===
 constant_numeric
 ===
 	add	7, 6
-
 ---
 (source_file
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
-            (constant
-              (constant_numeric)))
+            (number_literal))
           (operand
-            (constant
-              (constant_numeric))))))))
-
+            (number_literal)))))))
 ===
 constant_charstr (simple quote)
 ===
 	mov	al, 'yes'
-
 ---
 (source_file
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register))
           (operand
-            (constant
-              (constant_charstr))))))))
-
+            (string_literal)))))))
 ===
 constant_charstr (double quote)
 ===
 	mov	"no", bl
-
 ---
 (source_file
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
-            (constant
-              (constant_charstr)))
+            (string_literal))
           (operand
             (register)))))))
-
 ===
 effective_address
 ===
 	mov	[buf], rsi
-
 ---
 (source_file
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (effective_address
-              (expression
-                (word))))
+              (word)))
           (operand
             (register)))))))
-
 ===
 operand_prefix
 ===
 	mov	rax, qword '*'
-
 ---
 (source_file
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register))
           (operand
-            (operand_prefix)
-            (constant
-              (constant_charstr))))))))
-
+            (operand_prefix
+              (size_hint))
+            (string_literal)))))))
 ===
 operand_prefix strict
 ===
 	mov	rax, strict byte '*'
-
 ---
 (source_file
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register))
           (operand
-            (operand_prefix)
-            (constant
-              (constant_charstr))))))))
+            (operand_prefix
+              (size_hint))
+            (string_literal)))))))

@@ -103,7 +103,6 @@ module.exports = grammar({
       $.preproc_pragma,
       $.preproc_line,
       $.preproc_clear,
-      /%.*/, // sink
     ),
 
     preproc_def: $ => seq(

@@ -1,5 +1,5 @@
 ===
-label: instuction operands comment
+label: instruction operands comment
 ===
 label:	mov	rax, 60 ; sys_EXIT
 
@@ -9,17 +9,16 @@ label:	mov	rax, 60 ; sys_EXIT
     (label
       (word))
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register))
           (operand
-            (constant
-              (constant_numeric)))))))
+            (number_literal))))))
   (comment))
-
 ===
-label instuction operand
+label instruction operand
 ===
 label	add	rax, rbx
 
@@ -29,15 +28,15 @@ label	add	rax, rbx
     (label
       (word))
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register))
           (operand
             (register)))))))
-
 ===
-instuction operand
+instruction operand
 ===
 	inc	rax
 
@@ -45,13 +44,13 @@ instuction operand
 (source_file
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register)))))))
-
 ===
-instuction
+instruction
 ===
 	syscall
 
@@ -59,8 +58,8 @@ instuction
 (source_file
   (source_line
     (instruction
-      (known_instruction))))
-
+      (actual_instruction
+        (word)))))
 ===
 label:
 ===
@@ -71,7 +70,6 @@ label:
   (source_line
     (label
       (word))))
-
 ===
 prefix instruction
 ===
@@ -82,8 +80,8 @@ repne	scasb
   (source_line
     (instruction
       (instruction_prefix)
-      (known_instruction))))
-
+      (actual_instruction
+        (word)))))
 ===
 line \ continuation
 ===
@@ -96,14 +94,13 @@ label:	mov	rax, \
     (label
       (word))
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register))
           (operand
-            (constant
-              (constant_numeric))))))))
-
+            (number_literal)))))))
 ===
 label unknown operands
 ===
@@ -115,12 +112,11 @@ exit:	sys_exit	rax
     (label
       (word))
     (instruction
-      (unknown_instruction
+      (actual_instruction
         (word)
         (operands
           (operand
             (register)))))))
-
 ===
 unknown operands
 ===
@@ -130,19 +126,15 @@ unknown operands
 (source_file
   (source_line
     (instruction
-      (unknown_instruction
+      (actual_instruction
         (word)
         (operands
           (operand
-            (constant
-              (constant_numeric)))
+            (number_literal))
           (operand
-            (expression
-              (word)))
+            (word))
           (operand
-            (expression
-              (word))))))))
-
+            (word)))))))
 ===
 coucou
 ===
@@ -151,9 +143,9 @@ coucou
 ---
 (source_file
   (source_line
-    (label
-      (word))))
-
+    (instruction
+      (actual_instruction
+        (word)))))
 ===
 comment
 ===
@@ -162,7 +154,6 @@ comment
 ---
 (source_file
   (comment))
-
 ===
 com \ ment
 ===
@@ -172,7 +163,6 @@ com \ ment
 ---
 (source_file
   (comment))
-
 ===
 multi-line snippet
 ===
@@ -188,28 +178,28 @@ no_file:
       (word)))
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register))
           (operand
-            (constant
-              (constant_numeric)))))))
+            (number_literal))))))
   (comment)
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register))
           (operand
-            (constant
-              (constant_numeric)))))))
+            (number_literal))))))
   (comment)
   (source_line
     (instruction
-      (known_instruction))))
-
+      (actual_instruction
+        (word)))))
 ===
 ambiguous label
 ===
@@ -218,18 +208,18 @@ coucou
 ---
 (source_file
   (source_line
-    (label
-      (word)))
+    (instruction
+      (actual_instruction
+        (word))))
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register))
           (operand
-            (constant
-              (constant_numeric))))))))
-
+            (number_literal)))))))
 ===
 ambiguous known_instruction
 ===
@@ -239,17 +229,17 @@ syscall
 (source_file
   (source_line
     (instruction
-      (known_instruction)))
+      (actual_instruction
+        (word))))
   (source_line
     (instruction
-      (known_instruction
+      (actual_instruction
+        (word)
         (operands
           (operand
             (register))
           (operand
-            (constant
-              (constant_numeric))))))))
-
+            (number_literal)))))))
 ===
 floating-point instructions
 ===
@@ -264,31 +254,35 @@ floating-point instructions
     (instruction
       (actual_instruction
         (word)
-        (operand
-          (register)))))
+        (operands
+          (operand
+            (register))))))
   (comment)
   (source_line
     (instruction
       (actual_instruction
         (word)
-        (operand
-          (register))
-        (operand
-          (register)))))
+        (operands
+          (operand
+            (register))
+          (operand
+            (register))))))
   (comment)
   (source_line
     (instruction
       (actual_instruction
         (word)
-        (operand
-          (register))
-        (operand
-          (register)))))
+        (operands
+          (operand
+            (register))
+          (operand
+            (register))))))
   (comment)
   (source_line
     (instruction
       (actual_instruction
         (word)
-        (operand
-          (register)))))
+        (operands
+          (operand
+            (register))))))
   (comment))
