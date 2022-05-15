@@ -171,7 +171,7 @@ module.exports = grammar({
         optional(field('alternative', seq(
           choice(ci('%ELSE')),
           /\r?\n/,
-          field('consequence', _source_lines($)), // YYY: or 'body'?
+          field('consequence', _source_lines($)),
         ))),
         ci('%ENDIF'),
       );
@@ -189,20 +189,20 @@ module.exports = grammar({
     ),
     preproc_include: $ => seq(
       token.immediate(ci('INCLUDE')),
-      field('path', /.*/), // YYY: constant_charstr | identifier | preproc_call_expression
+      field('path', $.string_literal),
     ),
     preproc_pathsearch: $ => seq(
       token.immediate(ci('PATHSEARCH')),
       $.word,
-      field('path', /.*/), // YYY: constant_charstr | identifier | preproc_call_expression
+      field('path', $.string_literal),
     ),
     preproc_depend: $ => seq(
       token.immediate(ci('DEPEND')),
-      field('path', /.*/), // YYY: constant_charstr | identifier | preproc_call_expression
+      field('path', $.string_literal),
     ),
     preproc_use: $ => seq(
       token.immediate(ci('USE')),
-      field('path', /.*/), // YYY: constant_charstr | identifier | preproc_call_expression
+      field('path', $.string_literal),
     ),
     preproc_push: $ => seq(
       token.immediate(ci('PUSH')),
@@ -216,10 +216,13 @@ module.exports = grammar({
       token.immediate(ci('REPL')),
       optional(field('name', $.word)),
     ),
-    preproc_arg: $ => seq( // YYY: name fields?
+    preproc_arg: $ => seq(
       token.immediate(ci('ARG')),
       repeatSep1(
-        seq($.word, ':', choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci))),
+        seq(
+          field('name', $.word), ':',
+          field('size', choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci))),
+        ),
         ',',
       ),
     ),
@@ -227,16 +230,19 @@ module.exports = grammar({
       token.immediate(ci('STACKSIZE')),
       choice(...['FLAT', 'FLAT64', 'LARGE', 'SMALL'].map(ci)),
     ),
-    preproc_local: $ => seq( // YYY: name fields?
+    preproc_local: $ => seq(
       token.immediate(ci('LOCAL')),
       repeatSep1(
-        seq($.word, ':', choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci))),
+        seq(
+          field('name', $.word), ':',
+          field('size', choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci))),
+        ),
         ',',
       ),
     ),
     preproc_reporting: $ => seq(
       token.immediate(choice(...['ERROR', 'WARNING', 'FATAL'].map(ci))),
-      field('message', /.*/), // YYY: constant_charstr (not quite)
+      field('message', /.*/), // constant_charstr (not quite)
     ),
     preproc_pragma: $ => seq(
       token.immediate(ci('PRAGMA')),
@@ -248,7 +254,7 @@ module.exports = grammar({
       token.immediate(ci('LINE')),
       /[0-9]+/,
       optional(seq('+', /[0-9]+/)),
-      optional(/.*/), // YYY: constant_charstr
+      optional(field('path', /.*/)), // constant_charstr
     ),
     preproc_clear: $ => seq(
       token.immediate(ci('CLEAR')),
@@ -298,8 +304,8 @@ module.exports = grammar({
         )),
         _prim_from_user(seq( // no user form for [MAP]
           ci('MAP'),
-          optional(/[A-Za-z]/), //'ALL', 'BRIEF', 'SECTIONS', 'SEGMENTS', 'SYMBOLS'
-          $.word, // YYY: filename?
+          optional(choice(...['ALL', 'BRIEF', 'SECTIONS', 'SEGMENTS', 'SYMBOLS'].map(ci))),
+          field('filename', $.word), // no, it is not quoted
         )),
       );
     },
@@ -331,7 +337,7 @@ module.exports = grammar({
       repeatSep1(
         seq(
           field('name', $.word),
-          optional(field('extension', seq(':', /[^,]+/))), // YYY: "object-format specific text"?
+          optional(field('extension', seq(':', /[^,]+/))),
         ),
         ',',
       ),
@@ -340,7 +346,7 @@ module.exports = grammar({
       ci('COMMON'),
       field('name', $.word),
       field('value', $._expression), // critical_expression
-      optional(field('extension', seq(':', /[^,]+/))), // YYY: "object-format specific extensions"?
+      optional(field('extension', seq(':', /[^,]+/))),
     ),
     assembl_directive_symbolfixes: $ => seq(
       choice(...[
@@ -391,7 +397,7 @@ module.exports = grammar({
       '{REX}', '{EVEX}', '{VEX}', '{VEX2}', '{VEX3}'
     ].map(ci)),
 
-    actual_instruction: $ => seq( // YYY: should or not be hidden?
+    actual_instruction: $ => seq(
       field('instruction', $.word),
       field('operands', choice(
         seq(ci('TO'), $.operand), // weird NASM syntax for float instructions
@@ -408,7 +414,7 @@ module.exports = grammar({
     ),
 
 //  #region pseudo instruction
-    pseudo_instruction_dx: $ => seq( // YYY: << DT, DO, DY and DZ do not accept numeric constants as operands. >>
+    pseudo_instruction_dx: $ => seq(
       choice(...['DB', 'DW', 'DD', 'DQ', 'DT', 'DO', 'DY', 'DZ'].map(ci)),
       repeatSep1($.__pseudo_instruction_dx_value, ','),
     ),
@@ -630,7 +636,7 @@ module.exports = grammar({
       );
     },
     packed_bcd_literal: $ => {
-      // YYY: not covered: << can include up to 18 decimal digits >>
+      // not covered: << can include up to 18 decimal digits >>
       return choice(
         /0[Pp][0-9_]*/, // yes, '*' and not '+'
         /[0-9][0-9_]*[Pp]/,
@@ -649,8 +655,8 @@ module.exports = grammar({
       $.preproc_expression,
       $.word,
       $._constant,
-      '$', // XXX: don't like it (literal -> anonymous node or whatever)
-      '$$',
+      alias('$', $.line_here_token),
+      alias('$$', $.section_here_token),
     ),
 
     conditional_expression: $ => prec.right(1, seq(
@@ -703,8 +709,8 @@ module.exports = grammar({
     preproc_expression: $ => seq('%', choice(
       // environement variables
       seq(token.immediate('!'), token.immediate(choice(/[A-Z_a-z][0-9A-Z_a-z]+/, /'[^']*'/, /"[^"]*"/))),
-      // "macro indirection" YYY: or `$._expression`?
-      seq(token.immediate('['), $.word, ']'),
+      // "macro indirection"
+      seq(token.immediate('['), $._expression, ']'),
       // macro local and context local
       seq(token.immediate(choice('$', '$$', '%')), token.immediate(/[A-Za-z._?][A-Za-z0-9_$#@~.?]*/)),
       // macro context tokens
@@ -719,7 +725,7 @@ module.exports = grammar({
 //#endregion source_line
 
     comment: $ => /;(\\\r?\n|.)*/,
-    // YYY: `@bidoof` sould not be valid as per the doc (same with `$@bidoof`)
+    // note: `@bidoof` sould not be valid as per the doc (same with `$@bidoof`)
     word: $ => prec(-5, /\$?[A-Za-z._?][A-Za-z0-9_$#@~.?]*/),
 
   },

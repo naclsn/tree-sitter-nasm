@@ -1589,8 +1589,8 @@
           "type": "FIELD",
           "name": "path",
           "content": {
-            "type": "PATTERN",
-            "value": ".*"
+            "type": "SYMBOL",
+            "name": "string_literal"
           }
         }
       ]
@@ -1613,8 +1613,8 @@
           "type": "FIELD",
           "name": "path",
           "content": {
-            "type": "PATTERN",
-            "value": ".*"
+            "type": "SYMBOL",
+            "name": "string_literal"
           }
         }
       ]
@@ -1633,8 +1633,8 @@
           "type": "FIELD",
           "name": "path",
           "content": {
-            "type": "PATTERN",
-            "value": ".*"
+            "type": "SYMBOL",
+            "name": "string_literal"
           }
         }
       ]
@@ -1653,8 +1653,8 @@
           "type": "FIELD",
           "name": "path",
           "content": {
-            "type": "PATTERN",
-            "value": ".*"
+            "type": "SYMBOL",
+            "name": "string_literal"
           }
         }
       ]
@@ -1760,49 +1760,57 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "SYMBOL",
-                  "name": "word"
+                  "type": "FIELD",
+                  "name": "name",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "word"
+                  }
                 },
                 {
                   "type": "STRING",
                   "value": ":"
                 },
                 {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "PATTERN",
-                      "value": "[bB][yY][tT][eE]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[dD][wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[qQ][wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[tT][wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[oO][wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[yY][wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[zZ][wW][oO][rR][dD]"
-                    }
-                  ]
+                  "type": "FIELD",
+                  "name": "size",
+                  "content": {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "PATTERN",
+                        "value": "[bB][yY][tT][eE]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[dD][wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[qQ][wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[tT][wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[oO][wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[yY][wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[zZ][wW][oO][rR][dD]"
+                      }
+                    ]
+                  }
                 }
               ]
             },
@@ -1819,49 +1827,57 @@
                     "type": "SEQ",
                     "members": [
                       {
-                        "type": "SYMBOL",
-                        "name": "word"
+                        "type": "FIELD",
+                        "name": "name",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "word"
+                        }
                       },
                       {
                         "type": "STRING",
                         "value": ":"
                       },
                       {
-                        "type": "CHOICE",
-                        "members": [
-                          {
-                            "type": "PATTERN",
-                            "value": "[bB][yY][tT][eE]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[dD][wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[qQ][wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[tT][wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[oO][wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[yY][wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[zZ][wW][oO][rR][dD]"
-                          }
-                        ]
+                        "type": "FIELD",
+                        "name": "size",
+                        "content": {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "PATTERN",
+                              "value": "[bB][yY][tT][eE]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[dD][wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[qQ][wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[tT][wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[oO][wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[yY][wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[zZ][wW][oO][rR][dD]"
+                            }
+                          ]
+                        }
                       }
                     ]
                   }
@@ -1922,49 +1938,57 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "SYMBOL",
-                  "name": "word"
+                  "type": "FIELD",
+                  "name": "name",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "word"
+                  }
                 },
                 {
                   "type": "STRING",
                   "value": ":"
                 },
                 {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "PATTERN",
-                      "value": "[bB][yY][tT][eE]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[dD][wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[qQ][wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[tT][wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[oO][wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[yY][wW][oO][rR][dD]"
-                    },
-                    {
-                      "type": "PATTERN",
-                      "value": "[zZ][wW][oO][rR][dD]"
-                    }
-                  ]
+                  "type": "FIELD",
+                  "name": "size",
+                  "content": {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "PATTERN",
+                        "value": "[bB][yY][tT][eE]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[dD][wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[qQ][wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[tT][wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[oO][wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[yY][wW][oO][rR][dD]"
+                      },
+                      {
+                        "type": "PATTERN",
+                        "value": "[zZ][wW][oO][rR][dD]"
+                      }
+                    ]
+                  }
                 }
               ]
             },
@@ -1981,49 +2005,57 @@
                     "type": "SEQ",
                     "members": [
                       {
-                        "type": "SYMBOL",
-                        "name": "word"
+                        "type": "FIELD",
+                        "name": "name",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "word"
+                        }
                       },
                       {
                         "type": "STRING",
                         "value": ":"
                       },
                       {
-                        "type": "CHOICE",
-                        "members": [
-                          {
-                            "type": "PATTERN",
-                            "value": "[bB][yY][tT][eE]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[dD][wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[qQ][wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[tT][wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[oO][wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[yY][wW][oO][rR][dD]"
-                          },
-                          {
-                            "type": "PATTERN",
-                            "value": "[zZ][wW][oO][rR][dD]"
-                          }
-                        ]
+                        "type": "FIELD",
+                        "name": "size",
+                        "content": {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "PATTERN",
+                              "value": "[bB][yY][tT][eE]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[dD][wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[qQ][wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[tT][wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[oO][wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[yY][wW][oO][rR][dD]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[zZ][wW][oO][rR][dD]"
+                            }
+                          ]
+                        }
                       }
                     ]
                   }
@@ -2150,8 +2182,12 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "PATTERN",
-              "value": ".*"
+              "type": "FIELD",
+              "name": "path",
+              "content": {
+                "type": "PATTERN",
+                "value": ".*"
+              }
             },
             {
               "type": "BLANK"
@@ -2534,8 +2570,29 @@
                   "type": "CHOICE",
                   "members": [
                     {
-                      "type": "PATTERN",
-                      "value": "[A-Za-z]"
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[aA][lL][lL]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[bB][rR][iI][eE][fF]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[sS][eE][cC][tT][iI][oO][nN][sS]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[sS][eE][gG][mM][eE][nN][tT][sS]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[sS][yY][mM][bB][oO][lL][sS]"
+                        }
+                      ]
                     },
                     {
                       "type": "BLANK"
@@ -2543,8 +2600,12 @@
                   ]
                 },
                 {
-                  "type": "SYMBOL",
-                  "name": "word"
+                  "type": "FIELD",
+                  "name": "filename",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "word"
+                  }
                 }
               ]
             },
@@ -4617,12 +4678,22 @@
           "name": "_constant"
         },
         {
-          "type": "STRING",
-          "value": "$"
+          "type": "ALIAS",
+          "content": {
+            "type": "STRING",
+            "value": "$"
+          },
+          "named": true,
+          "value": "line_here_token"
         },
         {
-          "type": "STRING",
-          "value": "$$"
+          "type": "ALIAS",
+          "content": {
+            "type": "STRING",
+            "value": "$$"
+          },
+          "named": true,
+          "value": "section_here_token"
         }
       ]
     },
@@ -5813,7 +5884,7 @@
                 },
                 {
                   "type": "SYMBOL",
-                  "name": "word"
+                  "name": "_expression"
                 },
                 {
                   "type": "STRING",
