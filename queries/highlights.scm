@@ -52,11 +52,11 @@
 (struc_instance
   name: (word) @type)
 
-; TODO:
-;(effective_address
-;  (_) @type
-;  (_) @constant.builtin
-;  (_))
+(effective_address
+ hint: _ @type)
+(effective_address
+ segment: _ @constant.builtin)
+
 (register) @constant.builtin
 
 (number_literal) @number.integer
@@ -66,7 +66,7 @@
 
 ((word) @constant
   (#match? @constant "^[A-Z_][?A-Z_0-9]+$"))
-((word) @constant
+((word) @constant.builtin
   (#match? @constant.builtin "^__\\?[A-Z_a-z0-9]+\\?__$"))
 (word) @variable
 

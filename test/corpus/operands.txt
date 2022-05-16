@@ -162,7 +162,7 @@ wordvar dw      123
             (effective_address
               (binary_expression
                 (word)
-                (number_literal))))))))
+                (register))))))))
   (source_line
     (instruction
       (actual_instruction
@@ -175,9 +175,9 @@ wordvar dw      123
               (binary_expression
                 (binary_expression
                   (binary_expression
-                    (number_literal)
+                    (register)
                     (number_literal))
-                  (number_literal))
+                  (register))
                 (word))))))))
   (source_line
     (instruction
@@ -190,8 +190,8 @@ wordvar dw      123
             (effective_address
               (binary_expression
                 (binary_expression
-                  (word)
-                  (word))
+                  (register)
+                  (register))
                 (number_literal))))))))
   (source_line
     (instruction
@@ -203,7 +203,7 @@ wordvar dw      123
           (operand
             (effective_address
               (binary_expression
-                (number_literal)
+                (register)
                 (number_literal))))))))
   (comment)
   (source_line
@@ -222,18 +222,18 @@ wordvar dw      123
                 (word))))))))
   (comment)
   (source_line
-        (instruction
-          (actual_instruction
-            (word)
-            (operands
-              (operand
-                (register))
-              (operand
-                (effective_address
-                  (binary_expression
-                    (number_literal)
-                    (number_literal))
-                  (binary_expression
-                    (number_literal)
-                    (number_literal))))))))
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (register))
+          (operand
+            (effective_address
+              (binary_expression
+                (register)
+                (number_literal))
+              (binary_expression
+                (register)
+                (number_literal))))))))
   (comment))

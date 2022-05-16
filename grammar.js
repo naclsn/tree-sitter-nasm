@@ -541,9 +541,10 @@ module.exports = grammar({
       '[',
       // YYY: somehow, both optionals could even be moved to expression
       //      this (e.g./maybe) would enable weird macro to be still parsed
-      optional(choice(...['BYTE', 'WORD', 'DWORD', 'NOSPLIT', 'REL', 'ABS'].map(ci))),
-      optional(seq(choice(...['CS', 'DS', 'SS', 'ES', 'FS', 'GS'].map(ci)), ':')),
+      field('hint', repeat(choice(...['BYTE', 'WORD', 'DWORD', 'NOSPLIT', 'REL', 'ABS'].map(ci)))),
+      field('segment', optional(seq(choice(...['CS', 'DS', 'SS', 'ES', 'FS', 'GS'].map(ci)), ':'))),
       $._expression,
+      // YYY: could do with better mib expression handling
       optional(seq(',', $._expression)),
       ']',
     ),
@@ -669,6 +670,7 @@ module.exports = grammar({
       $.parenthesized_expression,
       $.grouped_expression,
       $.preproc_expression,
+      $.register,
       $.word,
       $._constant,
       alias('$', $.line_here_token),
@@ -729,13 +731,13 @@ module.exports = grammar({
       // "macro indirection"
       seq('%[', $._expression, ']'),
       // macro local and context local
-      /(%\$|%\$\$|%%)[A-Za-z._?][A-Za-z0-9_$#@~.?]*/,
+      /%(\$|\$\$|%)[A-Za-z._?][A-Za-z0-9_$#@~.?]*/,
       // macro context tokens
       choice('%?', '%??', '%*?', '%*??', '%0', '%00'),
       // macro parameters
       /%[-+]?[0-9]+/,
       // other expansion
-      seq('%{', $._expression, optional(seq(':', $._expression)), '}'), 
+      seq('%{', $._expression, optional(seq(':', $._expression)), '}'),
     ),
 //  #endregion expression
 // #endregion operand
