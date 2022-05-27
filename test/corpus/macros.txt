@@ -12,8 +12,8 @@ header guard
     (body
       (preproc_def
         (word)
-        (preproc_arg)))
-    (comment))
+        (preproc_arg))
+      (comment)))
   (comment))
 ===
 x86_64 sys_write

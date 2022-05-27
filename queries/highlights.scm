@@ -1,7 +1,9 @@
 ;;; Highlighting for NASM
 
 (comment) @comment
-(ERROR) @error
+;(ERROR) @error ; because of the nature of the 'language', the parser is not always right.. trust your instinct
+
+(label) @label
 
 [
   (preproc_expression)
@@ -41,10 +43,6 @@
 
 (call_syntax_expression
   base: (word) @function)
-
-(preproc_multiline_macro
-  name: (word) @function
-  spec: (preproc_multiline_macro_arg_spec) @type)
 
 (size_hint) @type
 (struc_declaration

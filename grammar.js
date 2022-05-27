@@ -22,12 +22,11 @@ module.exports = grammar({
   rules: {
 
     source_file: $ => _source_lines($),
-    body: $ => seq(/\r?\n/, _source_lines($)),
+    body: $ => seq(_source_lines($), /\r?\n/),
 
 //#region struc
     struc_declaration_body: $ => seq(
-      /\r?\n/,
-      repeatSep1(
+      repeatSep(
         seq(
           optional($.label),
           optional(choice(
@@ -37,18 +36,18 @@ module.exports = grammar({
         ),
         /\r?\n/,
       ),
+      /\r?\n/,
     ),
     struc_declaration: $ => seq(
       ci('STRUC'),
       field('name', $.word),
-      field('body', $.struc_declaration_body),
       /\r?\n/,
+      field('body', $.struc_declaration_body),
       ci('ENDSTRUC'),
     ),
 
     struc_instance_body: $ => seq(
-      /\r?\n/,
-      repeatSep1(
+      repeatSep(
         seq(
           optional($.label),
           optional(
@@ -60,12 +59,13 @@ module.exports = grammar({
         ),
         /\r?\n/,
       ),
+      /\r?\n/,
     ),
     struc_instance: $ => seq(
       ci('ISTRUC'),
       field('name', $.word),
-      field('body', $.struc_instance_body),
       /\r?\n/,
+      field('body', $.struc_instance_body),
       ci('IEND'),
     ),
 //#endregion struc
@@ -115,7 +115,7 @@ module.exports = grammar({
       ].map(ci)),
       field('name', $.word),
       token.immediate(/[^(]/), // hack to get preproc_function_def over preproc_def
-      field('value', alias(/.*/, $.preproc_arg)), // expression
+      field('value', alias(/(\\\r?\n|.)*/, $.preproc_arg)), // expression
     ),
     preproc_function_def_parameters: $ => seq(
       token.immediate('('),
@@ -133,7 +133,7 @@ module.exports = grammar({
       choice(...['%DEFINE', '%IDEFINE', '%XDEFINE'].map(ci)),
       field('name', $.word),
       field('parameters', $.preproc_function_def_parameters),
-      field('value', alias(/.*/, $.preproc_arg)), // expression
+      field('value', alias(/(\\\r?\n|.)*/, $.preproc_arg)), // expression
     ),
     preproc_undef: $ => seq(
       choice(...['%UNDEF', '%UNDEFALIAS'].map(ci)),
@@ -150,8 +150,8 @@ module.exports = grammar({
       field('name', $.word),
       field('spec', $.preproc_multiline_macro_arg_spec),
       field('default', repeatSep($._expression, ',')),
-      field('body', $.body),
       /\r?\n/,
+      field('body', $.body),
       ci('%ENDMACRO'),
     ),
     preproc_multiline_unmacro: $ => seq(
@@ -169,19 +169,19 @@ module.exports = grammar({
       return seq(
         choice(...ifs.map(ci)),
         field('condition', $._expression), // preproc_expression? (critical_expression?)
+        /\r?\n/,
         field('consequence', $.body),
         repeat(field('alternative', seq(
-          /\r?\n/,
           choice(...elifs.map(ci)),
           field('condition', $._expression), // preproc_expression? (critical_expression?)
+          /\r?\n/,
           field('consequence', $.body),
         ))),
         optional(field('alternative', seq(
-          /\r?\n/,
           ci('%ELSE'),
+          /\r?\n/,
           field('consequence', $.body),
         ))),
-        /\r?\n/,
         ci('%ENDIF'),
       );
     },
@@ -192,8 +192,8 @@ module.exports = grammar({
     preproc_rep_loop: $ => seq(
       ci('%REP'),
       field('count', $._expression), // preproc_expression? (critical_expression?)
-      field('body', $.body),
       /\r?\n/,
+      field('body', $.body),
       ci('%ENDREP'),
     ),
     preproc_include: $ => seq(
@@ -251,18 +251,18 @@ module.exports = grammar({
     ),
     preproc_reporting: $ => seq(
       choice(...['%ERROR', '%WARNING', '%FATAL'].map(ci)),
-      field('message', alias(/.*/, $.string_literal)), // constant_charstr (not quite)
+      field('message', alias(/(\\\r?\n|.)*/, $.string_literal)), // constant_charstr (not quite)
     ),
     preproc_pragma: $ => seq(
       ci('%PRAGMA'),
       field('namespace', $.word),
       field('directive', $.word),
-      optional(field('argument', alias(/.*/, $.string_literal))),
+      optional(field('argument', alias(/(\\\r?\n|.)*/, $.string_literal))),
     ),
     preproc_line: $ => seq(
       ci('%LINE'),
       /[0-9]+(\+[0-9]+)?/,
-      optional(field('path', alias(/.*/, $.string_literal))), // constant_charstr
+      optional(field('path', alias(/(\\\r?\n|.)*/, $.string_literal))), // constant_charstr
     ),
     preproc_clear: $ => seq(
       ci('%CLEAR'),
@@ -388,7 +388,13 @@ module.exports = grammar({
 //#endregion assembl_directive
 
 //#region source_line
-    label: $ => seq($.word, optional(':')),
+    label: $ => seq(
+      field('name', choice(
+        $.word,
+        seq('%%', token.immediate(/[A-Za-z._?][A-Za-z0-9_$#@~.?]*/)),
+      )),
+      optional(':'),
+    ),
 
 // #region instruction
     instruction: $ => seq(
@@ -592,9 +598,9 @@ module.exports = grammar({
       );
     },
     string_literal: $ => choice(
-      /'[^']*'/,
-      /"[^"]*"/,
-      /`(\\.|[^\\`])*`/,
+      /'(\\\r?\n|[^'\n])*'/,
+      /"(\\\r?\n|[^"\n])*"/,
+      /`(\\\r?\n|\\.|[^\\`\n])*`/,
       // YYY: it never complains about erroneous escapes..:
       //      << All other escape sequences are reserved. >>
       //      .. otherwise below may be more accurate
@@ -753,7 +759,7 @@ module.exports = grammar({
 
 /** to circumvent 'rule maches empty string' while not duplicating code */
 function _source_lines($) {
-  return repeatSep1(
+  return repeatSep(
     optional(choice(
       $.struc_declaration,
       $.struc_instance,
