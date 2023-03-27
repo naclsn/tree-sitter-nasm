@@ -520,27 +520,35 @@ module.exports = grammar({
     size_hint: $ => choice(...['BYTE', 'WORD', 'DWORD', 'QWORD', 'TWORD', 'OWORD', 'YWORD', 'ZWORD'].map(ci)),
 
     register: $ => choice(...[
-      'AL', 'AH', 'CL', 'CH', 'DL', 'DH', 'BL', 'BH', 'SPL', 'BPL', 'SIL', 'DIL', 'R8B', 'R9B', 'R10B', 'R11B', 'R12B', 'R13B', 'R14B', 'R15B',
-      'AX', 'CX', 'DX', 'BX', 'SP', 'BP', 'SI', 'DI', 'R8W', 'R9W', 'R10W', 'R11W', 'R12W', 'R13W', 'R14W', 'R15W',
-      'EAX', 'ECX', 'EDX', 'EBX', 'ESP', 'EBP', 'ESI', 'EDI', 'R8D', 'R9D', 'R10D', 'R11D', 'R12D', 'R13D', 'R14D', 'R15D',
-      'RAX', 'RCX', 'RDX', 'RBX', 'RSP', 'RBP', 'RSI', 'RDI', 'R8', 'R9', 'R10', 'R11', 'R12', 'R13', 'R14', 'R15',
+      'AL', 'AH', 'CL', 'CH', 'DL', 'DH', 'BL', 'BH', 'SPL', 'BPL', 'SIL', 'DIL',
+      ...withRange('R', 8, 16, 'B'),
+      'AX', 'CX', 'DX', 'BX', 'SP', 'BP', 'SI', 'DI',
+      ...withRange('R', 8, 16, 'W'),
+      'EAX', 'ECX', 'EDX', 'EBX', 'ESP', 'EBP', 'ESI', 'EDI',
+      ...withRange('R', 8, 16, 'D'),
+      'RAX', 'RCX', 'RDX', 'RBX', 'RSP', 'RBP', 'RSI', 'RDI',
+      ...withRange('R', 8, 16),
       // segment registers
       'CS', 'DS', 'SS', 'ES', 'FS', 'GS',
       // floating-point registers
-      'ST0', 'ST1', 'ST2', 'ST3', 'ST4', 'ST5', 'ST6', 'ST7',
+      ...withRange('ST', 0, 8),
       // 64-bit MMX registers
-      'MM0', 'MM1', 'MM2', 'MM3', 'MM4', 'MM5', 'MM6', 'MM7',
+      ...withRange('MM', 0, 8),
       // control registers
-      'CR0', 'CR2', 'CR3', 'CR4',
+      ...withRange('CR', 0, 8),
       // debug registers
-      'DR0', 'DR1', 'DR2', 'DR3', 'DR6', 'DR7',
+      ...withRange('DR', 0, 8),
       // test registers
-      'TR3', 'TR4', 'TR5', 'TR6', 'TR7',
+      ...withRange('TR', 0, 8),
       // alternate register names
-      'R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7',
-      'R8L', 'R9L', 'R10L', 'R11L', 'R12L', 'R13L', 'R14L', 'R15L',
-      'R0H', 'R1H', 'R2H', 'R3H',
-      'R0L', 'R1L', 'R2L', 'R3L',
+      ...withRange('R', 0, 8),
+      ...withRange('R', 8, 16, 'L'),
+      ...withRange('R', 0, 4, 'H'),
+      ...withRange('R', 0, 4, 'L'),
+      // SIMD registers
+      ...withRange('XMM', 0, 32),
+      ...withRange('YMM', 0, 32),
+      ...withRange('ZMM', 0, 32),
     ].map(ci)),
 
     effective_address: $ => seq(
@@ -780,6 +788,11 @@ function repeatSep1(rule, sep) {
 
 function repeatSep(rule, sep) {
   return optional(repeatSep1(rule, sep));
+}
+
+function withRange(prefix, min, max, suffix) {
+  return Array.from(Array(max-min).keys())
+    .map(n => prefix + (n+min) + (suffix || ""));
 }
 
 /**

@@ -3965,6 +3965,10 @@
         },
         {
           "type": "PATTERN",
+          "value": "[cC][rR]1"
+        },
+        {
+          "type": "PATTERN",
           "value": "[cC][rR]2"
         },
         {
@@ -3974,6 +3978,18 @@
         {
           "type": "PATTERN",
           "value": "[cC][rR]4"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[cC][rR]5"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[cC][rR]6"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[cC][rR]7"
         },
         {
           "type": "PATTERN",
@@ -3993,11 +4009,31 @@
         },
         {
           "type": "PATTERN",
+          "value": "[dD][rR]4"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dD][rR]5"
+        },
+        {
+          "type": "PATTERN",
           "value": "[dD][rR]6"
         },
         {
           "type": "PATTERN",
           "value": "[dD][rR]7"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[tT][rR]0"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[tT][rR]1"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[tT][rR]2"
         },
         {
           "type": "PATTERN",
@@ -4114,6 +4150,390 @@
         {
           "type": "PATTERN",
           "value": "[rR]3[lL]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]0"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]1"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]2"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]3"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]4"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]5"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]6"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]7"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]8"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]9"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]10"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]11"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]12"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]13"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]14"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]15"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]16"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]17"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]18"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]19"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]20"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]21"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]22"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]23"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]24"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]25"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]26"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]27"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]28"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]29"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]30"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xX][mM][mM]31"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]0"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]1"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]2"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]3"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]4"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]5"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]6"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]7"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]8"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]9"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]10"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]11"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]12"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]13"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]14"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]15"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]16"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]17"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]18"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]19"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]20"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]21"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]22"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]23"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]24"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]25"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]26"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]27"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]28"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]29"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]30"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[yY][mM][mM]31"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]0"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]1"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]2"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]3"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]4"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]5"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]6"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]7"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]8"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]9"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]10"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]11"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]12"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]13"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]14"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]15"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]16"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]17"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]18"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]19"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]20"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]21"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]22"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]23"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]24"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]25"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]26"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]27"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]28"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]29"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]30"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[zZ][mM][mM]31"
         }
       ]
     },
