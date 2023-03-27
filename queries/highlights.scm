@@ -1,19 +1,15 @@
 ;;; Highlighting for NASM
 
 (comment) @comment
-;(ERROR) @error ; because of the nature of the 'language', the parser is not always right.. trust your instinct
 
 (label) @label
 
+(preproc_expression) @keyword.directive
+
 [
-  (preproc_expression)
   (line_here_token)
   (section_here_token)
 ] @variable.builtin
-(preproc_expression
-  "]" @variable.builtin)
-(preproc_expression
-  "}" @variable.builtin)
 
 (unary_expression
   operator: _ @operator.unary)
@@ -57,10 +53,10 @@
 
 (register) @constant.builtin
 
-(number_literal) @number.integer
+(number_literal) @constant.numeric.integer
 (string_literal) @string
-(float_literal) @number.float
-(packed_bcd_literal) @number.integer
+(float_literal) @constant.numeric.float
+(packed_bcd_literal) @constant.numeric.integer
 
 ((word) @constant
   (#match? @constant "^[A-Z_][?A-Z_0-9]+$"))
@@ -68,7 +64,7 @@
   (#match? @constant.builtin "^__\\?[A-Z_a-z0-9]+\\?__$"))
 (word) @variable
 
-(preproc_arg) @keyword
+(preproc_arg) @keyword.directive
 
 [
   (preproc_def)
@@ -94,9 +90,7 @@
   (preproc_pragma)
   (preproc_line)
   (preproc_clear)
-; .. maybe should only capture the first literal for this
-; ('%bidoof' (also should be case insensitive))
-] @keyword
+] @keyword.directive
 [
   (pseudo_instruction_dx)
   (pseudo_instruction_resx)
@@ -104,8 +98,7 @@
   (pseudo_instruction_equ_command)
   (pseudo_instruction_times_prefix)
   (pseudo_instruction_alignx_macro)
-; same here
-] @keyword
+] @function.special
 [
   (assembl_directive_target)
   (assembl_directive_defaults)
@@ -132,6 +125,4 @@
   (assembl_directive_primitive_sectalign)
   (assembl_directive_primitive_warning)
   (assembl_directive_primitive_map)
-; and same, again, but for the primitive only capture
-; the second literal (skip the '[')
 ] @keyword
