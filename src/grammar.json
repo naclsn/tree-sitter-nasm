@@ -2957,23 +2957,23 @@
         },
         {
           "type": "PATTERN",
-          "value": "{[rR][eE][xX]}"
+          "value": "\\{[rR][eE][xX]\\}"
         },
         {
           "type": "PATTERN",
-          "value": "{[eE][vV][eE][xX]}"
+          "value": "\\{[eE][vV][eE][xX]\\}"
         },
         {
           "type": "PATTERN",
-          "value": "{[vV][eE][xX]}"
+          "value": "\\{[vV][eE][xX]\\}"
         },
         {
           "type": "PATTERN",
-          "value": "{[vV][eE][xX]2}"
+          "value": "\\{[vV][eE][xX]2\\}"
         },
         {
           "type": "PATTERN",
-          "value": "{[vV][eE][xX]3}"
+          "value": "\\{[vV][eE][xX]3\\}"
         }
       ]
     },
@@ -6194,24 +6194,11 @@
       "_expression"
     ],
     [
-      "__pseudo_instruction_dx_atom",
-      "_constant"
-    ],
-    [
       "__pseudo_instruction_dx_list"
     ],
     [
       "__pseudo_instruction_dx_atom",
       "parenthesized_expression"
-    ],
-    [
-      "body"
-    ],
-    [
-      "struc_declaration_body"
-    ],
-    [
-      "struc_instance_body"
     ]
   ],
   "precedences": [],
@@ -6219,4 +6206,3 @@
   "inline": [],
   "supertypes": []
 }
-

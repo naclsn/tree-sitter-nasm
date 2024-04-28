@@ -11,12 +11,8 @@ module.exports = grammar({
   conflicts: $ => [
     [$.actual_instruction, $.label],
     [$.operand, $._expression],
-    [$.__pseudo_instruction_dx_atom, $._constant],
     [$.__pseudo_instruction_dx_list],
     [$.__pseudo_instruction_dx_atom, $.parenthesized_expression],
-    [$.body],
-    [$.struc_declaration_body],
-    [$.struc_instance_body],
   ],
 
   rules: {
@@ -410,7 +406,7 @@ module.exports = grammar({
       /*_address_size:*/ 'A16', 'A32', 'A64',
       /*_operand_size:*/ 'O16', 'O32', 'O64',
       /*_segment_register:*/ 'CS', 'DS', 'SS', 'ES', 'FS', 'GS',
-      '{REX}', '{EVEX}', '{VEX}', '{VEX2}', '{VEX3}'
+      '\\{REX\\}', '\\{EVEX\\}', '\\{VEX\\}', '\\{VEX2\\}', '\\{VEX3\\}'
     ].map(ci)),
 
     actual_instruction: $ => seq(
