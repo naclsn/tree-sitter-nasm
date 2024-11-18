@@ -502,13 +502,14 @@ module.exports = grammar({
       optional($.operand_prefix),
       choice(
         $.register,
+        $.segment_offset,
         $.effective_address,
         $._expression,
       ),
     ),
 
     operand_prefix: $ => seq(
-      optional(ci('STRICT')),
+      optional(choice(...['STRICT', 'SHORT'].map(ci))),
       $.size_hint,
       // YYY: `optional(choice('FAR', ..))`?
     ),
@@ -557,6 +558,23 @@ module.exports = grammar({
       // YYY: could do with better mib expression handling
       optional(seq(',', $._expression)),
       ']',
+    ),
+
+    segment_offset: $ => seq(
+      // YYY: Specific to jump instructions in 16 bit mode, could be revised
+      //      to only be valid for jump instructions. Also this is a little hacky
+      //      to avoid conflicts
+      field('segment', 
+            seq(choice(
+                  ...['CS', 'DS', 'SS', 'ES', 'FS', 'GS'].map(ci), 
+                  $.binary_expression, 
+                  $.word, 
+                  $.number_literal,
+                  $.preproc_expression,
+                  $.parenthesized_expression
+               ), ':')
+      ),
+      $._expression,
     ),
 
 //  #region constant

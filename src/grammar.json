@@ -3528,6 +3528,10 @@
             },
             {
               "type": "SYMBOL",
+              "name": "segment_offset"
+            },
+            {
+              "type": "SYMBOL",
               "name": "effective_address"
             },
             {
@@ -3545,8 +3549,17 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "PATTERN",
-              "value": "[sS][tT][rR][iI][cC][tT]"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[sS][tT][rR][iI][cC][tT]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[sS][hH][oO][rR][tT]"
+                }
+              ]
             },
             {
               "type": "BLANK"
@@ -4658,6 +4671,77 @@
         {
           "type": "STRING",
           "value": "]"
+        }
+      ]
+    },
+    "segment_offset": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "segment",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "PATTERN",
+                    "value": "[cC][sS]"
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "[dD][sS]"
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "[sS][sS]"
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "[eE][sS]"
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "[fF][sS]"
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "[gG][sS]"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "binary_expression"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "number_literal"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "preproc_expression"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "parenthesized_expression"
+                  }
+                ]
+              },
+              {
+                "type": "STRING",
+                "value": ":"
+              }
+            ]
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
         }
       ]
     },
@@ -6206,3 +6290,4 @@
   "inline": [],
   "supertypes": []
 }
+
