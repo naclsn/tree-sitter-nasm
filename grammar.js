@@ -509,8 +509,8 @@ module.exports = grammar({
     ),
 
     operand_prefix: $ => seq(
-      optional(choice(...['STRICT', 'SHORT'].map(ci))),
-      $.size_hint,
+      optional(ci('STRICT')),
+      choice($.size_hint, ci('SHORT')),
       // YYY: `optional(choice('FAR', ..))`?
     ),
 

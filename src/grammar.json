@@ -3549,17 +3549,8 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "PATTERN",
-                  "value": "[sS][tT][rR][iI][cC][tT]"
-                },
-                {
-                  "type": "PATTERN",
-                  "value": "[sS][hH][oO][rR][tT]"
-                }
-              ]
+              "type": "PATTERN",
+              "value": "[sS][tT][rR][iI][cC][tT]"
             },
             {
               "type": "BLANK"
@@ -3567,8 +3558,17 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "size_hint"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "size_hint"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[sS][hH][oO][rR][tT]"
+            }
+          ]
         }
       ]
     },
