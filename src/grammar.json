@@ -708,24 +708,38 @@
           }
         },
         {
-          "type": "IMMEDIATE_TOKEN",
-          "content": {
-            "type": "PATTERN",
-            "value": "[^(]"
-          }
-        },
-        {
-          "type": "FIELD",
-          "name": "value",
-          "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "PATTERN",
-              "value": "(\\\\\\r?\\n|.)*"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "IMMEDIATE_TOKEN",
+                  "content": {
+                    "type": "PATTERN",
+                    "value": "[^(]"
+                  }
+                },
+                {
+                  "type": "FIELD",
+                  "name": "value",
+                  "content": {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "PATTERN",
+                      "value": "(\\\\\\r?\\n|[^;\\n])*"
+                    },
+                    "named": true,
+                    "value": "preproc_arg"
+                  }
+                }
+              ]
             },
-            "named": true,
-            "value": "preproc_arg"
-          }
+            {
+              "type": "STRING",
+              "value": "\n"
+            }
+          ]
         }
       ]
     },
@@ -867,7 +881,7 @@
             "type": "ALIAS",
             "content": {
               "type": "PATTERN",
-              "value": "(\\\\\\r?\\n|.)*"
+              "value": "(\\\\\\r?\\n|[^;\\n])*"
             },
             "named": true,
             "value": "preproc_arg"
@@ -4686,30 +4700,6 @@
               {
                 "type": "CHOICE",
                 "members": [
-                  {
-                    "type": "PATTERN",
-                    "value": "[cC][sS]"
-                  },
-                  {
-                    "type": "PATTERN",
-                    "value": "[dD][sS]"
-                  },
-                  {
-                    "type": "PATTERN",
-                    "value": "[sS][sS]"
-                  },
-                  {
-                    "type": "PATTERN",
-                    "value": "[eE][sS]"
-                  },
-                  {
-                    "type": "PATTERN",
-                    "value": "[fF][sS]"
-                  },
-                  {
-                    "type": "PATTERN",
-                    "value": "[gG][sS]"
-                  },
                   {
                     "type": "SYMBOL",
                     "name": "binary_expression"

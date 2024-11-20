@@ -110,8 +110,13 @@ module.exports = grammar({
         '%STRCAT', '%STRLEN', '%SUBSTR',
       ].map(ci)),
       field('name', $.word),
-      token.immediate(/[^(]/), // hack to get preproc_function_def over preproc_def
-      field('value', alias(/(\\\r?\n|.)*/, $.preproc_arg)), // expression
+      choice(
+        seq(
+          token.immediate(/[^(]/), // hack to get preproc_function_def over preproc_def
+          field('value', alias(/(\\\r?\n|[^;\r\n])*/, $.preproc_arg)), // expression
+        ),
+        '\n' // No definition is valid as well
+      ),
     ),
     preproc_function_def_parameters: $ => seq(
       token.immediate('('),
@@ -129,7 +134,7 @@ module.exports = grammar({
       choice(...['%DEFINE', '%IDEFINE', '%XDEFINE'].map(ci)),
       field('name', $.word),
       field('parameters', $.preproc_function_def_parameters),
-      field('value', alias(/(\\\r?\n|.)*/, $.preproc_arg)), // expression
+      field('value', alias(/(\\\r?\n|[^;\r\n])*/, $.preproc_arg)), // expression
     ),
     preproc_undef: $ => seq(
       choice(...['%UNDEF', '%UNDEFALIAS'].map(ci)),
@@ -564,15 +569,15 @@ module.exports = grammar({
       // YYY: Specific to jump instructions in 16 bit mode, could be revised
       //      to only be valid for jump instructions. Also this is a little hacky
       //      to avoid conflicts
-      field('segment', 
-            seq(choice(
-                  ...['CS', 'DS', 'SS', 'ES', 'FS', 'GS'].map(ci), 
-                  $.binary_expression, 
-                  $.word, 
-                  $.number_literal,
-                  $.preproc_expression,
-                  $.parenthesized_expression
-               ), ':')
+      field(
+        'segment',
+        seq(choice(
+              $.binary_expression, 
+              $.word, 
+              $.number_literal,
+              $.preproc_expression,
+              $.parenthesized_expression
+            ), ':')
       ),
       $._expression,
     ),
