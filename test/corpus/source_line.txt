@@ -332,3 +332,25 @@ floating point
           (operand
             (register))))))
   (comment))
+
+===
+jump segment-offset
+===
+
+label:
+    jmp 0x0:0x7C00
+---
+
+(source_file
+  (source_line
+    (label
+      (word)))
+  (source_line
+    (instruction
+      (actual_instruction
+        (word)
+        (operands
+          (operand
+            (segment_offset
+              (number_literal)
+              (number_literal))))))))
